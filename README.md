@@ -1,10 +1,10 @@
-# Alpha Desk
+# Quantrix
 
-> **Derivative work notice:** Alpha Desk is a derivative of [**FinRobot**](https://github.com/AI4Finance-Foundation/FinRobot) by AI4Finance Foundation, licensed under Apache License 2.0. See [`NOTICE`](./NOTICE) and [`LICENSE`](./LICENSE) for full attribution and license terms. "FinRobot" and "AI4Finance" remain trademarks of AI4Finance Foundation; this project is not affiliated with or endorsed by them.
+> **Derivative work notice:** Quantrix is a derivative of [**FinRobot**](https://github.com/AI4Finance-Foundation/FinRobot) by AI4Finance Foundation, licensed under Apache License 2.0. See [`NOTICE`](./NOTICE) and [`LICENSE`](./LICENSE) for full attribution and license terms. "FinRobot" and "AI4Finance" remain trademarks of AI4Finance Foundation; this project is not affiliated with or endorsed by them.
 
 ---
 
-# Alpha Desk: An Open-Source AI Agent Platform for Financial Applications using Large Language Models
+# Quantrix: An Open-Source AI Agent Platform for Financial Applications using Large Language Models
 [![Downloads](https://static.pepy.tech/badge/finrobot)](https://pepy.tech/project/finrobot)
 [![Downloads](https://static.pepy.tech/badge/finrobot/week)](https://pepy.tech/project/finrobot)
 [![Join Discord](https://img.shields.io/badge/Discord-Join-blue)](https://discord.gg/trsr8SXpW5)
@@ -15,17 +15,17 @@
 ![](https://img.shields.io/github/issues-closed-raw/AI4Finance-Foundation/finrobot?label=Closed+Issues)
 ![](https://img.shields.io/github/issues-pr-raw/AI4Finance-Foundation/finrobot?label=Open+PRs)
 ![](https://img.shields.io/github/issues-pr-closed-raw/AI4Finance-Foundation/finrobot?label=Closed+PRs)
-[![Alpha Desk Desktop](https://img.shields.io/badge/Desktop-v0.1.0-blue)](https://github.com/AI4Finance-Foundation/FinRobot/releases/tag/desktop-v0.1.0)
+[![Quantrix Desktop](https://img.shields.io/badge/Desktop-v0.1.0-blue)](https://github.com/AI4Finance-Foundation/FinRobot/releases/tag/desktop-v0.1.0)
 
 <div align="center">
 <img align="center" src=figs/logo_white_background.jpg width="40%"/>
 </div>
 
-**Alpha Desk** is an open-source **agentic AI framework for financial decision intelligence**. It combines foundation models with financial tools, quantitative models, deterministic computation, and multi-agent workflows to build decision-grade financial applications.
+**Quantrix** is an open-source **agentic AI framework for financial decision intelligence**. It combines foundation models with financial tools, quantitative models, deterministic computation, and multi-agent workflows to build decision-grade financial applications.
 
 Its core principle is simple: **models reason, software computes, agents orchestrate, and systems verify.** Models can be replaced; the surrounding financial infrastructure — tools, workflows, validation, provenance, and evaluation — is what makes the system reliable.
 
-Unlike the single-model paradigm of [**FinGPT**](https://github.com/AI4Finance-Foundation/FinGPT), Alpha Desk supports end-to-end agentic workflows for **equity research, quantitative trading, risk analysis, investment banking, private equity, wealth management, and other high-stakes financial decisions**.
+Unlike the single-model paradigm of [**FinGPT**](https://github.com/AI4Finance-Foundation/FinGPT), Quantrix supports end-to-end agentic workflows for **equity research, quantitative trading, risk analysis, investment banking, private equity, wealth management, and other high-stakes financial decisions**.
 
 [Whitepaper on arXiv](https://arxiv.org/abs/2405.14767) · [Official Academic Page](https://ai4finance.org/research/finrobot-open-source-ai-agent.html)
 
@@ -36,32 +36,32 @@ Unlike the single-model paradigm of [**FinGPT**](https://github.com/AI4Finance-F
 
 ## Where to start
 
-Alpha Desk is three projects sharing one financial domain layer. They are not three versions of the same thing competing for your attention — they serve different purposes.
+Quantrix is three projects sharing one financial domain layer. They are not three versions of the same thing competing for your attention — they serve different purposes.
 
 | Directory | Version | What it is | Use it for |
 |:---|:---|:---|:---|
-| **[`alpha_desk_desktop/`](./alpha_desk_desktop/)** | V2 | **Production** — the real agent system. Native desktop research workstation on PydanticAI + FastAPI + React/Tauri | Actual research work. This is the one to use if you want output you can act on |
-| **[`alpha_desk_equity/`](./alpha_desk_equity/)** | V1 | **Web app** — a self-hosted report generator with a FastAPI interface | Standing up a browser-based service that turns a ticker into a shareable HTML/PDF report |
-| **[`alpha_desk_autogen/`](./alpha_desk_autogen/)** | V0 | **Educational** — the original AutoGen library, the codebase behind the whitepaper | Learning how financial agents are wired together, teaching, and reproducing the paper. Not intended for production use |
+| **[`quantrix_desktop/`](./quantrix_desktop/)** | V2 | **Production** — the real agent system. Native desktop research workstation on PydanticAI + FastAPI + React/Tauri | Actual research work. This is the one to use if you want output you can act on |
+| **[`quantrix_equity/`](./quantrix_equity/)** | V1 | **Web app** — a self-hosted report generator with a FastAPI interface | Standing up a browser-based service that turns a ticker into a shareable HTML/PDF report |
+| **[`quantrix_autogen/`](./quantrix_autogen/)** | V0 | **Educational** — the original AutoGen library, the codebase behind the whitepaper | Learning how financial agents are wired together, teaching, and reproducing the paper. Not intended for production use |
 
-`pip install alpha-desk` installs the V0 package. Its source moved into `alpha_desk_autogen/`, but the import name did not change — every existing `from alpha_desk... import ...` keeps working.
+`pip install quantrix` installs the V0 package. Its source moved into `quantrix_autogen/`, but the import name did not change — every existing `from quantrix... import ...` keeps working.
 
 ---
 
 ## 🧬 Architecture Evolution
 
-Alpha Desk evolves alongside the rapid development of AI-agent frameworks. Rather than being tied to a single agent stack, each generation explores how emerging agent architectures can improve financial analysis, research, and decision-making.
+Quantrix evolves alongside the rapid development of AI-agent frameworks. Rather than being tied to a single agent stack, each generation explores how emerging agent architectures can improve financial analysis, research, and decision-making.
 
 | Version | Agent Framework | Project | Maturity | Focus |
 |---|---|---|---|---|
-| **V0** | AutoGen | [`alpha_desk_autogen/`](./alpha_desk_autogen/) | Educational / reference | The original Alpha Desk multi-agent architecture for financial applications |
-| **V1** | OpenAI Agents SDK | [`alpha_desk_equity/`](./alpha_desk_equity/) | Self-hosted web app | Equity-research agents, financial analysis, valuation, and automated report generation |
-| **V2** | PydanticAI | [`alpha_desk_desktop/`](./alpha_desk_desktop/) | **Production** — also hosted at [finrobot.ai/v2](https://finrobot.ai/v2) | Structured, type-safe agent workflows for professional equity research |
-| **V3** | DeepSeek-Harness | Alpha Desk V3 | In development | More autonomy inside the same verification constraints |
+| **V0** | AutoGen | [`quantrix_autogen/`](./quantrix_autogen/) | Educational / reference | The original Quantrix multi-agent architecture for financial applications |
+| **V1** | OpenAI Agents SDK | [`quantrix_equity/`](./quantrix_equity/) | Self-hosted web app | Equity-research agents, financial analysis, valuation, and automated report generation |
+| **V2** | PydanticAI | [`quantrix_desktop/`](./quantrix_desktop/) | **Production** — also hosted at [finrobot.ai/v2](https://finrobot.ai/v2) | Structured, type-safe agent workflows for professional equity research |
+| **V3** | DeepSeek-Harness | Quantrix V3 | In development | More autonomy inside the same verification constraints |
 
 All three are open source. **V2 is the production system** — the deterministic compute engine, the provenance guarantees, and the agent orchestration described below all live there. V0 is kept because it is small enough to read and learn from, not because it is the recommended way to run research today.
 
-> **Our philosophy:** Alpha Desk is not defined by any single agent framework. We continuously adopt, evaluate, and evolve with state-of-the-art agent architectures while keeping the financial domain layer — tools, workflows, deterministic computation, and decision-making capabilities — at the core.
+> **Our philosophy:** Quantrix is not defined by any single agent framework. We continuously adopt, evaluate, and evolve with state-of-the-art agent architectures while keeping the financial domain layer — tools, workflows, deterministic computation, and decision-making capabilities — at the core.
 
 ---
 
@@ -79,12 +79,12 @@ Every output is provenance-tracked.
 
 ---
 
-## 🚀 Alpha Desk Desktop v0.1.0
+## 🚀 Quantrix Desktop v0.1.0
 
 A native desktop equity research cockpit powered by a production-grade multi-agent architecture. It takes analysts from market data and company filings to valuation, debate, synthesis, and investment-committee-style reports in one traceable workflow.
 
 <div align="center">
-<img src="figs/desktop-cockpit.png" width="92%" alt="Alpha Desk Desktop — the research cockpit: enter a ticker to open a fully traceable AI research desk"/>
+<img src="figs/desktop-cockpit.png" width="92%" alt="Quantrix Desktop — the research cockpit: enter a ticker to open a fully traceable AI research desk"/>
 </div>
 
 <table>
@@ -104,14 +104,14 @@ A native desktop equity research cockpit powered by a production-grade multi-age
 
 <p align="center"><i>The design principle, visible in the product: the DCF table is labelled <b>code-computed</b> — a ten-year forecast from pure-Python operators — while the paragraph beside it is the LLM reading those numbers back across all three valuation methods.</i></p>
 
-👉 **Latest release:** [Alpha Desk Desktop v0.1.0](https://github.com/AI4Finance-Foundation/FinRobot/releases/tag/desktop-v0.1.0)
+👉 **Latest release:** [Quantrix Desktop v0.1.0](https://github.com/AI4Finance-Foundation/FinRobot/releases/tag/desktop-v0.1.0)
 
-For macOS Apple Silicon (M1/M2/M3 or later), download `AlphaDesk_0.1.0_aarch64.dmg` and drag **Alpha Desk** into **Applications**. Intel Mac builds are not available in this release.
+For macOS Apple Silicon (M1/M2/M3 or later), download `Quantrix_0.1.0_aarch64.dmg` and drag **Quantrix** into **Applications**. Intel Mac builds are not available in this release.
 
 The app is not yet Apple-notarized, so on first launch macOS may report that it is "damaged." Run this once in Terminal, then open it normally:
 
 ```bash
-xattr -cr "/Applications/Alpha Desk.app"
+xattr -cr "/Applications/Quantrix.app"
 ```
 
 ### Multi-agent architecture
@@ -142,7 +142,7 @@ Traceable Investment Research Output
 | **Skills** | 56 analyst playbooks across equity research, investment banking, private equity, and wealth management |
 | **Product stack** | PydanticAI, FastAPI, SQLite, React 19, Vite 6, Zustand, Tauri/Rust, Recharts |
 
-Full details in [`alpha_desk_desktop/README.md`](./alpha_desk_desktop/README.md).
+Full details in [`quantrix_desktop/README.md`](./quantrix_desktop/README.md).
 
 ---
 
@@ -157,54 +157,54 @@ Three ways to run the same engine.
 **Local web UI** — the same interface in a browser, no `.dmg` and no Rust toolchain, so it also works on Intel Macs, Linux, and Windows:
 
 ```bash
-cd alpha_desk_desktop
+cd quantrix_desktop
 uv sync                        # backend dependencies
 (cd desktop && npm install)    # frontend dependencies — one time
 
 ./dev.sh                       # → open http://localhost:5173
 ```
 
-`dev.sh` runs the FastAPI backend on `:8321` and a Vite server on `:5173` that proxies the API to it; `Ctrl+C` stops both. Note that it first frees those two ports, so quit "Alpha Desk.app" if it is open, and that the local API is unauthenticated in browser mode — details in [`alpha_desk_desktop/README.md`](./alpha_desk_desktop/README.md).
+`dev.sh` runs the FastAPI backend on `:8321` and a Vite server on `:5173` that proxies the API to it; `Ctrl+C` stops both. Note that it first frees those two ports, so quit "Quantrix.app" if it is open, and that the local API is unauthenticated in browser mode — details in [`quantrix_desktop/README.md`](./quantrix_desktop/README.md).
 
-**CLI** — after `uv sync` in `alpha_desk_desktop/`:
+**CLI** — after `uv sync` in `quantrix_desktop/`:
 
 ```bash
-alpha_desk research AAPL          # full 13-chapter research artifact
-alpha_desk dcf MSFT               # DCF valuation (auto-switches to DDM where appropriate)
-alpha_desk comps NVDA --peers AMD,INTC
-alpha_desk ic-memo TSLA
-alpha_desk ask AAPL "How exposed is the gross margin to tariffs?"
+quantrix research AAPL          # full 13-chapter research artifact
+quantrix dcf MSFT               # DCF valuation (auto-switches to DDM where appropriate)
+quantrix comps NVDA --peers AMD,INTC
+quantrix ic-memo TSLA
+quantrix ask AAPL "How exposed is the gross margin to tariffs?"
 ```
 
-Building the Tauri desktop shell is covered in [`alpha_desk_desktop/README.md`](./alpha_desk_desktop/README.md).
+Building the Tauri desktop shell is covered in [`quantrix_desktop/README.md`](./quantrix_desktop/README.md).
 
 ### V1 — the equity research web app
 
 ```bash
-cp alpha_desk_equity/core/config/config.ini.example alpha_desk_equity/core/config/config.ini
+cp quantrix_equity/core/config/config.ini.example quantrix_equity/core/config/config.ini
 # edit config.ini: fmp_api_key, openai_api_key, (optional) adanos_api_key
 
-chmod +x alpha_desk_equity/deploy.sh
-./alpha_desk_equity/deploy.sh start          # → http://127.0.0.1:8001
+chmod +x quantrix_equity/deploy.sh
+./quantrix_equity/deploy.sh start          # → http://127.0.0.1:8001
 ```
 
 | Command | Description |
 |:---|:---|
-| `./alpha_desk_equity/deploy.sh start` | Start the web app (auto-installs dependencies) |
-| `./alpha_desk_equity/deploy.sh stop` | Stop the application |
-| `./alpha_desk_equity/deploy.sh restart` | Restart the application |
-| `./alpha_desk_equity/deploy.sh status` | Check running status |
-| `./alpha_desk_equity/deploy.sh install` | Install/update dependencies only |
+| `./quantrix_equity/deploy.sh start` | Start the web app (auto-installs dependencies) |
+| `./quantrix_equity/deploy.sh stop` | Stop the application |
+| `./quantrix_equity/deploy.sh restart` | Restart the application |
+| `./quantrix_equity/deploy.sh status` | Check running status |
+| `./quantrix_equity/deploy.sh install` | Install/update dependencies only |
 
 If `deploy.sh` doesn't work in your environment:
 
 ```bash
 python3 -m venv venv && source venv/bin/activate
-pip install -r alpha_desk_equity/requirements.txt
-python alpha_desk_equity/run_web_app.py
+pip install -r quantrix_equity/requirements.txt
+python quantrix_equity/run_web_app.py
 ```
 
-A two-step CLI pipeline is available as well — see [`alpha_desk_equity/README.md`](./alpha_desk_equity/README.md).
+A two-step CLI pipeline is available as well — see [`quantrix_equity/README.md`](./quantrix_equity/README.md).
 
 **Example reports:**
 [NVDA](https://ai4finance-foundation.github.io/FinRobot/finrobot_equity/core/output/NVDA_Equity_Research_Report.html) ·
@@ -218,27 +218,27 @@ A two-step CLI pipeline is available as well — see [`alpha_desk_equity/README.
 **1. Create an environment** (Python 3.10 or 3.11):
 
 ```bash
-conda create --name alpha_desk python=3.10
-conda activate alpha_desk
+conda create --name quantrix python=3.10
+conda activate quantrix
 ```
 
-**2. Install** — from PyPI, or from source at the **repository root** (`setup.py` maps the `alpha_desk` package to `alpha_desk_autogen/alpha_desk`, so installing from inside that directory won't work):
+**2. Install** — from PyPI, or from source at the **repository root** (`setup.py` maps the `quantrix` package to `quantrix_autogen/quantrix`, so installing from inside that directory won't work):
 
 ```bash
 git clone https://github.com/Arslanabbas102/Alpha-Desk-.git
 cd Alpha-Desk-
-pip install -e .          # or: pip install -U alpha-desk
+pip install -e .          # or: pip install -U quantrix
 ```
 
-**3. Configure keys** — both files go in `alpha_desk_autogen/`, which is where the notebooks look for them. Copy rather than rename: the `*_sample` files are tracked, and your filled-in copies are gitignored.
+**3. Configure keys** — both files go in `quantrix_autogen/`, which is where the notebooks look for them. Copy rather than rename: the `*_sample` files are tracked, and your filled-in copies are gitignored.
 
 ```bash
-cd alpha_desk_autogen
+cd quantrix_autogen
 cp OAI_CONFIG_LIST_sample OAI_CONFIG_LIST     # OpenAI / Azure OpenAI endpoints
 cp config_api_keys_sample config_api_keys     # Finnhub, FMP, SEC, Reddit, …
 ```
 
-**4. Run a tutorial** from `alpha_desk_autogen/tutorials_beginner/` or `tutorials_advanced/`:
+**4. Run a tutorial** from `quantrix_autogen/tutorials_beginner/` or `tutorials_advanced/`:
 
 ```
 agent_annual_report.ipynb        # 10-K → formatted PDF annual report
@@ -248,7 +248,7 @@ lmm_agent_mplfinance.ipynb       # multimodal agent reading a candlestick chart
 lmm_agent_opt_smacross.ipynb     # multimodal SMA-crossover tuning
 ```
 
-The agent library, workflow types, and full tutorial index are in [`alpha_desk_autogen/README.md`](./alpha_desk_autogen/README.md).
+The agent library, workflow types, and full tutorial index are in [`quantrix_autogen/README.md`](./quantrix_autogen/README.md).
 
 ---
 
@@ -256,15 +256,15 @@ The agent library, workflow types, and full tutorial index are in [`alpha_desk_a
 
 ```
 Alpha-Desk-/
-├── alpha_desk_autogen/          # V0 — AutoGen generation (PyPI: pip install alpha-desk)
-│   ├── alpha_desk/              #   package root — imported as `alpha_desk`
+├── quantrix_autogen/          # V0 — AutoGen generation (PyPI: pip install quantrix)
+│   ├── quantrix/              #   package root — imported as `quantrix`
 │   │   ├── agents/              #     agent_library.py, workflow.py, prompts.py
 │   │   ├── data_source/         #     finnhub / finnlp / fmp / sec / yfinance / reddit
 │   │   ├── functional/          #     analyzer, charting, coding, quantitative, rag, text
 │   │   ├── toolkits.py          #     registers Python functions as agent tools
 │   │   └── utils.py
 │   ├── tutorials_beginner/      #   hands-on tutorials
-│   ├── tutorials_advanced/      #   advanced tutorials for Alpha Desk developers
+│   ├── tutorials_advanced/      #   advanced tutorials for Quantrix developers
 │   ├── experiments/             #   investment group, multi-factor, portfolio optimization
 │   ├── configs/ report/         #   agent configs and sample generated reports
 │   ├── FinNLP/                  #   git submodule
@@ -272,8 +272,8 @@ Alpha-Desk-/
 │   ├── config_api_keys_sample
 │   └── requirements.txt
 │
-├── alpha_desk_desktop/          # V2 — PydanticAI desktop generation (current)
-│   ├── alpha_desk/              #   Python backend (FastAPI + compute engine)
+├── quantrix_desktop/          # V2 — PydanticAI desktop generation (current)
+│   ├── quantrix/              #   Python backend (FastAPI + compute engine)
 │   │   ├── engine/              #     agents/, pipelines/, compute/, data/
 │   │   ├── artifact/            #     report store + output contract gate
 │   │   ├── audit/ coverage/ obs/ routes/
@@ -283,7 +283,7 @@ Alpha-Desk-/
 │   ├── tests/ scripts/ tutorials/
 │   └── pyproject.toml uv.lock dev.sh
 │
-├── alpha_desk_equity/           # V1 — OpenAI Agents SDK generation
+├── quantrix_equity/           # V1 — OpenAI Agents SDK generation
 │   ├── core/                    #   analysis engine + 8 section-writing agents
 │   ├── web_app/                 #   FastAPI web application
 │   ├── run_web_app.py           #   launcher
@@ -293,9 +293,9 @@ Alpha-Desk-/
 │
 ├── Dockerfile .dockerignore     # V1 container build — must stay at the repo
 │                                # root, since the image imports the app as
-│                                # alpha_desk_equity.web_app.main
+│                                # quantrix_equity.web_app.main
 ├── .github/workflows/           # desktop CI (backend 3.11/3.12, frontend Node 22/24)
-├── setup.py                     # packages V0 (as `alpha_desk`) + V1 for PyPI
+├── setup.py                     # packages V0 (as `quantrix`) + V1 for PyPI
 ├── LICENSE NOTICE TRADEMARK_POLICY.md
 └── README.md
 ```

@@ -1,1 +1,0 @@
-from alpha_desk.data_source.earnings_calls_src.main_earningsData import get_earnings_all_docs

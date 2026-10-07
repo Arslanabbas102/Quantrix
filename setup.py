@@ -1,18 +1,18 @@
 from setuptools import setup, find_packages
 
-# V0 (AutoGen) 的包本体已移入 alpha_desk_autogen/,但对外 import 名仍是 `alpha_desk`
-_V0_PKG_DIR = "alpha_desk_autogen/alpha_desk"
+# V0 (AutoGen) 的包本体已移入 quantrix_autogen/,但对外 import 名仍是 `quantrix`
+_V0_PKG_DIR = "quantrix_autogen/quantrix"
 
 # Read requirements.txt, ignore comments
 try:
-    with open("alpha_desk_autogen/requirements.txt", "r") as f:
+    with open("quantrix_autogen/requirements.txt", "r") as f:
         REQUIRES = [line.split("#", 1)[0].strip() for line in f if line.strip()]
 except:
-    print("'alpha_desk_autogen/requirements.txt' not found!")
+    print("'quantrix_autogen/requirements.txt' not found!")
     REQUIRES = list()
 
 setup(
-    name="alpha-desk",
+    name="quantrix",
     version="0.1.5",
     include_package_data=True,
     author="AI4Finance Foundation",
@@ -20,14 +20,14 @@ setup(
     url="https://github.com/AI4Finance-Foundation/FinRobot",
     license="Apache-2.0",
     packages=(
-        ["alpha_desk"]
-        + [f"alpha_desk.{_p}" for _p in find_packages(where=_V0_PKG_DIR)]
-        + find_packages(include=["alpha_desk_equity", "alpha_desk_equity.*"])
+        ["quantrix"]
+        + [f"quantrix.{_p}" for _p in find_packages(where=_V0_PKG_DIR)]
+        + find_packages(include=["quantrix_equity", "quantrix_equity.*"])
     ),
-    package_dir={"alpha_desk": _V0_PKG_DIR},
+    package_dir={"quantrix": _V0_PKG_DIR},
     install_requires=REQUIRES,
-    description="Alpha Desk: An Open-Source AI Agent Platform for Financial Applications using LLMs",
-    long_description="""Alpha Desk""",
+    description="Quantrix: An Open-Source AI Agent Platform for Financial Applications using LLMs",
+    long_description="""Quantrix""",
     classifiers=[
         # Trove classifiers
         # Full list: https://pypi.python.org/pypi?%3Aaction=list_classifiers

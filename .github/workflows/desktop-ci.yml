@@ -1,23 +1,23 @@
-# CI for the V2 desktop generation (alpha_desk_desktop/).
+# CI for the V2 desktop generation (quantrix_desktop/).
 #
 # Lives at the repo root because GitHub only reads .github/workflows/ there,
-# but every step is scoped to alpha_desk_desktop/ so V0 and V1 are untouched.
+# but every step is scoped to quantrix_desktop/ so V0 and V1 are untouched.
 name: Desktop CI
 
 on:
   push:
     branches: [master]
-    paths: ['alpha_desk_desktop/**', '.github/workflows/desktop-ci.yml']
+    paths: ['quantrix_desktop/**', '.github/workflows/desktop-ci.yml']
   pull_request:
     branches: [master]
-    paths: ['alpha_desk_desktop/**', '.github/workflows/desktop-ci.yml']
+    paths: ['quantrix_desktop/**', '.github/workflows/desktop-ci.yml']
 
 jobs:
   backend:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: alpha_desk_desktop
+        working-directory: quantrix_desktop
     strategy:
       matrix:
         python-version: ["3.11", "3.12"]
@@ -37,7 +37,7 @@ jobs:
         run: uv sync --all-extras
 
       - name: Lint
-        run: uv run ruff check alpha_desk/
+        run: uv run ruff check quantrix/
 
       # Was `pre-commit run ruff-format --all-files`, which resolves files from
       # the git root — now the whole monorepo, including never-formatted V0/V1
@@ -46,19 +46,19 @@ jobs:
         run: uv run ruff format --check .
 
       - name: Type check
-        run: uv run mypy alpha_desk/ --strict
+        run: uv run mypy quantrix/ --strict
 
       - name: Unit tests
         run: uv run pytest tests/unit/ -v
         env:
-          ALPHA_DESK_MODEL_NAME: "test"
-          ALPHA_DESK_DEEPSEEK_API_KEY: "test-key"
+          QUANTRIX_MODEL_NAME: "test"
+          QUANTRIX_DEEPSEEK_API_KEY: "test-key"
 
   frontend:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: alpha_desk_desktop/desktop
+        working-directory: quantrix_desktop/desktop
     strategy:
       matrix:
         # Lower bound: @lingui/cli imports fs.globSync, added in Node 22, so
