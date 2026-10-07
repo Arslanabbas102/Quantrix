@@ -436,7 +436,7 @@ def main():
     parser.add_argument("--skip-market-fetch", action="store_true",
                        help="Skip fetching market data from API")
     parser.add_argument("--analyst-names", type=str, nargs="*", 
-                       default=["AI4Finance Alpha Desk"])
+                       default=["Alpha Desk"])
     parser.add_argument("--research-source", type=str, 
                        default="AI4Finance Foundation Alpha Desk Equity Research")
     

@@ -1051,7 +1051,7 @@ def render_professional_html_report(data: dict) -> str:
         'credit_cashflow_table_html': data.get('credit_cashflow_table_html', '<p class="body-text" style="color:#94a3b8; font-style:italic;">Credit & cashflow metrics not available.</p>'),
         'disclaimer_text': data.get('disclaimer_text', 'This report is for informational purposes only and does not constitute investment advice.'),
         'data_source_text': data.get('data_source_text', 'Company Filings, FMP API'),
-        'research_source': data.get('research_source', 'AI4Finance Alpha Desk'),
+        'research_source': data.get('research_source', 'Alpha Desk'),
         'report_generated_time': datetime.now().strftime('%Y-%m-%d %H:%M'),
     }
 
