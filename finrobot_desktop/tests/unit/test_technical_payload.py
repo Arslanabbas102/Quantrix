@@ -10,15 +10,15 @@ from datetime import datetime, timezone
 
 import pytest
 
-from finrobot.engine.compute.coordinators.technical_payload import (
+from alpha_desk.engine.compute.coordinators.technical_payload import (
     HistoricalBandSnapshot,
     TechnicalAnalysis,
     build_technical_analysis,
 )
-from finrobot.engine.data.interface import DataResult
-from finrobot.engine.data.normalize.contracts import NormalizedPrice, PriceBar, Provenance
-from finrobot.engine.data.types import DataType
-from finrobot.engine.models.financial import DCFInputs
+from alpha_desk.engine.data.interface import DataResult
+from alpha_desk.engine.data.normalize.contracts import NormalizedPrice, PriceBar, Provenance
+from alpha_desk.engine.data.types import DataType
+from alpha_desk.engine.models.financial import DCFInputs
 
 
 def _dcf_inputs() -> DCFInputs:

@@ -160,7 +160,7 @@ export function ValuationBody({
       ({
         // Headline term explainers: WACC, terminal growth and EV are the DCF
         // levers a non-IB reader most needs unpacked — wrap them in TermTip
-        // (hover gloss + "ask FinRobot" deep dive). One wrap per term per chapter.
+        // (hover gloss + "ask Alpha Desk" deep dive). One wrap per term per chapter.
         label: <TermTip term="WACC" />,
         value: `${(wacc * 100).toFixed(2)}%`,
         sub: beta !== null ? <TermTip term="β">{`β ${beta.toFixed(2)}`}</TermTip> : undefined,

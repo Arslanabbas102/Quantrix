@@ -4,15 +4,15 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import httpx
 import pytest
 
-from finrobot.engine.data.interface import (
+from alpha_desk.engine.data.interface import (
     DataResult,
     ProviderError,
     RateLimitedProviderError,
     is_rate_limit_error,
 )
-from finrobot.engine.data.providers.news_aggregator import NewsAggregatorProvider
-from finrobot.engine.data.types import DataType
-from finrobot.engine.compute.coordinators.news import (
+from alpha_desk.engine.data.providers.news_aggregator import NewsAggregatorProvider
+from alpha_desk.engine.data.types import DataType
+from alpha_desk.engine.compute.coordinators.news import (
     NewsItem,
     RawNewsItem,
     _parse_datetime,
@@ -21,7 +21,7 @@ from finrobot.engine.compute.coordinators.news import (
     render_news_for_prompt,
     sanitize_untrusted_text,
 )
-from finrobot.engine.analysis.news_classifier import (
+from alpha_desk.engine.analysis.news_classifier import (
     _MAX_CLASSIFY_ATTEMPTS,
     ClassifiedNewsBatch,
     NewsClassification,
@@ -388,7 +388,7 @@ class TestClassifyNews:
         mock_deps = MagicMock()
         mock_deps.settings.model_name = "test-model"
 
-        with patch("finrobot.engine.analysis.news_classifier.PydanticAgent") as MockAgent:
+        with patch("alpha_desk.engine.analysis.news_classifier.PydanticAgent") as MockAgent:
             mock_agent_instance = AsyncMock()
             mock_agent_instance.run.return_value = mock_output
             MockAgent.return_value = mock_agent_instance
@@ -438,7 +438,7 @@ class TestClassifyNews:
         mock_deps = MagicMock()
         mock_deps.settings.model_name = "test-model"
 
-        with patch("finrobot.engine.analysis.news_classifier.PydanticAgent") as MockAgent:
+        with patch("alpha_desk.engine.analysis.news_classifier.PydanticAgent") as MockAgent:
             mock_agent_instance = AsyncMock()
             mock_agent_instance.run.return_value = mock_output
             MockAgent.return_value = mock_agent_instance
@@ -486,7 +486,7 @@ class TestClassifyNews:
         mock_deps = MagicMock()
         mock_deps.settings.model_name = "test-model"
 
-        with patch("finrobot.engine.analysis.news_classifier.PydanticAgent") as MockAgent:
+        with patch("alpha_desk.engine.analysis.news_classifier.PydanticAgent") as MockAgent:
             mock_agent_instance = AsyncMock()
             mock_agent_instance.run.return_value = mock_output
             MockAgent.return_value = mock_agent_instance
@@ -550,7 +550,7 @@ class TestClassifyNews:
         mock_deps = MagicMock()
         mock_deps.settings.model_name = "test-model"
 
-        with patch("finrobot.engine.analysis.news_classifier.PydanticAgent") as MockAgent:
+        with patch("alpha_desk.engine.analysis.news_classifier.PydanticAgent") as MockAgent:
             mock_agent_instance = AsyncMock()
             outputs = [first, second]
 
@@ -605,8 +605,8 @@ class TestClassifyNews:
         mock_deps.settings.model_name = "test-model"
 
         with (
-            patch("finrobot.engine.analysis.news_classifier.PydanticAgent") as MockAgent,
-            patch("finrobot.engine.analysis.news_classifier.logger") as mock_logger,
+            patch("alpha_desk.engine.analysis.news_classifier.PydanticAgent") as MockAgent,
+            patch("alpha_desk.engine.analysis.news_classifier.logger") as mock_logger,
         ):
             mock_agent_instance = AsyncMock()
             mock_agent_instance.run.return_value = only_first
@@ -643,7 +643,7 @@ class TestClassifyNews:
         mock_deps = MagicMock()
         mock_deps.settings.model_name = "test-model"
 
-        with patch("finrobot.engine.analysis.news_classifier.PydanticAgent") as MockAgent:
+        with patch("alpha_desk.engine.analysis.news_classifier.PydanticAgent") as MockAgent:
 
             def _capture_ctor(*_args, **kwargs):
                 captured["instructions"] = kwargs.get("instructions", "")
@@ -689,7 +689,7 @@ class TestClassifyNews:
         mock_deps = MagicMock()
         mock_deps.settings.model_name = "test-model"
 
-        with patch("finrobot.engine.analysis.news_classifier.PydanticAgent") as MockAgent:
+        with patch("alpha_desk.engine.analysis.news_classifier.PydanticAgent") as MockAgent:
             mock_agent_instance = AsyncMock()
 
             async def _capture(prompt, **kwargs):
@@ -733,7 +733,7 @@ class TestClassifyNews:
         mock_deps = MagicMock()
         mock_deps.settings.model_name = "test-model"
 
-        with patch("finrobot.engine.analysis.news_classifier.PydanticAgent") as MockAgent:
+        with patch("alpha_desk.engine.analysis.news_classifier.PydanticAgent") as MockAgent:
             mock_agent_instance = AsyncMock()
             mock_agent_instance.run.side_effect = AgentRunError("LLM failed")
             MockAgent.return_value = mock_agent_instance
@@ -757,7 +757,7 @@ class TestClassifyNews:
         mock_deps = MagicMock()
         mock_deps.settings.model_name = "test-model"
 
-        with patch("finrobot.engine.analysis.news_classifier.PydanticAgent") as MockAgent:
+        with patch("alpha_desk.engine.analysis.news_classifier.PydanticAgent") as MockAgent:
             mock_agent_instance = AsyncMock()
             mock_agent_instance.run.side_effect = ValueError("bad output contract")
             MockAgent.return_value = mock_agent_instance
@@ -854,7 +854,7 @@ class TestNewsAggregatorYfinanceSource:
 
     def test_no_dead_yahoo_rss_code_path(self):
         """The dead RSS endpoint constant and fetch method must be gone."""
-        import finrobot.engine.data.providers.news_aggregator as mod
+        import alpha_desk.engine.data.providers.news_aggregator as mod
 
         assert not hasattr(mod, "_YAHOO_RSS_URL")
         assert not hasattr(NewsAggregatorProvider, "_fetch_yahoo_rss")
@@ -863,7 +863,7 @@ class TestNewsAggregatorYfinanceSource:
     def test_no_direct_yfinance_import(self):
         """门一 red line: news_aggregator must not import yfinance directly — it
         delegates through YFinanceProvider (tests/audit enforces this too)."""
-        import finrobot.engine.data.providers.news_aggregator as mod
+        import alpha_desk.engine.data.providers.news_aggregator as mod
 
         assert not hasattr(mod, "yf"), "news_aggregator must not import yfinance directly"
 

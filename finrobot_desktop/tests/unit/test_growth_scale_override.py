@@ -14,8 +14,8 @@ from __future__ import annotations
 
 import pytest
 
-from finrobot.engine.models.financial import DCFInputs
-from finrobot.routes.compute import apply_growth_scale_override
+from alpha_desk.engine.models.financial import DCFInputs
+from alpha_desk.routes.compute import apply_growth_scale_override
 
 
 def _inputs(growth_rates: list[float]) -> DCFInputs:

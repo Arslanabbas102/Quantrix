@@ -17,9 +17,9 @@ import pytest
 from fastapi.testclient import TestClient
 from fastapi import FastAPI
 
-from finrobot.artifact.models import Artifact
-from finrobot.artifact.store import ArtifactStore
-from finrobot.routes.artifacts import router as artifacts_router
+from alpha_desk.artifact.models import Artifact
+from alpha_desk.artifact.store import ArtifactStore
+from alpha_desk.routes.artifacts import router as artifacts_router
 from tests.artifact.conftest import _make_artifact
 
 
@@ -354,7 +354,7 @@ class TestTimelineIncludeSignals:
 
         # Non-None data_layer so the route reaches the attach_signals branch.
         app.state.deps = SimpleNamespace(data_layer=object())
-        monkeypatch.setattr("finrobot.routes.artifacts.attach_signals", _spy)
+        monkeypatch.setattr("alpha_desk.routes.artifacts.attach_signals", _spy)
 
     def test_signals_attached_by_default(
         self,

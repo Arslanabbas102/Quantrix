@@ -8,7 +8,7 @@ tests pin the consolidated contract so a future copy-paste can't reopen it.
 
 from __future__ import annotations
 
-from finrobot.warning_text import humanize_warnings, safe_error_text
+from alpha_desk.warning_text import humanize_warnings, safe_error_text
 
 
 class _ProviderBoom(RuntimeError):

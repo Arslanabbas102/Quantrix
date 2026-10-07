@@ -4,7 +4,7 @@ These tests scan the source tree for patterns that, if reintroduced, would
 walk back CLAUDE.md architecture red-line #5 for the LBO path. They mirror
 ``test_dcf_red_lines.py`` and enforce:
 
-  1. The pipeline ``lbo_parameters`` step in ``finrobot/engine/pipelines/lbo.py``
+  1. The pipeline ``lbo_parameters`` step in ``alpha_desk/engine/pipelines/lbo.py``
      must build LBOInputs via ``seed_lbo_inputs`` — no ``param_agent``,
      no ``output_type=LBOInputs``.
 
@@ -32,8 +32,8 @@ from pathlib import Path
 
 import pytest
 
-from finrobot.engine.compute.operators.lbo_seed import seed_lbo_inputs
-from finrobot.engine.models.financial import (
+from alpha_desk.engine.compute.operators.lbo_seed import seed_lbo_inputs
+from alpha_desk.engine.models.financial import (
     BalanceSheet,
     DataProvenance,
     FinancialData,
@@ -58,7 +58,7 @@ def test_ic_memo_financials_step_uses_seed_lbo_inputs():
 
     Mirror of the DCF guard for the same step (see test_dcf_red_lines.py).
     """
-    src = (REPO_ROOT / "finrobot" / "engine" / "pipelines" / "ic_memo.py").read_text()
+    src = (REPO_ROOT / "alpha_desk" / "engine" / "pipelines" / "ic_memo.py").read_text()
 
     func_marker = "async def _execute_ic_financials("
     assert func_marker in src, (
@@ -97,7 +97,7 @@ def test_lbo_pipeline_uses_seed_lbo_inputs():
     """The lbo_parameters step in pipelines/lbo.py must construct LBOInputs
     exclusively via ``seed_lbo_inputs``. No LLM agent picks LBO assumptions.
     """
-    src = (REPO_ROOT / "finrobot" / "engine" / "pipelines" / "lbo.py").read_text()
+    src = (REPO_ROOT / "alpha_desk" / "engine" / "pipelines" / "lbo.py").read_text()
 
     func_marker = "async def _execute_lbo_params("
     assert func_marker in src, (
@@ -270,8 +270,8 @@ def _out_of_band_industry(monkeypatch: pytest.MonkeyPatch, rate: float) -> None:
     """
     import dataclasses
 
-    from finrobot.engine.compute.operators import lbo_seed as _mod
-    from finrobot.engine.data.industry_defaults import get_industry_default
+    from alpha_desk.engine.compute.operators import lbo_seed as _mod
+    from alpha_desk.engine.data.industry_defaults import get_industry_default
 
     base = get_industry_default("Software (System & Application)")
     patched = dataclasses.replace(base, effective_tax_rate=rate)
@@ -286,7 +286,7 @@ def test_lbo_tax_rate_clamp_cap_disclosed(monkeypatch: pytest.MonkeyPatch) -> No
     Audit-trail invariant: any clamped/transformed input must be disclosed at the
     value actually used, never the raw (BUG-023 honesty convention).
     """
-    from finrobot.engine.compute.operators.lbo_seed import LBO_TAX_RATE_CAP
+    from alpha_desk.engine.compute.operators.lbo_seed import LBO_TAX_RATE_CAP
 
     raw = 0.52
     assert raw > LBO_TAX_RATE_CAP  # precondition: clamp binds
@@ -308,7 +308,7 @@ def test_lbo_tax_rate_clamp_cap_disclosed(monkeypatch: pytest.MonkeyPatch) -> No
 def test_lbo_tax_rate_clamp_floor_disclosed(monkeypatch: pytest.MonkeyPatch) -> None:
     """Symmetric floor case: a near-zero industry aggregate is clamped up and the
     provenance discloses the raw rate + the floor."""
-    from finrobot.engine.compute.operators.lbo_seed import LBO_TAX_RATE_FLOOR
+    from alpha_desk.engine.compute.operators.lbo_seed import LBO_TAX_RATE_FLOOR
 
     raw = 0.04
     assert raw < LBO_TAX_RATE_FLOOR
@@ -458,7 +458,7 @@ def test_all_standalone_valuation_seeders_fx_normalize_before_seeding():
     """
     import inspect
 
-    from finrobot.engine.pipelines import dcf, ddm, ic_memo, lbo
+    from alpha_desk.engine.pipelines import dcf, ddm, ic_memo, lbo
 
     cases = [
         (dcf._execute_dcf_calc, "normalize_financials_to_usd"),

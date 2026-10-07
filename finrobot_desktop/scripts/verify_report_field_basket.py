@@ -1,6 +1,6 @@
 """External-truth × stock-basket × every-report-field verification harness.
 
-Compares FinRobot's OWN compute output against the independent external-truth
+Compares Alpha Desk's OWN compute output against the independent external-truth
 anchor (``specs/外部真值锚-报告字段验证.json``, built by
 ``scripts/build_truth_anchor.py``). Four caliber-aware verifier paths, one row per
 field — ``field | external_baseline | caliber | our_value | consistent?``:
@@ -53,27 +53,27 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
-from finrobot.config import get_settings
-from finrobot.engine.agents.factory import create_sub_agents
-from finrobot.engine.compute.coordinators.extractor import extract_financial_data
-from finrobot.engine.compute.operators.ownership import compute_ownership_governance
-from finrobot.engine.data.factory import build_data_layer
-from finrobot.engine.data.types import DataType
-from finrobot.engine.deps import FinRobotDeps
-from finrobot.engine.models.financial import DCFResult, ThesisResult
-from finrobot.engine.models.sec import OwnershipGovernanceAnalysis
-from finrobot.engine.pipelines.registry import get_pipeline_factories
-from finrobot.engine.skills.registry import SkillRegistry
-from finrobot.paths import SETTINGS_JSON, ensure_home
-from finrobot.routes.settings import load_non_secret_settings
-from finrobot.secret_store import create_secret_store
-from finrobot.server import hydrate_settings_from_secrets
+from alpha_desk.config import get_settings
+from alpha_desk.engine.agents.factory import create_sub_agents
+from alpha_desk.engine.compute.coordinators.extractor import extract_financial_data
+from alpha_desk.engine.compute.operators.ownership import compute_ownership_governance
+from alpha_desk.engine.data.factory import build_data_layer
+from alpha_desk.engine.data.types import DataType
+from alpha_desk.engine.deps import AlphaDeskDeps
+from alpha_desk.engine.models.financial import DCFResult, ThesisResult
+from alpha_desk.engine.models.sec import OwnershipGovernanceAnalysis
+from alpha_desk.engine.pipelines.registry import get_pipeline_factories
+from alpha_desk.engine.skills.registry import SkillRegistry
+from alpha_desk.paths import SETTINGS_JSON, ensure_home
+from alpha_desk.routes.settings import load_non_secret_settings
+from alpha_desk.secret_store import create_secret_store
+from alpha_desk.server import hydrate_settings_from_secrets
 
 _HERE = Path(__file__).resolve().parent.parent
 ANCHOR_PATH = _HERE / "specs" / "外部真值锚-报告字段验证.json"
 RESULTS_PATH = _HERE / "specs" / "verify_field_basket_results.json"
 
-# Validator tolerances — copied from finrobot/engine/data/validator.py so the
+# Validator tolerances — copied from alpha_desk/engine/data/validator.py so the
 # harness shares the system's own thresholds (no parallel tolerance definition).
 _TOL = {
     "revenue": 0.15,
@@ -148,7 +148,7 @@ def _names_match(a: str | None, b: str | None) -> bool:
 
 
 async def _financial_rows(
-    deps: FinRobotDeps, ticker: str, anchor: dict[str, Any]
+    deps: AlphaDeskDeps, ticker: str, anchor: dict[str, Any]
 ) -> tuple[list[FieldRow], dict[str, Any]]:
     fin = await deps.data_layer.fetch_canonical(DataType.FINANCIALS, ticker)
     price = await deps.data_layer.fetch_canonical(DataType.PRICE, ticker)
@@ -361,7 +361,7 @@ def _anchor_is_stale(as_of: datetime | None, max_age: timedelta) -> bool:
 # ── (d) entities: CEO from the ownership operator ─────────────────────────────
 
 
-async def _ceo_row(deps: FinRobotDeps, ticker: str, anchor: dict[str, Any]) -> FieldRow:
+async def _ceo_row(deps: AlphaDeskDeps, ticker: str, anchor: dict[str, Any]) -> FieldRow:
     insider = await _safe_sec(deps, ticker, DataType.INSIDER_TRADES, days=90)
     proxy = await _safe_sec(deps, ticker, DataType.PROXY_STATEMENT)
     analysis = compute_ownership_governance(
@@ -412,7 +412,7 @@ async def _ceo_row(deps: FinRobotDeps, ticker: str, anchor: dict[str, Any]) -> F
 
 
 async def _safe_sec(
-    deps: FinRobotDeps, ticker: str, data_type: DataType, **kwargs: Any
+    deps: AlphaDeskDeps, ticker: str, data_type: DataType, **kwargs: Any
 ) -> dict[str, Any]:
     try:
         result = await deps.data_layer.fetch(data_type, ticker, **kwargs)
@@ -533,7 +533,7 @@ def _adr_abstain_row(ticker: str, meta: dict[str, Any]) -> FieldRow | None:
 # ── orchestration ─────────────────────────────────────────────────────────────
 
 
-async def build_deps() -> FinRobotDeps:
+async def build_deps() -> AlphaDeskDeps:
     ensure_home()
     settings = get_settings(**load_non_secret_settings(SETTINGS_JSON))
     store, _ = create_secret_store()
@@ -541,13 +541,13 @@ async def build_deps() -> FinRobotDeps:
     settings.validate_runtime_config()
     skills_path = Path(settings.skills_dir)
     registry = SkillRegistry(skills_path) if skills_path.exists() else None
-    return FinRobotDeps(
+    return AlphaDeskDeps(
         data_layer=build_data_layer(settings), settings=settings, skill_runtime=registry
     )
 
 
 async def verify_ticker(
-    deps: FinRobotDeps, ticker: str, anchor: dict[str, Any], run_pipeline: bool
+    deps: AlphaDeskDeps, ticker: str, anchor: dict[str, Any], run_pipeline: bool
 ) -> list[FieldRow]:
     rows: list[FieldRow] = []
     fin_rows, meta = await _financial_rows(deps, ticker, anchor)

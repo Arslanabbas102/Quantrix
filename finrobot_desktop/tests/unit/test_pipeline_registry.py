@@ -12,7 +12,7 @@ import sys
 
 import pytest
 
-from finrobot.engine.pipelines.registry import (
+from alpha_desk.engine.pipelines.registry import (
     PipelineSpec,
     get_pipeline_factories,
     get_pipeline_spec,
@@ -75,7 +75,7 @@ class TestLazyImport:
         import subprocess
 
         code = (
-            "import sys; import finrobot.engine.pipelines.registry as r; "
+            "import sys; import alpha_desk.engine.pipelines.registry as r; "
             "leaked=[m for m in sys.modules if any(k in m for k in "
             "('equity_research','pipelines.comps','pipelines.dcf','pipelines.ddm',"
             "'pipelines.lbo','earnings_analysis','ic_memo'))]; "

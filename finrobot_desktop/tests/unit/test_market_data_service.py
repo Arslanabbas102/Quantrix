@@ -1,4 +1,4 @@
-"""Unit tests for finrobot/engine/services/market_data.py (ADR-0006 Step 5).
+"""Unit tests for alpha_desk/engine/services/market_data.py (ADR-0006 Step 5).
 
 fetch_price_history now fetches through DataLayer.fetch_canonical(PRICE) and
 computes day-over-day change via NormalizedPrice.latest_session_change() instead
@@ -15,11 +15,11 @@ from typing import Any
 
 import pytest
 
-from finrobot.engine.data.interface import DataResult, ProviderError
-from finrobot.engine.data.normalize.contracts import NormalizedPrice
-from finrobot.engine.data.normalize.price import normalize_price
-from finrobot.engine.data.types import DataType
-from finrobot.engine.services.market_data import fetch_price_history
+from alpha_desk.engine.data.interface import DataResult, ProviderError
+from alpha_desk.engine.data.normalize.contracts import NormalizedPrice
+from alpha_desk.engine.data.normalize.price import normalize_price
+from alpha_desk.engine.data.types import DataType
+from alpha_desk.engine.services.market_data import fetch_price_history
 
 
 def _price_raw(

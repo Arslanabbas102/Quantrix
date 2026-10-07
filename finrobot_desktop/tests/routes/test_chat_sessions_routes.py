@@ -16,16 +16,16 @@ import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from finrobot.audit.transcript import TranscriptWriter
-from finrobot.routes.chat_sessions import router as chat_sessions_router
+from alpha_desk.audit.transcript import TranscriptWriter
+from alpha_desk.routes.chat_sessions import router as chat_sessions_router
 
 
 @pytest.fixture()
 def _sessions_dir(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
     """Redirect both the writer and the reader to a temp sessions dir."""
     sess_dir = tmp_path / "sessions"
-    monkeypatch.setattr("finrobot.audit.transcript._DEFAULT_DIR", sess_dir)
-    monkeypatch.setattr("finrobot.audit.persistence._DEFAULT_DIR", sess_dir)
+    monkeypatch.setattr("alpha_desk.audit.transcript._DEFAULT_DIR", sess_dir)
+    monkeypatch.setattr("alpha_desk.audit.persistence._DEFAULT_DIR", sess_dir)
     return sess_dir
 
 

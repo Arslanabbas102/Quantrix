@@ -2,8 +2,8 @@
 
 Replicates server.lifespan's deps/sub_agents/artifact_store assembly in a fresh
 process — so it runs the CURRENT code (B1/B2 fixes), not whatever the
-long-running `finrobot serve` loaded at boot — and persists the artifact to the
-same ~/.finrobot/artifacts.db the desktop app reads. Does NOT touch the running
+long-running `alpha_desk serve` loaded at boot — and persists the artifact to the
+same ~/.alpha_desk/artifacts.db the desktop app reads. Does NOT touch the running
 server.
 
 Usage: python scripts/_regen_aapl_report.py [TICKER] [zh|en]
@@ -14,18 +14,18 @@ from __future__ import annotations
 import asyncio
 import sys
 
-from finrobot.artifact.store import ArtifactStore
-from finrobot.config import get_settings
-from finrobot.engine.agents.factory import create_sub_agents
-from finrobot.engine.data.factory import build_data_layer
-from finrobot.engine.deps import FinRobotDeps
-from finrobot.engine.pipelines.registry import get_pipeline_factories
-from finrobot.engine.skills.registry import SkillRegistry
-from finrobot.obs import setup_logging
-from finrobot.paths import SETTINGS_JSON, ensure_home
-from finrobot.routes.settings import load_non_secret_settings
-from finrobot.secret_store import create_secret_store
-from finrobot.server import hydrate_settings_from_secrets
+from alpha_desk.artifact.store import ArtifactStore
+from alpha_desk.config import get_settings
+from alpha_desk.engine.agents.factory import create_sub_agents
+from alpha_desk.engine.data.factory import build_data_layer
+from alpha_desk.engine.deps import AlphaDeskDeps
+from alpha_desk.engine.pipelines.registry import get_pipeline_factories
+from alpha_desk.engine.skills.registry import SkillRegistry
+from alpha_desk.obs import setup_logging
+from alpha_desk.paths import SETTINGS_JSON, ensure_home
+from alpha_desk.routes.settings import load_non_secret_settings
+from alpha_desk.secret_store import create_secret_store
+from alpha_desk.server import hydrate_settings_from_secrets
 from pathlib import Path
 
 TICKER = sys.argv[1] if len(sys.argv) > 1 else "AAPL"
@@ -60,7 +60,7 @@ async def main() -> int:
     data_layer = build_data_layer(settings)
     artifact_store = ArtifactStore()
     sub_agents = create_sub_agents(settings, skill_registry=registry)
-    deps = FinRobotDeps(
+    deps = AlphaDeskDeps(
         data_layer=data_layer,
         settings=settings,
         skill_runtime=registry,
@@ -78,7 +78,7 @@ async def main() -> int:
     finally:
         # Non-server entrypoint: join the aiosqlite workers + checkpoint WAL so the
         # process exits cleanly instead of hanging on "Event loop is closed" (2026-06-24).
-        from finrobot.engine.data.factory import shutdown_data_layer
+        from alpha_desk.engine.data.factory import shutdown_data_layer
 
         await shutdown_data_layer(data_layer)
         await artifact_store.close()

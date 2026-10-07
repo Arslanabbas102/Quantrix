@@ -86,7 +86,7 @@ def _is_valid_identity(s: str | None) -> bool:
     edgar_provider.py 并由这里 import。"""
     if not s or "@" not in s or " " not in s.strip():
         return False
-    if s.strip() == "FinRobot admin@example.com":
+    if s.strip() == "Alpha Desk admin@example.com":
         return False
     return True
 
@@ -98,7 +98,7 @@ def probe_local_identity_gate() -> dict[str, Any]:
         "none": (_is_valid_identity(None), False),
         "no_email_no_space": (_is_valid_identity("foobar"), False),
         "no_space": (_is_valid_identity("no_space@example.com"), False),
-        "default_config_value": (_is_valid_identity("FinRobot admin@example.com"), False),
+        "default_config_value": (_is_valid_identity("Alpha Desk admin@example.com"), False),
         "valid_english": (_is_valid_identity("Jane Doe jane@example.com"), True),
         "valid_chinese": (_is_valid_identity("张三 zhangsan@example.com"), True),
         "leading_trailing_space": (_is_valid_identity("  John j@x.io  "), True),
@@ -117,7 +117,7 @@ def probe_local_identity_gate() -> dict[str, Any]:
 
 # ---------------------------------------------------------------------------
 # Section 2 · 服务器可启动性（identity 缺失/默认时）— 这部分门 1 是设计
-# 验证，不真起 finrobot serve（避免 lifespan 副作用）；只验证
+# 验证，不真起 alpha_desk serve（避免 lifespan 副作用）；只验证
 # build_data_layer 等价逻辑：当 identity invalid 时不构造 EdgarToolsProvider
 # ---------------------------------------------------------------------------
 
@@ -129,7 +129,7 @@ def probe_server_can_start_without_identity() -> dict[str, Any]:
     逻辑在"identity invalid → 不构造 provider"路径上不抛异常。
     """
     logger.info("[probe] gating logic when identity invalid")
-    invalid_cases = ["", "FinRobot admin@example.com", "noemail"]
+    invalid_cases = ["", "Alpha Desk admin@example.com", "noemail"]
     results = {}
     for case in invalid_cases:
         try:

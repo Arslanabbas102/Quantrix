@@ -234,7 +234,7 @@ describe('isValidSecIdentity', () => {
   })
 
   it('rejects the backend placeholder default', () => {
-    expect(isValidSecIdentity('FinRobot admin@example.com')).toBe(false)
+    expect(isValidSecIdentity('Alpha Desk admin@example.com')).toBe(false)
   })
 
   it('accepts the SEC-canonical Name email format', () => {
@@ -256,7 +256,7 @@ describe('isValidSecIdentity', () => {
 
   it('previews the ASCII SEC header sent for Chinese display names', () => {
     expect(secHeaderIdentityPreview('郭嘉祺 17696026747@163.com')).toBe(
-      'FinRobot 17696026747@163.com',
+      'Alpha Desk 17696026747@163.com',
     )
   })
 })

@@ -1,4 +1,4 @@
-"""Shared test fixtures for FinRobot test suite."""
+"""Shared test fixtures for Alpha Desk test suite."""
 
 import asyncio
 import faulthandler
@@ -12,10 +12,10 @@ from unittest.mock import AsyncMock
 import aiosqlite
 import pytest
 
-from finrobot.engine.data.cache import DataCache
+from alpha_desk.engine.data.cache import DataCache
 
 
-_PYTEST_SESSION_TIMEOUT_SECONDS = int(os.environ.get("FINROBOT_PYTEST_TIMEOUT_SECONDS", "600"))
+_PYTEST_SESSION_TIMEOUT_SECONDS = int(os.environ.get("ALPHA_DESK_PYTEST_TIMEOUT_SECONDS", "600"))
 _AIOSQLITE_CLOSE_TIMEOUT_SECONDS = 2.0
 
 
@@ -98,7 +98,7 @@ async def _close_quote_cache_singleton_between_tests():
     makes the worker thread exit cleanly.
     """
     yield
-    from finrobot.engine.data import quote_batch
+    from alpha_desk.engine.data import quote_batch
 
     await quote_batch.close_quote_cache_singleton()
 
@@ -110,7 +110,7 @@ def _reset_fx_cache():
     a lock bound to that test's now-dead event loop) would leak into the next —
     e.g. a TWD rate cached as 0.03125 by one case would mask another's expected
     raise. Lazy import so conftest load doesn't pull yfinance unconditionally."""
-    from finrobot.engine.data.providers.fx import clear_fx_cache
+    from alpha_desk.engine.data.providers.fx import clear_fx_cache
 
     clear_fx_cache()
     yield
@@ -127,7 +127,7 @@ async def app_with_deps(tmp_path):
     This fixture installs an isolated DataCache backed by a per-test SQLite
     file under ``tmp_path`` so tests can exercise the cache wrapper end-to-end.
     """
-    from finrobot.server import app
+    from alpha_desk.server import app
 
     cache = DataCache(str(tmp_path / "test_cache.db"))
     saved_deps = getattr(app.state, "deps", None)

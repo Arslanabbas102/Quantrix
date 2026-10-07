@@ -27,32 +27,32 @@ from __future__ import annotations
 import asyncio
 import sys
 
-from finrobot.config import get_settings
-from finrobot.engine.compute.coordinators.extractor import extract_financial_data
-from finrobot.engine.compute.operators.audit import audit_artifact
-from finrobot.engine.compute.operators.forward_estimates import get_forward_financials
-from finrobot.engine.compute.operators.valuation_synthesis import (
+from alpha_desk.config import get_settings
+from alpha_desk.engine.compute.coordinators.extractor import extract_financial_data
+from alpha_desk.engine.compute.operators.audit import audit_artifact
+from alpha_desk.engine.compute.operators.forward_estimates import get_forward_financials
+from alpha_desk.engine.compute.operators.valuation_synthesis import (
     resolve_canonical_thesis,
 )
-from finrobot.engine.data.factory import build_data_layer
-from finrobot.engine.data.interface import ProviderError
-from finrobot.engine.data.types import DataType
-from finrobot.engine.deps import FinRobotDeps
-from finrobot.engine.models.financial import DDMResult, ValuationSynthesis
-from finrobot.engine.pipelines._helpers import execute_peer_analysis
-from finrobot.engine.pipelines.equity_research import _execute_financial_modeling
-from finrobot.engine.primitives.industry import is_bank
-from finrobot.paths import SETTINGS_JSON
-from finrobot.routes.settings import load_non_secret_settings
-from finrobot.secret_store import create_secret_store
-from finrobot.server import hydrate_settings_from_secrets
+from alpha_desk.engine.data.factory import build_data_layer
+from alpha_desk.engine.data.interface import ProviderError
+from alpha_desk.engine.data.types import DataType
+from alpha_desk.engine.deps import AlphaDeskDeps
+from alpha_desk.engine.models.financial import DDMResult, ValuationSynthesis
+from alpha_desk.engine.pipelines._helpers import execute_peer_analysis
+from alpha_desk.engine.pipelines.equity_research import _execute_financial_modeling
+from alpha_desk.engine.primitives.industry import is_bank
+from alpha_desk.paths import SETTINGS_JSON
+from alpha_desk.routes.settings import load_non_secret_settings
+from alpha_desk.secret_store import create_secret_store
+from alpha_desk.server import hydrate_settings_from_secrets
 
 # Banks (the fix target) + non-bank controls (must be byte-identical to pre-change).
 BASKET = sys.argv[1:] or ["JPM", "GS", "BAC", "WFC", "KO", "AAPL", "MU"]
 
 
 async def _valuation_for(
-    deps: FinRobotDeps, ticker: str
+    deps: AlphaDeskDeps, ticker: str
 ) -> tuple[ValuationSynthesis | None, bool, list[str], DDMResult | None]:
     """Run the deterministic valuation prefix of equity_research for one ticker.
 
@@ -109,7 +109,7 @@ async def main() -> int:
     store, _ = create_secret_store()
     settings = await hydrate_settings_from_secrets(settings, store)
     dl = build_data_layer(settings)
-    deps = FinRobotDeps(data_layer=dl, settings=settings)
+    deps = AlphaDeskDeps(data_layer=dl, settings=settings)
     try:
         print(
             f"{'tkr':<6}{'bank':>5}{'price':>9}  {'methods (name=mid)':<46}"
@@ -151,7 +151,7 @@ async def main() -> int:
     finally:
         # Non-server entrypoint: join aiosqlite workers + checkpoint WAL so the process
         # exits cleanly instead of hanging on "Event loop is closed" (2026-06-24).
-        from finrobot.engine.data.factory import shutdown_data_layer
+        from alpha_desk.engine.data.factory import shutdown_data_layer
 
         await shutdown_data_layer(dl)
 

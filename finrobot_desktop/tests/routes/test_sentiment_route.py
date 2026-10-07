@@ -9,10 +9,10 @@ from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
 from pydantic import BaseModel, ConfigDict
 
-from finrobot.engine.data.interface import DataProvider, DataResult, ProviderError
-from finrobot.engine.data.provider_health import ProviderState
-from finrobot.engine.data.types import DataType
-from finrobot.routes.sentiment import router
+from alpha_desk.engine.data.interface import DataProvider, DataResult, ProviderError
+from alpha_desk.engine.data.provider_health import ProviderState
+from alpha_desk.engine.data.types import DataType
+from alpha_desk.routes.sentiment import router
 
 UTC = timezone.utc
 NOW = datetime(2026, 5, 21, tzinfo=UTC)
@@ -287,7 +287,7 @@ def test_reason_literal_is_exhaustive() -> None:
     # fails this test until both sides move together.
     from typing import get_args, get_type_hints
 
-    from finrobot.routes.sentiment import SentimentSnapshot
+    from alpha_desk.routes.sentiment import SentimentSnapshot
 
     reason_field = get_type_hints(SentimentSnapshot)["reason"]
     literal = get_args(reason_field)[0]  # Optional[Literal[...]] → Literal[...]

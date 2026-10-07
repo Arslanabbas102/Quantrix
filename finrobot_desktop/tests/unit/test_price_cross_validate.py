@@ -11,12 +11,12 @@ from datetime import datetime, timezone
 
 import pytest
 
-from finrobot.engine.data.cache import DataCache
-from finrobot.engine.data.interface import DataProvider, DataResult
-from finrobot.engine.data.layer import DataLayer
-from finrobot.engine.data.normalize.contracts import degraded_price_divergence
-from finrobot.engine.data.types import DataType
-from finrobot.engine.data.validator import cross_validate_price
+from alpha_desk.engine.data.cache import DataCache
+from alpha_desk.engine.data.interface import DataProvider, DataResult
+from alpha_desk.engine.data.layer import DataLayer
+from alpha_desk.engine.data.normalize.contracts import degraded_price_divergence
+from alpha_desk.engine.data.types import DataType
+from alpha_desk.engine.data.validator import cross_validate_price
 
 
 def _price_result(
@@ -102,7 +102,7 @@ class _StubProvider(DataProvider):
         if data_type == DataType.QUOTE:
             self.quote_calls += 1
             if self._quote_raises:
-                from finrobot.engine.data.interface import ProviderError
+                from alpha_desk.engine.data.interface import ProviderError
 
                 raise ProviderError("quote down")
             return DataResult(

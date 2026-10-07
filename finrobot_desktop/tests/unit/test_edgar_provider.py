@@ -22,18 +22,18 @@ from unittest.mock import MagicMock
 import httpx
 import pytest
 
-from finrobot.engine.data.interface import (
+from alpha_desk.engine.data.interface import (
     ProviderError,
     RateLimitedProviderError,
     is_rate_limit_error,
 )
-from finrobot.engine.data.providers.edgar_provider import (
+from alpha_desk.engine.data.providers.edgar_provider import (
     EdgarToolsProvider,
     _MIN_VALID_SECTION_CHARS,
     _is_valid_identity,
     _sec_header_identity,
 )
-from finrobot.engine.data.types import DataType
+from alpha_desk.engine.data.types import DataType
 
 
 # ---------------------------------------------------------------------------
@@ -49,7 +49,7 @@ class TestIsValidIdentity:
         assert _is_valid_identity(None) is False  # type: ignore[arg-type]
 
     def test_rejects_default_config_value(self) -> None:
-        assert _is_valid_identity("FinRobot admin@example.com") is False
+        assert _is_valid_identity("Alpha Desk admin@example.com") is False
 
     def test_rejects_no_email(self) -> None:
         assert _is_valid_identity("foobar") is False
@@ -69,7 +69,7 @@ class TestIsValidIdentity:
 
     def test_chinese_identity_gets_ascii_header(self) -> None:
         assert _sec_header_identity("郭嘉祺 17696026747@163.com") == (
-            "FinRobot 17696026747@163.com"
+            "Alpha Desk 17696026747@163.com"
         )
 
 
@@ -84,7 +84,7 @@ class TestEdgarToolsProviderConstruction:
         # (and it's purely local — it sets a module-level identity string).
         calls: list[str] = []
         monkeypatch.setattr(
-            "finrobot.engine.data.providers.edgar_provider.set_identity",
+            "alpha_desk.engine.data.providers.edgar_provider.set_identity",
             lambda s: calls.append(s),
         )
         p = EdgarToolsProvider("Jane Doe jane@example.com")
@@ -96,11 +96,11 @@ class TestEdgarToolsProviderConstruction:
     ) -> None:
         calls: list[str] = []
         monkeypatch.setattr(
-            "finrobot.engine.data.providers.edgar_provider.set_identity",
+            "alpha_desk.engine.data.providers.edgar_provider.set_identity",
             lambda s: calls.append(s),
         )
         p = EdgarToolsProvider("郭嘉祺 17696026747@163.com")
-        assert calls == ["FinRobot 17696026747@163.com"]
+        assert calls == ["Alpha Desk 17696026747@163.com"]
         assert p.name == "edgar_tools"
 
     def test_capabilities_includes_legacy_aliases(self) -> None:
@@ -173,7 +173,7 @@ async def test_fetch_wraps_httpx_error_into_provider_error(
     def _boom(_ticker: str) -> Any:
         raise exc
 
-    monkeypatch.setattr("finrobot.engine.data.providers.edgar_provider.Company", _boom)
+    monkeypatch.setattr("alpha_desk.engine.data.providers.edgar_provider.Company", _boom)
     with pytest.raises(ProviderError, match="edgartools"):
         await p.fetch("AAPL", DataType.FILINGS_8K, n=10)
 
@@ -197,7 +197,7 @@ async def test_fetch_http_429_raises_typed_rate_limited_error(
             response=httpx.Response(429, request=request),
         )
 
-    monkeypatch.setattr("finrobot.engine.data.providers.edgar_provider.Company", _boom_429)
+    monkeypatch.setattr("alpha_desk.engine.data.providers.edgar_provider.Company", _boom_429)
     with pytest.raises(RateLimitedProviderError, match="edgartools") as exc_info:
         await p.fetch("AAPL", DataType.FILINGS_8K, n=10)
     assert is_rate_limit_error(exc_info.value)
@@ -209,7 +209,7 @@ async def test_fetch_http_429_raises_typed_rate_limited_error(
             response=httpx.Response(403, request=request),
         )
 
-    monkeypatch.setattr("finrobot.engine.data.providers.edgar_provider.Company", _boom_403)
+    monkeypatch.setattr("alpha_desk.engine.data.providers.edgar_provider.Company", _boom_403)
     with pytest.raises(ProviderError, match="edgartools") as exc_info_403:
         await p.fetch("AAPL", DataType.FILINGS_8K, n=10)
     assert not isinstance(exc_info_403.value, RateLimitedProviderError)
@@ -597,7 +597,7 @@ def test_coerce_form4_date_handles_all_edgartools_shapes(
     date fields. The provider boundary collapses non-date shapes to None so
     downstream ``date.fromisoformat`` never sees garbage.
     """
-    from finrobot.engine.data.providers.edgar_provider import _coerce_form4_date
+    from alpha_desk.engine.data.providers.edgar_provider import _coerce_form4_date
 
     assert _coerce_form4_date(raw) == expected
 
@@ -610,7 +610,7 @@ def test_slice_proxy_text_splices_sct_window_past_intro() -> None:
     "Summary Compensation Table" — so the SCT row + pay-ratio extractors have
     the actual table AND the pay-ratio disclosure that follows it.
     """
-    from finrobot.engine.data.providers.edgar_provider import _slice_proxy_text
+    from alpha_desk.engine.data.providers.edgar_provider import _slice_proxy_text
 
     # Build a 50k intro that includes a TOC line near char 30k — the TOC
     # mention must NOT be treated as the real SCT anchor.
@@ -648,7 +648,7 @@ def test_slice_proxy_text_returns_intro_only_when_no_sct_found() -> None:
     """If a proxy is short or doesn't contain an SCT heading past the
     intro window, return just the intro — don't drag along useless tail
     bytes."""
-    from finrobot.engine.data.providers.edgar_provider import _slice_proxy_text
+    from alpha_desk.engine.data.providers.edgar_provider import _slice_proxy_text
 
     short = "GOV intro " * 1_000  # well under 50k
     assert _slice_proxy_text(short) == short
@@ -821,7 +821,7 @@ def test_select_latest_fact_revenue_prefers_total_on_same_period() -> None:
     annual period_end. prefer_recent resolves the tie to the total via concept
     rank — first-match used to latch the 2.4B subset (31× understated, fed to the
     LLM thesis prompt)."""
-    from finrobot.engine.data.providers.edgar_provider import (
+    from alpha_desk.engine.data.providers.edgar_provider import (
         _LATEST_REVENUE_CONCEPTS,
         _select_latest_fact,
     )
@@ -846,7 +846,7 @@ def test_select_latest_fact_revenue_recency_beats_rank() -> None:
     ASC-606 concept at FY2025 (416B). Recency wins ACROSS periods even though the
     total outranks the subset — concept rank only breaks SAME-period ties, so a
     blind reorder-to-front would have regressed AAPL to the stale 265B."""
-    from finrobot.engine.data.providers.edgar_provider import (
+    from alpha_desk.engine.data.providers.edgar_provider import (
         _LATEST_REVENUE_CONCEPTS,
         _select_latest_fact,
     )
@@ -991,7 +991,7 @@ async def test_fetch_xbrl_surfaces_ttm_calculated_q4_and_warning() -> None:
 @pytest.mark.asyncio
 async def test_xbrl_concept_snapshot_net_income_dual_key() -> None:
     """xbrl_concept_snapshot splits NetIncomeLoss into :annual and :ttm keys."""
-    from finrobot.engine.compute.operators.xbrl_aligned_comps import xbrl_concept_snapshot
+    from alpha_desk.engine.compute.operators.xbrl_aligned_comps import xbrl_concept_snapshot
 
     raw_xbrl = {
         "ttm_net_income": {
@@ -1115,7 +1115,7 @@ async def test_fetch_returns_well_formed_data_result(
 
 from datetime import date as _date  # noqa: E402
 
-from finrobot.engine.data.providers.edgar_provider import (  # noqa: E402
+from alpha_desk.engine.data.providers.edgar_provider import (  # noqa: E402
     _TTM_REVENUE_CONCEPTS,
     _select_recent_ttm,
     _validate_ttm_periods,
@@ -1330,7 +1330,7 @@ class TestSelectRecentTTM:
 
 
 def _sched13_helpers():
-    from finrobot.engine.data.providers.edgar_provider import (
+    from alpha_desk.engine.data.providers.edgar_provider import (
         _issuer_token,
         _schedule13_pct,
         _schedule13_shares,
@@ -1443,7 +1443,7 @@ def test_ceo_cert_attachment_rank_matches_ceo_leg_variants() -> None:
     """The CEO Section-302 cert (Exhibit 31.1) leg — real naming variants probed
     2026-07-09: "EX-31.1" (most), "EX-31.01" (GOOGL, leading zero), "EX-31.A"
     (DIS, letter suffix + explicit officer description)."""
-    from finrobot.engine.data.providers.edgar_provider import _ceo_cert_attachment_rank
+    from alpha_desk.engine.data.providers.edgar_provider import _ceo_cert_attachment_rank
 
     # Numeric ".1", zero-padded ".01", filename fallback, and letter ".A".
     assert _ceo_cert_attachment_rank("EX-31.1", "EX-31.1", "a-ex-311.htm") is not None
@@ -1461,7 +1461,7 @@ def test_ceo_cert_attachment_rank_rejects_cfo_and_906() -> None:
     """Must NEVER select the CFO leg (Ex-31.2/.02/.B) or a Section-906 cert
     (Ex-32.x, which may be a single COMBINED CEO+CFO document) — a wrong signer
     is worse than falling back."""
-    from finrobot.engine.data.providers.edgar_provider import _ceo_cert_attachment_rank
+    from alpha_desk.engine.data.providers.edgar_provider import _ceo_cert_attachment_rank
 
     # CFO leg of the 302 cert.
     assert _ceo_cert_attachment_rank("EX-31.2", "EX-31.2", "a-ex-312.htm") is None
@@ -1509,7 +1509,7 @@ def _mock_sched13_filing(form: str, fdate: date, acc: str, filer: str, cik: str 
 
 
 def test_fetch_schedule13_parses_dedups_and_skips_self_filing() -> None:
-    from finrobot.engine.data.providers.edgar_provider import EdgarToolsProvider
+    from alpha_desk.engine.data.providers.edgar_provider import EdgarToolsProvider
 
     p = EdgarToolsProvider("Jane Doe jane@example.com")
     cover = "(a) Amount Beneficially Owned: 998,190,803\n(b) Percent of Class: 4.069%"
@@ -1563,7 +1563,7 @@ class TestBuildRagChunks:
         ]
 
     def test_source_carries_section_title(self) -> None:
-        from finrobot.engine.data.providers.edgar_provider import build_rag_chunks
+        from alpha_desk.engine.data.providers.edgar_provider import build_rag_chunks
 
         chunks = build_rag_chunks(self._sections(), "2025-10-31")
         assert chunks, "expected chunks from non-empty sections"
@@ -1575,7 +1575,7 @@ class TestBuildRagChunks:
         assert any("Item 7 — MD&A" in s for s in mdna_sources)
 
     def test_chunk_index_is_unique_and_sequential(self) -> None:
-        from finrobot.engine.data.providers.edgar_provider import build_rag_chunks
+        from alpha_desk.engine.data.providers.edgar_provider import build_rag_chunks
 
         chunks = build_rag_chunks(self._sections(), "2025-10-31")
         indices = [c["chunk_index"] for c in chunks]
@@ -1584,7 +1584,7 @@ class TestBuildRagChunks:
     def test_empty_sections_skipped_and_chunks_serializable(self) -> None:
         import json
 
-        from finrobot.engine.data.providers.edgar_provider import build_rag_chunks
+        from alpha_desk.engine.data.providers.edgar_provider import build_rag_chunks
 
         chunks = build_rag_chunks(self._sections(), "2025-10-31")
         # the whitespace-only "Item 9" section contributes nothing
@@ -1606,7 +1606,7 @@ class TestFetch13FStaleWarning:
     def _wire(monkeypatch: pytest.MonkeyPatch, holders: list[dict], status: dict) -> None:
         from contextlib import asynccontextmanager
 
-        from finrobot.engine.data import sec_holdings_cache as cache_mod
+        from alpha_desk.engine.data import sec_holdings_cache as cache_mod
 
         async def _holders(*_a: Any, **_k: Any) -> list[dict]:
             return holders
@@ -1731,7 +1731,7 @@ class TestCompanyfactsAnnualSeries:
         on its OWN period-end year, never the filing fy. MU's FY2018 peak appears
         in the FY2019 10-K tagged fy=2019; keying by fy would mislabel it.
         """
-        from finrobot.engine.data.providers.edgar_provider import _companyfacts_annual_series
+        from alpha_desk.engine.data.providers.edgar_provider import _companyfacts_annual_series
 
         items = [
             # The real FY2018 fact filed in the 2018 10-K (fy=2018).
@@ -1751,7 +1751,7 @@ class TestCompanyfactsAnnualSeries:
         assert series[2019] == 23_406
 
     def test_latest_filed_comparative_wins(self) -> None:
-        from finrobot.engine.data.providers.edgar_provider import _companyfacts_annual_series
+        from alpha_desk.engine.data.providers.edgar_provider import _companyfacts_annual_series
 
         items = [
             _fact(start="2022-01-01", end="2022-12-31", val=100, fy=2022, filed="2023-02-01"),
@@ -1762,7 +1762,7 @@ class TestCompanyfactsAnnualSeries:
         assert series[2022] == 110  # latest filed wins
 
     def test_skips_non_usd_quarterly_and_non_10k(self) -> None:
-        from finrobot.engine.data.providers.edgar_provider import _companyfacts_annual_series
+        from alpha_desk.engine.data.providers.edgar_provider import _companyfacts_annual_series
 
         concept = "Revenues"
         node_items = [
@@ -1793,7 +1793,7 @@ class TestCompanyfactsAnnualSeries:
         assert _companyfacts_annual_series(eur, (concept,)) == {}
 
     def test_concept_fallback_first_nonempty_wins(self) -> None:
-        from finrobot.engine.data.providers.edgar_provider import _companyfacts_annual_series
+        from alpha_desk.engine.data.providers.edgar_provider import _companyfacts_annual_series
 
         # Primary concept absent; second candidate present.
         facts = _facts_with(
@@ -1811,7 +1811,7 @@ class TestCompanyfactsAnnualSeries:
         BOTH total ``Revenues`` and the ASC-606 contract-revenue subset for the
         SAME fiscal years. prefer_total_across_concepts surfaces the total (77B),
         never the fee-only subset (2.4B) the old first-concept-wins latched."""
-        from finrobot.engine.data.providers.edgar_provider import (
+        from alpha_desk.engine.data.providers.edgar_provider import (
             _HIST_REVENUE_CONCEPTS,
             _companyfacts_annual_series,
         )
@@ -1872,7 +1872,7 @@ class TestCompanyfactsAnnualSeries:
         the ASC-606 concept from FY2019 (416B by FY2025). The total concept owns
         the years it reports; the subset fills ONLY the later years totals are
         missing — one consistent total series, never a regression to stale 2018."""
-        from finrobot.engine.data.providers.edgar_provider import (
+        from alpha_desk.engine.data.providers.edgar_provider import (
             _HIST_REVENUE_CONCEPTS,
             _companyfacts_annual_series,
         )
@@ -1923,7 +1923,7 @@ class TestCompanyfactsPointSeries:
     EPS = "EarningsPerShareBasic"
 
     def _series(self, items: list[dict[str, Any]], concepts: tuple[str, ...] = (EPS,)):
-        from finrobot.engine.data.providers.edgar_provider import _companyfacts_point_series
+        from alpha_desk.engine.data.providers.edgar_provider import _companyfacts_point_series
 
         return _companyfacts_point_series(_facts_with(self.EPS, items), concepts)
 
@@ -2065,7 +2065,7 @@ class TestBuildSecYearlyFinancials:
         return {"facts": {"us-gaap": usgaap}}
 
     def test_shape_keys_match_extractor_contract(self) -> None:
-        from finrobot.engine.data.providers.edgar_provider import _build_sec_yearly_financials
+        from alpha_desk.engine.data.providers.edgar_provider import _build_sec_yearly_financials
 
         rows = _build_sec_yearly_financials(self._multi_concept_facts(), 10)
         required = {
@@ -2084,14 +2084,14 @@ class TestBuildSecYearlyFinancials:
             assert required <= set(row.keys())
 
     def test_newest_first_and_windowed(self) -> None:
-        from finrobot.engine.data.providers.edgar_provider import _build_sec_yearly_financials
+        from alpha_desk.engine.data.providers.edgar_provider import _build_sec_yearly_financials
 
         rows = _build_sec_yearly_financials(self._multi_concept_facts(), 2)
         # newest-first, windowed to 2 most-recent fiscal years
         assert [r["fiscal_year"][:4] for r in rows] == ["2023", "2022"]
 
     def test_margins_and_capex_sign(self) -> None:
-        from finrobot.engine.data.providers.edgar_provider import _build_sec_yearly_financials
+        from alpha_desk.engine.data.providers.edgar_provider import _build_sec_yearly_financials
 
         rows = {
             r["fiscal_year"][:4]: r
@@ -2109,7 +2109,7 @@ class TestBuildSecYearlyFinancials:
         assert rows["2021"]["operating_margin"] == pytest.approx(200 / 1000)
 
     def test_ebitda_none_when_component_missing(self) -> None:
-        from finrobot.engine.data.providers.edgar_provider import _build_sec_yearly_financials
+        from alpha_desk.engine.data.providers.edgar_provider import _build_sec_yearly_financials
 
         # Revenue + operating income present, but NO D&A concept at all → the EBITDA
         # identity can't be formed, so ebitda is None (never a fabricated value).
@@ -2145,6 +2145,6 @@ class TestBuildSecYearlyFinancials:
         assert rows[0]["ebitda"] is None
 
     def test_empty_facts_yield_no_rows(self) -> None:
-        from finrobot.engine.data.providers.edgar_provider import _build_sec_yearly_financials
+        from alpha_desk.engine.data.providers.edgar_provider import _build_sec_yearly_financials
 
         assert _build_sec_yearly_financials({"facts": {"us-gaap": {}}}, 10) == []

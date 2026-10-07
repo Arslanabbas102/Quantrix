@@ -1,6 +1,6 @@
 """Cold-start import guard for the sidecar.
 
-``finrobot serve`` imports ``finrobot.server`` (the FastAPI app) BEFORE uvicorn
+``alpha_desk serve`` imports ``alpha_desk.server`` (the FastAPI app) BEFORE uvicorn
 binds the port, and uvicorn only starts accepting connections after the lifespan
 *startup* completes. So every millisecond spent importing the heavy analytical
 stack at module-load time is a millisecond ``/health`` and the local-SQLite
@@ -11,7 +11,7 @@ report from local SQLite. They are pulled lazily — at the lifespan warmup task
 that constructs the data layer / agents, or inside the handlers that actually
 use them. This test is the mechanical gate that keeps them off the cold-start
 import path: a regression (a new module-level ``import`` of any of these reachable
-from ``finrobot.server``) silently re-slows every launch, so it fails loudly here.
+from ``alpha_desk.server``) silently re-slows every launch, so it fails loudly here.
 
 See docs handoff『sidecar 冷启动根治』.
 """
@@ -34,7 +34,7 @@ _FORBIDDEN = ("edgar", "pydantic_ai", "yfinance", "matplotlib", "pandas")
 def test_importing_server_does_not_load_heavy_stack() -> None:
     probe = (
         "import sys\n"
-        "import finrobot.server  # noqa: F401\n"
+        "import alpha_desk.server  # noqa: F401\n"
         f"forbidden = {_FORBIDDEN!r}\n"
         "leaked = sorted(m for m in forbidden if m in sys.modules)\n"
         "print(','.join(leaked))\n"
@@ -48,7 +48,7 @@ def test_importing_server_does_not_load_heavy_stack() -> None:
     )
     leaked = result.stdout.strip().splitlines()[-1] if result.stdout.strip() else ""
     assert result.returncode == 0, (
-        "Importing finrobot.server pulled heavy modules onto the sidecar "
+        "Importing alpha_desk.server pulled heavy modules onto the sidecar "
         f"cold-start path: [{leaked}]. Move the offending module-level import "
         "into the handler / lifespan warmup that actually uses it.\n"
         f"stderr:\n{result.stderr}"

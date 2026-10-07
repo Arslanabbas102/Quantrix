@@ -35,15 +35,15 @@ import math
 import statistics
 import sys
 
-import finrobot.engine.compute.operators.dcf as dcf_mod
-from finrobot.config import get_settings
-from finrobot.engine.compute.coordinators.dcf_seed import seed_dcf_inputs_for_ticker
-from finrobot.engine.data.factory import build_data_layer
-from finrobot.engine.models.financial import DCFInputs
-from finrobot.paths import SETTINGS_JSON
-from finrobot.routes.settings import load_non_secret_settings
-from finrobot.secret_store import create_secret_store
-from finrobot.server import hydrate_settings_from_secrets
+import alpha_desk.engine.compute.operators.dcf as dcf_mod
+from alpha_desk.config import get_settings
+from alpha_desk.engine.compute.coordinators.dcf_seed import seed_dcf_inputs_for_ticker
+from alpha_desk.engine.data.factory import build_data_layer
+from alpha_desk.engine.models.financial import DCFInputs
+from alpha_desk.paths import SETTINGS_JSON
+from alpha_desk.routes.settings import load_non_secret_settings
+from alpha_desk.secret_store import create_secret_store
+from alpha_desk.server import hydrate_settings_from_secrets
 
 BASKET = sys.argv[1:] or ["AMD", "MU", "TSLA", "AAPL", "MSFT", "NVDA", "KO", "JNJ", "RIVN"]
 
@@ -140,7 +140,7 @@ async def main() -> int:
             )
 
             # 终值 NWC 缩放需要历史 ΔNWC/Δrev——从 coordinator 再取一次 historical
-            from finrobot.engine.compute.coordinators.historical_extractor import (
+            from alpha_desk.engine.compute.coordinators.historical_extractor import (
                 fetch_historical_metrics,
             )
 
@@ -180,7 +180,7 @@ async def main() -> int:
     finally:
         # Non-server entrypoint: join the aiosqlite workers + checkpoint WAL so the
         # process exits cleanly instead of hanging on "Event loop is closed" (2026-06-24).
-        from finrobot.engine.data.factory import shutdown_data_layer
+        from alpha_desk.engine.data.factory import shutdown_data_layer
 
         await shutdown_data_layer(dl)
 

@@ -37,7 +37,7 @@ jobs:
         run: uv sync --all-extras
 
       - name: Lint
-        run: uv run ruff check finrobot/
+        run: uv run ruff check alpha_desk/
 
       # Was `pre-commit run ruff-format --all-files`, which resolves files from
       # the git root — now the whole monorepo, including never-formatted V0/V1
@@ -46,13 +46,13 @@ jobs:
         run: uv run ruff format --check .
 
       - name: Type check
-        run: uv run mypy finrobot/ --strict
+        run: uv run mypy alpha_desk/ --strict
 
       - name: Unit tests
         run: uv run pytest tests/unit/ -v
         env:
-          FINROBOT_MODEL_NAME: "test"
-          FINROBOT_DEEPSEEK_API_KEY: "test-key"
+          ALPHA_DESK_MODEL_NAME: "test"
+          ALPHA_DESK_DEEPSEEK_API_KEY: "test-key"
 
   frontend:
     runs-on: ubuntu-latest

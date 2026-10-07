@@ -11,7 +11,7 @@ import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from finrobot.routes.health import router as health_router
+from alpha_desk.routes.health import router as health_router
 
 
 @pytest.fixture

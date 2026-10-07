@@ -17,8 +17,8 @@ from datetime import datetime, timezone
 
 import pytest
 
-from finrobot.engine.data.historical_loaders import load_yearly_financials
-from finrobot.engine.data.interface import DataResult
+from alpha_desk.engine.data.historical_loaders import load_yearly_financials
+from alpha_desk.engine.data.interface import DataResult
 
 
 class _FXStubLayer:
@@ -92,7 +92,7 @@ async def test_load_yearly_financials_no_fx_for_same_currency():
 
 class _FXFailLayer(_FXStubLayer):
     async def reporting_to_quote_rate(self, reporting_ccy: str, quote_ccy: str) -> float:
-        from finrobot.engine.data.interface import ProviderError
+        from alpha_desk.engine.data.interface import ProviderError
 
         raise ProviderError("FX provider down")
 
@@ -141,7 +141,7 @@ async def test_load_yearly_financials_missing_balance_leg_keeps_net_debt_none():
 
 
 def _band(*, p25, p75, sample_count, current=24.0):
-    from finrobot.engine.primitives.historical_valuation import HistoricalBand
+    from alpha_desk.engine.primitives.historical_valuation import HistoricalBand
 
     return HistoricalBand(
         metric="ev_ebitda",
@@ -158,7 +158,7 @@ def _band(*, p25, p75, sample_count, current=24.0):
 
 @pytest.mark.asyncio
 async def test_fetch_reverse_multiple_band_returns_spread(monkeypatch):
-    from finrobot.engine.data import historical_loaders as hl
+    from alpha_desk.engine.data import historical_loaders as hl
 
     async def _fake(ticker, metric, years, data_layer, *, current_override=None):
         return _band(p25=20.0, p75=30.0, sample_count=900)
@@ -173,7 +173,7 @@ async def test_fetch_reverse_multiple_band_returns_spread(monkeypatch):
 async def test_fetch_reverse_multiple_band_withholds_thin_history(monkeypatch):
     """Below the sample floor the band carries no distribution — p25/p75 would
     echo one multiple dressed as a range. Withhold rather than emit a fake range."""
-    from finrobot.engine.data import historical_loaders as hl
+    from alpha_desk.engine.data import historical_loaders as hl
 
     async def _fake(ticker, metric, years, data_layer, *, current_override=None):
         return _band(p25=23.0, p75=23.0, sample_count=hl._MIN_BAND_SAMPLES - 1)
@@ -184,7 +184,7 @@ async def test_fetch_reverse_multiple_band_withholds_thin_history(monkeypatch):
 
 @pytest.mark.asyncio
 async def test_fetch_reverse_multiple_band_withholds_nonpositive_band(monkeypatch):
-    from finrobot.engine.data import historical_loaders as hl
+    from alpha_desk.engine.data import historical_loaders as hl
 
     async def _fake(ticker, metric, years, data_layer, *, current_override=None):
         return _band(p25=None, p75=None, sample_count=900)
@@ -195,6 +195,6 @@ async def test_fetch_reverse_multiple_band_withholds_nonpositive_band(monkeypatc
 
 @pytest.mark.asyncio
 async def test_fetch_reverse_multiple_band_none_layer_returns_none():
-    from finrobot.engine.data import historical_loaders as hl
+    from alpha_desk.engine.data import historical_loaders as hl
 
     assert await hl.fetch_reverse_multiple_band("X", "ev_ebitda", None) is None

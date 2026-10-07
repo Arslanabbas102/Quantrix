@@ -13,9 +13,9 @@ import pytest
 
 from pydantic_ai.exceptions import ModelHTTPError
 
-from finrobot.config import FinRobotSettings
-from finrobot.engine.backtest.engine import BacktestConfig, BacktestResult
-from finrobot.engine.backtest.strategy_agent import (
+from alpha_desk.config import AlphaDeskSettings
+from alpha_desk.engine.backtest.engine import BacktestConfig, BacktestResult
+from alpha_desk.engine.backtest.strategy_agent import (
     _FALLBACK_WARNING,
     _NO_HOLDOUT_WARNING,
     IN_SAMPLE_FRACTION,
@@ -69,7 +69,7 @@ class TestRunStrategySelection:
     @pytest.mark.asyncio
     async def test_single_iteration_early_stop(self) -> None:
         """LLM stops after iter 1 -> 1 IS backtest + 1 OOS backtest reported."""
-        settings = FinRobotSettings(model_name="test:test")
+        settings = AlphaDeskSettings(model_name="test:test")
 
         config = _make_config()
         is_result = _make_result(0.15)
@@ -82,8 +82,8 @@ class TestRunStrategySelection:
         mock_engine_run = AsyncMock(side_effect=[is_result, oos_result])
 
         with (
-            patch("finrobot.engine.backtest.strategy_agent.Agent") as mock_agent_cls,
-            patch("finrobot.engine.backtest.strategy_agent.BackTraderAdapter") as mock_adapter_cls,
+            patch("alpha_desk.engine.backtest.strategy_agent.Agent") as mock_agent_cls,
+            patch("alpha_desk.engine.backtest.strategy_agent.BackTraderAdapter") as mock_adapter_cls,
         ):
             # First Agent() call -> config agent, second -> adjustment agent
             agent_instances = [MagicMock(), MagicMock()]
@@ -119,7 +119,7 @@ class TestRunStrategySelection:
         must be the ones carried into the single out-of-sample evaluation, whose
         result (not the IS fit) is returned.
         """
-        settings = FinRobotSettings(model_name="test:test")
+        settings = AlphaDeskSettings(model_name="test:test")
 
         configs = [
             _make_config(strategy_params={"fast": 10, "slow": 30}),
@@ -152,8 +152,8 @@ class TestRunStrategySelection:
         adjust_agent_mock.run = AsyncMock(side_effect=decision_results)
 
         with (
-            patch("finrobot.engine.backtest.strategy_agent.Agent") as mock_agent_cls,
-            patch("finrobot.engine.backtest.strategy_agent.BackTraderAdapter") as mock_adapter_cls,
+            patch("alpha_desk.engine.backtest.strategy_agent.Agent") as mock_agent_cls,
+            patch("alpha_desk.engine.backtest.strategy_agent.BackTraderAdapter") as mock_adapter_cls,
         ):
             mock_agent_cls.side_effect = [
                 config_agent_mock,
@@ -183,7 +183,7 @@ class TestRunStrategySelection:
         Now the best IS run only *selects the params*; the reported figure is the
         out-of-sample evaluation, which is decoupled from the IS fit.
         """
-        settings = FinRobotSettings(model_name="test:test")
+        settings = AlphaDeskSettings(model_name="test:test")
 
         configs = [
             _make_config(strategy_params={"fast": 10, "slow": 30}),
@@ -214,8 +214,8 @@ class TestRunStrategySelection:
         mock_engine_run = AsyncMock(side_effect=[*is_results, oos_result])
 
         with (
-            patch("finrobot.engine.backtest.strategy_agent.Agent") as mock_agent_cls,
-            patch("finrobot.engine.backtest.strategy_agent.BackTraderAdapter") as mock_adapter_cls,
+            patch("alpha_desk.engine.backtest.strategy_agent.Agent") as mock_agent_cls,
+            patch("alpha_desk.engine.backtest.strategy_agent.BackTraderAdapter") as mock_adapter_cls,
         ):
             mock_agent_cls.side_effect = [
                 config_agent_mock,
@@ -241,7 +241,7 @@ class TestRunStrategySelection:
         final run; the LLM never widens the window. Strategy params still flow
         from the LLM.
         """
-        settings = FinRobotSettings(model_name="test:test")
+        settings = AlphaDeskSettings(model_name="test:test")
 
         # LLM tries to change the ticker and dates
         bad_config = BacktestConfig(
@@ -266,8 +266,8 @@ class TestRunStrategySelection:
         mock_engine_run = AsyncMock(side_effect=[is_result, oos_result])
 
         with (
-            patch("finrobot.engine.backtest.strategy_agent.Agent") as mock_agent_cls,
-            patch("finrobot.engine.backtest.strategy_agent.BackTraderAdapter") as mock_adapter_cls,
+            patch("alpha_desk.engine.backtest.strategy_agent.Agent") as mock_agent_cls,
+            patch("alpha_desk.engine.backtest.strategy_agent.BackTraderAdapter") as mock_adapter_cls,
         ):
             mock_agent_cls.side_effect = [config_agent_mock, adjust_agent_mock]
             mock_adapter_cls.return_value.run = mock_engine_run
@@ -307,7 +307,7 @@ class TestRunStrategySelection:
         modelling an auth/rate-limit failure) to confirm the except tuple
         catches real provider errors and degrades gracefully.
         """
-        settings = FinRobotSettings(model_name="test:test")
+        settings = AlphaDeskSettings(model_name="test:test")
 
         bt_result = _make_result(0.07)
 
@@ -323,8 +323,8 @@ class TestRunStrategySelection:
         mock_engine_run = AsyncMock(return_value=bt_result)
 
         with (
-            patch("finrobot.engine.backtest.strategy_agent.Agent") as mock_agent_cls,
-            patch("finrobot.engine.backtest.strategy_agent.BackTraderAdapter") as mock_adapter_cls,
+            patch("alpha_desk.engine.backtest.strategy_agent.Agent") as mock_agent_cls,
+            patch("alpha_desk.engine.backtest.strategy_agent.BackTraderAdapter") as mock_adapter_cls,
         ):
             mock_agent_cls.side_effect = [config_agent_mock, adjust_agent_mock]
             mock_adapter_cls.return_value.run = mock_engine_run
@@ -355,7 +355,7 @@ class TestRunStrategySelection:
         is flagged with _NO_HOLDOUT_WARNING so the in-sample nature is explicit
         rather than silently shipped as a validated number.
         """
-        settings = FinRobotSettings(model_name="test:test")
+        settings = AlphaDeskSettings(model_name="test:test")
 
         # ~30-day window: the OOS tail (~9 days) is far below _MIN_OOS_DAYS,
         # so _split_in_sample_oos returns None and we tune on the whole window.
@@ -371,8 +371,8 @@ class TestRunStrategySelection:
         mock_engine_run = AsyncMock(return_value=is_result)
 
         with (
-            patch("finrobot.engine.backtest.strategy_agent.Agent") as mock_agent_cls,
-            patch("finrobot.engine.backtest.strategy_agent.BackTraderAdapter") as mock_adapter_cls,
+            patch("alpha_desk.engine.backtest.strategy_agent.Agent") as mock_agent_cls,
+            patch("alpha_desk.engine.backtest.strategy_agent.BackTraderAdapter") as mock_adapter_cls,
         ):
             mock_agent_cls.side_effect = [config_agent_mock, adjust_agent_mock]
             mock_adapter_cls.return_value.run = mock_engine_run

@@ -4,7 +4,7 @@ from datetime import date, datetime, timezone
 
 import pytest
 
-from finrobot.engine.data.normalize.contracts import (
+from alpha_desk.engine.data.normalize.contracts import (
     DEGRADED_CLOSE_ONLY,
     NormalizedFinancials,
     NormalizedPrice,

@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta, timezone
 
-from finrobot.engine.models.financial import CatalystEvent
-from finrobot.engine.compute.operators.catalyst import (
+from alpha_desk.engine.models.financial import CatalystEvent
+from alpha_desk.engine.compute.operators.catalyst import (
     rank_catalysts,
     filter_by_impact,
     classify_catalyst_type,
@@ -11,7 +11,7 @@ from finrobot.engine.compute.operators.catalyst import (
     compute_expected_impact,
     summarize_catalyst_outlook,
 )
-from finrobot.engine.compute.coordinators.news import NewsItem
+from alpha_desk.engine.compute.coordinators.news import NewsItem
 
 
 def _make_events() -> list[CatalystEvent]:
@@ -111,7 +111,7 @@ class TestFilterByImpact:
 
 class TestCatalystAnalysisNewFields:
     def test_catalyst_analysis_new_fields_defaulted(self):
-        from finrobot.engine.models.financial import CatalystAnalysis
+        from alpha_desk.engine.models.financial import CatalystAnalysis
 
         ca = CatalystAnalysis(events=[], overall_sentiment="neutral", key_catalysts=[])
         assert ca.net_sentiment == 0.0
@@ -826,7 +826,7 @@ class TestCrossMediaEventFingerprintSignal:
         # signals alone (title Jaccard < 0.6, different domains/days) — if
         # this assertion ever fails the fixture stopped being a real test of
         # the NEW signal and must be reworded harder.
-        from finrobot.engine.compute.operators.catalyst import (
+        from alpha_desk.engine.compute.operators.catalyst import (
             _DEDUP_JACCARD_MIN,
             _jaccard,
             _title_tokens,

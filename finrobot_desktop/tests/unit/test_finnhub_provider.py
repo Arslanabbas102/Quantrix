@@ -5,13 +5,13 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import httpx
 import pytest
 
-from finrobot.engine.data.interface import (
+from alpha_desk.engine.data.interface import (
     DataResult,
     ProviderError,
     RateLimitedProviderError,
     is_rate_limit_error,
 )
-from finrobot.engine.data.providers.finnhub_provider import FinnhubProvider
+from alpha_desk.engine.data.providers.finnhub_provider import FinnhubProvider
 
 
 @pytest.fixture
@@ -225,7 +225,7 @@ class TestFinnhubPrice:
     async def test_fetch_price_normalizes_to_canonical_price(self, provider):
         """End-to-end: the Finnhub PRICE result must normalize identically to the
         other providers — current_price preserved, bars built, exchange carried."""
-        from finrobot.engine.data.normalize.price import normalize_price
+        from alpha_desk.engine.data.normalize.price import normalize_price
 
         responses = [
             _mock_response(_finnhub_quote_response(price=175.5)),
@@ -402,7 +402,7 @@ class TestFinnhubRateLimiter:
         """Second call within MIN_INTERVAL must trigger asyncio.sleep."""
         import asyncio
         import time
-        from finrobot.engine.data.providers.finnhub_provider import _MIN_INTERVAL
+        from alpha_desk.engine.data.providers.finnhub_provider import _MIN_INTERVAL
 
         sleep_durations: list[float] = []
 

@@ -14,7 +14,7 @@ import math
 
 import pytest
 
-from finrobot.engine.primitives.market_cap import market_cap_on_live_price
+from alpha_desk.engine.primitives.market_cap import market_cap_on_live_price
 
 
 @pytest.mark.parametrize("bad_live", [float("nan"), float("inf"), float("-inf")])

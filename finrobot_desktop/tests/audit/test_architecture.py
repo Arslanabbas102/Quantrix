@@ -9,8 +9,8 @@ Red lines tested:
   2. Pipeline steps not exposed as individual orchestrator tools
   3. Pipelines don't directly import provider SDKs
   4. Dependency blacklist (no LangChain/AutoGen/LiteLLM)
-  5. No bare `except Exception:` in finrobot/
-  6. No `print(` in finrobot/ (use logging)
+  5. No bare `except Exception:` in alpha_desk/
+  6. No `print(` in alpha_desk/ (use logging)
   7. No `os.environ` outside config.py (use dependency injection)
 """
 
@@ -23,12 +23,12 @@ from pathlib import Path
 import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
-FINROBOT = ROOT / "finrobot"
-COMPUTE = FINROBOT / "engine" / "compute"
-MODELS = FINROBOT / "engine" / "models"
-PRIMITIVES = FINROBOT / "engine" / "primitives"
-PIPELINES = FINROBOT / "engine" / "pipelines"
-CONTRACT = FINROBOT / "artifact" / "contract.py"
+ALPHA_DESK = ROOT / "alpha_desk"
+COMPUTE = ALPHA_DESK / "engine" / "compute"
+MODELS = ALPHA_DESK / "engine" / "models"
+PRIMITIVES = ALPHA_DESK / "engine" / "primitives"
+PIPELINES = ALPHA_DESK / "engine" / "pipelines"
+CONTRACT = ALPHA_DESK / "artifact" / "contract.py"
 
 
 def _py_files(directory: Path) -> list[Path]:
@@ -53,9 +53,9 @@ def _all_imports(filepath: Path) -> list[tuple[int, str]]:
 # ---------------------------------------------------------------------------
 
 FORBIDDEN_UPWARD = [
-    "finrobot.engine.pipelines",
-    "finrobot.engine.agents",
-    "finrobot.engine.orchestrator",
+    "alpha_desk.engine.pipelines",
+    "alpha_desk.engine.agents",
+    "alpha_desk.engine.orchestrator",
 ]
 
 FORBIDDEN_LLM = [
@@ -114,7 +114,7 @@ class TestLeafLayerIsolation:
         primitive imports data/ or compute/, the data→compute→data cycle ADR-0005
         §2.2 removed comes back silently (the providers reuse these primitives).
         """
-        forbidden = ("finrobot.engine.data", "finrobot.engine.compute")
+        forbidden = ("alpha_desk.engine.data", "alpha_desk.engine.compute")
         violations: list[str] = []
         for py in _py_files(PRIMITIVES):
             for lineno, module in _all_imports(py):
@@ -135,7 +135,7 @@ class TestPipelineEncapsulation:
     """Orchestrator tools must wrap whole pipelines, never individual steps."""
 
     def test_no_step_tools_in_orchestrator(self) -> None:
-        orch = FINROBOT / "engine" / "orchestrator.py"
+        orch = ALPHA_DESK / "engine" / "orchestrator.py"
         if not orch.exists():
             pytest.skip("orchestrator.py not found")
         source = orch.read_text()
@@ -187,11 +187,11 @@ BANNED_DEPS = ["langchain", "langgraph", "autogen", "litellm"]
 
 
 class TestDependencyBlacklist:
-    """Banned frameworks must not appear anywhere in finrobot/."""
+    """Banned frameworks must not appear anywhere in alpha_desk/."""
 
     def test_no_banned_imports(self) -> None:
         violations: list[str] = []
-        for py in _py_files(FINROBOT):
+        for py in _py_files(ALPHA_DESK):
             for lineno, module in _all_imports(py):
                 for banned in BANNED_DEPS:
                     if module == banned or module.startswith(banned + "."):
@@ -218,7 +218,7 @@ class TestExceptionHygiene:
 
     def test_no_bare_except_exception(self) -> None:
         violations: list[str] = []
-        for py in _py_files(FINROBOT):
+        for py in _py_files(ALPHA_DESK):
             text = py.read_text()
             for match in _BARE_EXCEPT_RE.finditer(text):
                 lineno = text[: match.start()].count("\n") + 1
@@ -235,16 +235,16 @@ class TestExceptionHygiene:
 
 
 # ---------------------------------------------------------------------------
-# Coding discipline: no print() in finrobot/
+# Coding discipline: no print() in alpha_desk/
 # ---------------------------------------------------------------------------
 
 
 class TestNoPrint:
-    """finrobot/ must use logging, not print(). Docstring examples are OK."""
+    """alpha_desk/ must use logging, not print(). Docstring examples are OK."""
 
-    def test_no_print_in_finrobot(self) -> None:
+    def test_no_print_in_alpha_desk(self) -> None:
         violations: list[str] = []
-        for py in _py_files(FINROBOT):
+        for py in _py_files(ALPHA_DESK):
             tree = ast.parse(py.read_text(), filename=str(py))
             for node in ast.walk(tree):
                 if (
@@ -255,7 +255,7 @@ class TestNoPrint:
                     rel = py.relative_to(ROOT)
                     violations.append(f"  {rel}:{node.lineno}")
         assert not violations, (
-            "print() calls found in finrobot/ (use logging instead):\n" + "\n".join(violations)
+            "print() calls found in alpha_desk/ (use logging instead):\n" + "\n".join(violations)
         )
 
 
@@ -273,7 +273,7 @@ class TestNoOsEnviron:
         # config.py: settings source of truth; secret_store.py: bootstrap before config
         allowed = {"config.py", "secret_store.py"}
         violations: list[str] = []
-        for py in _py_files(FINROBOT):
+        for py in _py_files(ALPHA_DESK):
             if py.name in allowed:
                 continue
             text = py.read_text()
@@ -282,7 +282,7 @@ class TestNoOsEnviron:
                 rel = py.relative_to(ROOT)
                 violations.append(
                     f"  {rel}:{lineno} — os.environ usage\n"
-                    f"  FIX: Use FinRobotSettings (finrobot/config.py) + dependency injection."
+                    f"  FIX: Use AlphaDeskSettings (alpha_desk/config.py) + dependency injection."
                 )
         assert not violations, "os.environ used outside config.py:\n" + "\n".join(violations)
 
@@ -291,7 +291,7 @@ class TestNoOsEnviron:
 # Red line 8: heavy sync-bound coroutines must not block the server event loop
 # ---------------------------------------------------------------------------
 
-SERVER = FINROBOT / "server.py"
+SERVER = ALPHA_DESK / "server.py"
 
 # Coroutines whose body is dominated by *synchronous* CPU/IO work (so awaiting
 # them directly on the request/lifespan loop freezes every concurrent request).
@@ -348,14 +348,14 @@ class TestEventLoopNotBlocked:
 # (spec 输出合同总闸-质量harness.md §7 Q4)
 # ---------------------------------------------------------------------------
 
-# contract.py may import ONLY these finrobot modules (Q4 "只许 engine/models 叶子 +
+# contract.py may import ONLY these alpha_desk modules (Q4 "只许 engine/models 叶子 +
 # summary_extractor + stdlib"; plus the Artifact type it operates on, in its own
 # package under TYPE_CHECKING). Anything under compute/ data/ pipelines/ would mean
 # the gate RE-RUNS computation instead of verifying the already-assembled result.
-_CONTRACT_ALLOWED_FINROBOT_IMPORTS = (
-    "finrobot.engine.models",  # leaf constants/ledger: numeric_claim, valuation_thresholds, reconcile_tolerances
-    "finrobot.artifact.summary_extractor",
-    "finrobot.artifact.models",  # the Artifact type the clauses operate on
+_CONTRACT_ALLOWED_ALPHA_DESK_IMPORTS = (
+    "alpha_desk.engine.models",  # leaf constants/ledger: numeric_claim, valuation_thresholds, reconcile_tolerances
+    "alpha_desk.artifact.summary_extractor",
+    "alpha_desk.artifact.models",  # the Artifact type the clauses operate on
 )
 
 # Numeric literals a clause body may compare against directly (Q4 ③ whitelist
@@ -403,11 +403,11 @@ class TestArtifactContractStaysDumb:
     def test_imports_only_leaves_and_summary_extractor(self) -> None:
         violations: list[str] = []
         for lineno, module in _all_imports(CONTRACT):
-            if not module.startswith("finrobot."):
+            if not module.startswith("alpha_desk."):
                 continue  # stdlib / third-party is fine
             if not any(
                 module == allowed or module.startswith(allowed + ".")
-                for allowed in _CONTRACT_ALLOWED_FINROBOT_IMPORTS
+                for allowed in _CONTRACT_ALLOWED_ALPHA_DESK_IMPORTS
             ):
                 violations.append(
                     f"  contract.py:{lineno} imports {module}\n"
@@ -469,7 +469,7 @@ class TestComputeNeverImportsArtifact:
         violations: list[str] = []
         for py in _py_files(COMPUTE):
             for lineno, module in _all_imports(py):
-                if module == "finrobot.artifact" or module.startswith("finrobot.artifact."):
+                if module == "alpha_desk.artifact" or module.startswith("alpha_desk.artifact."):
                     violations.append(f"  {py.relative_to(ROOT)}:{lineno} imports {module}")
         assert not violations, (
             "compute/ must not import artifact/ (would cycle artifact↔compute, "

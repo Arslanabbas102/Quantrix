@@ -4,11 +4,11 @@ from pathlib import Path
 
 import pytest
 
-from finrobot.engine.pipelines.runner import _resolve_step_methodology
-from finrobot.engine.pipelines.step import PipelineStep, iter_skill_sections
-from finrobot.engine.skills.pipeline_methodology import render_pipeline_methodology
-from finrobot.engine.skills.registry import SkillRegistry
-from finrobot.engine.skills.spec import Skill
+from alpha_desk.engine.pipelines.runner import _resolve_step_methodology
+from alpha_desk.engine.pipelines.step import PipelineStep, iter_skill_sections
+from alpha_desk.engine.skills.pipeline_methodology import render_pipeline_methodology
+from alpha_desk.engine.skills.registry import SkillRegistry
+from alpha_desk.engine.skills.spec import Skill
 
 # The repo's real skills tree (skills/**/SKILL.md) — the same one the orchestrator
 # and pipeline runner load at runtime via SkillRegistry(settings.skills_dir).
@@ -206,7 +206,7 @@ def test_every_loadable_skill_renders_checkpoint_free(skill_id: str) -> None:
     assert not leaked, (
         f"skill {skill_id!r} leaks interactive checkpoint phrases {leaked} into its "
         f"pipeline-rendered methodology. Add a distilled, narrative-only entry to "
-        f"_PIPELINE_SAFE_METHODOLOGY in finrobot/engine/skills/pipeline_methodology.py "
+        f"_PIPELINE_SAFE_METHODOLOGY in alpha_desk/engine/skills/pipeline_methodology.py "
         f"that captures the method and drops every 'wait for user' / checkpoint / "
         f"file-generation directive."
     )

@@ -12,7 +12,7 @@ from __future__ import annotations
 from datetime import datetime, timedelta, timezone
 from typing import Any
 
-from finrobot.artifact.models import (
+from alpha_desk.artifact.models import (
     Artifact,
     ArtifactAssumptions,
     ArtifactComputeVersion,
@@ -20,9 +20,9 @@ from finrobot.artifact.models import (
     ArtifactMeta,
     ArtifactOutputs,
 )
-from finrobot.artifact.semantic_diff import build_semantic_delta
-from finrobot.engine.compute.operators.dcf import calculate_dcf
-from finrobot.engine.models.financial import DCFInputs
+from alpha_desk.artifact.semantic_diff import build_semantic_delta
+from alpha_desk.engine.compute.operators.dcf import calculate_dcf
+from alpha_desk.engine.models.financial import DCFInputs
 
 UTC = timezone.utc
 

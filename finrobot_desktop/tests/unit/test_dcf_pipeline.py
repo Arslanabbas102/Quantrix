@@ -4,16 +4,16 @@ from datetime import datetime, timezone
 from pydantic_ai import Agent
 from pydantic_ai.models.test import TestModel
 
-from finrobot.engine.data.interface import DataResult
-from finrobot.engine.data.normalize.contracts import (
+from alpha_desk.engine.data.interface import DataResult
+from alpha_desk.engine.data.normalize.contracts import (
     NormalizedFinancials,
     NormalizedPrice,
     PriceBar,
     Provenance,
 )
-from finrobot.engine.data.types import DataType
-from finrobot.engine.deps import FinRobotDeps
-from finrobot.engine.pipelines.dcf import create_dcf_pipeline
+from alpha_desk.engine.data.types import DataType
+from alpha_desk.engine.deps import AlphaDeskDeps
+from alpha_desk.engine.pipelines.dcf import create_dcf_pipeline
 
 
 # ---------------------------------------------------------------------------
@@ -108,7 +108,7 @@ def _make_test_agents(output: str = "analysis output") -> dict[str, Agent]:
     agents = {}
     for role in ["data", "analysis", "modeling", "synthesis", "report"]:
         agents[role] = Agent(
-            TestModel(custom_output_text=output), deps_type=FinRobotDeps, defer_model_check=True
+            TestModel(custom_output_text=output), deps_type=AlphaDeskDeps, defer_model_check=True
         )
     return agents
 
@@ -156,7 +156,7 @@ class TestDcfPipelineStructure:
 
 def _make_stub_execute_fn(step_name: str):
     """Return an async stub execute_fn that returns a minimal valid StepOutput."""
-    from finrobot.engine.models.financial import StepOutput
+    from alpha_desk.engine.models.financial import StepOutput
 
     async def _stub(agent, deps, prompt, structured_context, ticker):
         return StepOutput(
@@ -173,8 +173,8 @@ class TestDcfPipelineExecution:
     async def test_execute_produces_result_with_all_3_step_keys(self, capsys):
         pipeline = create_dcf_pipeline(_make_test_agents("revenue 385B ebitda 130B"))
         # Stub executor to avoid real LLM/compute calls in orchestration test
-        from finrobot.engine.pipelines.base import TextValidator
-        from finrobot.engine.pipelines.validators import validate_is_non_empty
+        from alpha_desk.engine.pipelines.base import TextValidator
+        from alpha_desk.engine.pipelines.validators import validate_is_non_empty
 
         for step in pipeline.steps:
             step.executor = _make_stub_execute_fn(step.name)
@@ -196,14 +196,14 @@ async def test_dcf_calc_degrades_for_financial_sector_issuer():
     gate fires BEFORE any data-layer fetch, so deps is never touched here."""
     from unittest.mock import MagicMock
 
-    from finrobot.engine.models.financial import (
+    from alpha_desk.engine.models.financial import (
         BalanceSheet,
         FinancialData,
         IncomeStatement,
         MarketData,
         ValuationMetrics,
     )
-    from finrobot.engine.pipelines.dcf import _execute_dcf_calc
+    from alpha_desk.engine.pipelines.dcf import _execute_dcf_calc
 
     bank_fd = FinancialData(
         ticker="JPM",
@@ -236,8 +236,8 @@ async def test_dcf_calc_degrades_for_financial_sector_issuer():
 
 
 def test_dcf_pipeline_historical_data_has_custom_executor():
-    from finrobot.engine.pipelines.dcf import create_dcf_pipeline
-    from finrobot.engine.pipelines.base import DefaultAgentExecutor, StructuredValidator
+    from alpha_desk.engine.pipelines.dcf import create_dcf_pipeline
+    from alpha_desk.engine.pipelines.base import DefaultAgentExecutor, StructuredValidator
     from unittest.mock import MagicMock
 
     agents = {k: MagicMock() for k in ["data", "modeling", "report"]}
@@ -248,8 +248,8 @@ def test_dcf_pipeline_historical_data_has_custom_executor():
 
 
 def test_dcf_pipeline_dcf_calc_step_has_custom_executor():
-    from finrobot.engine.pipelines.dcf import create_dcf_pipeline
-    from finrobot.engine.pipelines.base import DefaultAgentExecutor, StructuredValidator
+    from alpha_desk.engine.pipelines.dcf import create_dcf_pipeline
+    from alpha_desk.engine.pipelines.base import DefaultAgentExecutor, StructuredValidator
     from unittest.mock import MagicMock
 
     agents = {k: MagicMock() for k in ["data", "modeling", "report"]}

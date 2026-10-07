@@ -16,13 +16,13 @@ from typing import Any
 
 from edgar import Company, set_identity
 
-from finrobot.config import get_settings
-from finrobot.engine.data.factory import build_data_layer
-from finrobot.engine.data.types import DataType
-from finrobot.paths import SETTINGS_JSON
-from finrobot.routes.settings import load_non_secret_settings
-from finrobot.secret_store import create_secret_store
-from finrobot.server import hydrate_settings_from_secrets
+from alpha_desk.config import get_settings
+from alpha_desk.engine.data.factory import build_data_layer
+from alpha_desk.engine.data.types import DataType
+from alpha_desk.paths import SETTINGS_JSON
+from alpha_desk.routes.settings import load_non_secret_settings
+from alpha_desk.secret_store import create_secret_store
+from alpha_desk.server import hydrate_settings_from_secrets
 
 TICKERS = ("AAPL", "MSFT", "NVDA", "MU", "TSLA")
 
@@ -76,7 +76,7 @@ async def main() -> int:
     settings = get_settings(**load_non_secret_settings(SETTINGS_JSON))
     store, _ = create_secret_store()
     settings = await hydrate_settings_from_secrets(settings, store)
-    identity = settings.sec_user_agent or "FinRobot Audit audit@example.com"
+    identity = settings.sec_user_agent or "Alpha Desk Audit audit@example.com"
     set_identity(identity)
 
     data_layer = build_data_layer(settings)
@@ -118,7 +118,7 @@ async def main() -> int:
     finally:
         # Non-server entrypoint: join the aiosqlite workers + checkpoint WAL so the
         # process exits cleanly instead of hanging on "Event loop is closed" (2026-06-24).
-        from finrobot.engine.data.factory import shutdown_data_layer
+        from alpha_desk.engine.data.factory import shutdown_data_layer
 
         await shutdown_data_layer(data_layer)
     return 0

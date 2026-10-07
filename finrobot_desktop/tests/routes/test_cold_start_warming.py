@@ -32,7 +32,7 @@ def warming_app():
     ``app.state`` is module-global (one app object shared across the suite), so every
     key this test mutates is saved and restored to keep it hermetic.
     """
-    from finrobot.server import app
+    from alpha_desk.server import app
 
     saved = {k: getattr(app.state, k, _MISSING) for k in _STATE_KEYS}
     app.state.engine_ready = False
@@ -104,7 +104,7 @@ def test_ensure_engine_ready_gate_logic() -> None:
     """
     from fastapi import HTTPException
 
-    from finrobot.routes._ready import ensure_engine_ready, is_engine_ready
+    from alpha_desk.routes._ready import ensure_engine_ready, is_engine_ready
 
     ready = SimpleNamespace(app=SimpleNamespace(state=SimpleNamespace(engine_ready=True)))
     assert is_engine_ready(ready) is True

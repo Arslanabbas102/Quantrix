@@ -17,8 +17,8 @@ Year 1: Rev=525, EBITDA=105, DA=21, EBIT=84
 """
 
 import pytest
-from finrobot.engine.models.financial import LBOInputs
-from finrobot.engine.compute.operators.lbo import (
+from alpha_desk.engine.models.financial import LBOInputs
+from alpha_desk.engine.compute.operators.lbo import (
     calculate_lbo,
     calculate_lbo_sensitivity,
     _compute_irr,

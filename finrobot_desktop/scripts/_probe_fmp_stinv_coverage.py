@@ -27,12 +27,12 @@ from typing import Any
 
 from edgar import Company, set_identity
 
-from finrobot.config import get_settings
-from finrobot.engine.data.factory import build_data_layer, shutdown_data_layer
-from finrobot.paths import SETTINGS_JSON
-from finrobot.routes.settings import load_non_secret_settings
-from finrobot.secret_store import create_secret_store
-from finrobot.server import hydrate_settings_from_secrets
+from alpha_desk.config import get_settings
+from alpha_desk.engine.data.factory import build_data_layer, shutdown_data_layer
+from alpha_desk.paths import SETTINGS_JSON
+from alpha_desk.routes.settings import load_non_secret_settings
+from alpha_desk.secret_store import create_secret_store
+from alpha_desk.server import hydrate_settings_from_secrets
 
 # ~35-name multi-sector basket: big tech, semis, consumer staples/discretionary,
 # industrials, energy, pharma/health, financials/banks, telecom.
@@ -168,7 +168,7 @@ async def main() -> int:
     settings = get_settings(**load_non_secret_settings(SETTINGS_JSON))
     store, _ = create_secret_store()
     settings = await hydrate_settings_from_secrets(settings, store)
-    set_identity(settings.sec_user_agent or "FinRobot Audit audit@example.com")
+    set_identity(settings.sec_user_agent or "Alpha Desk Audit audit@example.com")
 
     data_layer = build_data_layer(settings)
     fmp = next((p for p in data_layer._providers if p.name == "fmp"), None)

@@ -15,29 +15,29 @@ import asyncio
 import sys
 from pathlib import Path
 
-from finrobot.config import get_settings
-from finrobot.engine.agents.factory import create_sub_agents
-from finrobot.engine.data.factory import build_data_layer
-from finrobot.engine.deps import FinRobotDeps
-from finrobot.engine.models.financial import ThesisResult, ValuationSynthesis
-from finrobot.engine.pipelines.registry import get_pipeline_factories
-from finrobot.engine.skills.registry import SkillRegistry
-from finrobot.paths import SETTINGS_JSON
-from finrobot.routes.settings import load_non_secret_settings
-from finrobot.secret_store import create_secret_store
-from finrobot.server import hydrate_settings_from_secrets
+from alpha_desk.config import get_settings
+from alpha_desk.engine.agents.factory import create_sub_agents
+from alpha_desk.engine.data.factory import build_data_layer
+from alpha_desk.engine.deps import AlphaDeskDeps
+from alpha_desk.engine.models.financial import ThesisResult, ValuationSynthesis
+from alpha_desk.engine.pipelines.registry import get_pipeline_factories
+from alpha_desk.engine.skills.registry import SkillRegistry
+from alpha_desk.paths import SETTINGS_JSON
+from alpha_desk.routes.settings import load_non_secret_settings
+from alpha_desk.secret_store import create_secret_store
+from alpha_desk.server import hydrate_settings_from_secrets
 
 TICKERS = sys.argv[1:] or ["AAPL", "NVDA", "KO", "MU", "TSLA", "F", "RIVN"]
 
 
-async def build_deps() -> FinRobotDeps:
+async def build_deps() -> AlphaDeskDeps:
     settings = get_settings(**load_non_secret_settings(SETTINGS_JSON))
     store, _ = create_secret_store()
     settings = await hydrate_settings_from_secrets(settings, store)
     settings.validate_runtime_config()
     skills_path = Path(settings.skills_dir)
     registry = SkillRegistry(skills_path) if skills_path.exists() else None
-    return FinRobotDeps(
+    return AlphaDeskDeps(
         data_layer=build_data_layer(settings), settings=settings, skill_runtime=registry
     )
 
@@ -96,7 +96,7 @@ async def main() -> None:
     finally:
         # Non-server entrypoint: join the aiosqlite workers + checkpoint WAL so the
         # process exits cleanly instead of hanging on "Event loop is closed" (2026-06-24).
-        from finrobot.engine.data.factory import shutdown_data_layer
+        from alpha_desk.engine.data.factory import shutdown_data_layer
 
         await shutdown_data_layer(deps.data_layer)
 

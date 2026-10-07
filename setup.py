@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
-# V0 (AutoGen) 的包本体已移入 finrobot_autogen/,但对外 import 名仍是 `finrobot`
-_V0_PKG_DIR = "finrobot_autogen/finrobot"
+# V0 (AutoGen) 的包本体已移入 finrobot_autogen/,但对外 import 名仍是 `alpha_desk`
+_V0_PKG_DIR = "finrobot_autogen/alpha_desk"
 
 # Read requirements.txt, ignore comments
 try:
@@ -12,7 +12,7 @@ except:
     REQUIRES = list()
 
 setup(
-    name="FinRobot",
+    name="alpha-desk",
     version="0.1.5",
     include_package_data=True,
     author="AI4Finance Foundation",
@@ -20,14 +20,14 @@ setup(
     url="https://github.com/AI4Finance-Foundation/FinRobot",
     license="Apache-2.0",
     packages=(
-        ["finrobot"]
-        + [f"finrobot.{_p}" for _p in find_packages(where=_V0_PKG_DIR)]
+        ["alpha_desk"]
+        + [f"alpha_desk.{_p}" for _p in find_packages(where=_V0_PKG_DIR)]
         + find_packages(include=["finrobot_equity", "finrobot_equity.*"])
     ),
-    package_dir={"finrobot": _V0_PKG_DIR},
+    package_dir={"alpha_desk": _V0_PKG_DIR},
     install_requires=REQUIRES,
-    description="FinRobot: An Open-Source AI Agent Platform for Financial Applications using LLMs",
-    long_description="""FinRobot""",
+    description="Alpha Desk: An Open-Source AI Agent Platform for Financial Applications using LLMs",
+    long_description="""Alpha Desk""",
     classifiers=[
         # Trove classifiers
         # Full list: https://pypi.python.org/pypi?%3Aaction=list_classifiers

@@ -15,22 +15,22 @@ from __future__ import annotations
 
 import pytest
 
-from finrobot.engine.compute.operators.cyclical_peers import (
+from alpha_desk.engine.compute.operators.cyclical_peers import (
     cyclical_peer_group,
     inject_cyclical_peers,
 )
-from finrobot.engine.compute.operators.multiples import (
+from alpha_desk.engine.compute.operators.multiples import (
     PEER_PB_SANITY_MAX,
     calculate_multiples,
     calculate_peer_statistics,
 )
-from finrobot.engine.compute.operators.valuation_aggregator import (
+from alpha_desk.engine.compute.operators.valuation_aggregator import (
     _comps_pb_method,
     _comps_pe_method,
     aggregate_valuation,
     through_cycle_roe,
 )
-from finrobot.engine.models.financial import CompanyFinancials, PeerComps
+from alpha_desk.engine.models.financial import CompanyFinancials, PeerComps
 
 
 def _peer(
@@ -165,7 +165,7 @@ class TestMedianEvEbitdaNmCap:
         )
 
     def test_nm_high_member_excluded_from_median_but_kept_in_set(self):
-        from finrobot.engine.compute.operators.multiples import PEER_EV_EBITDA_NM_CAP
+        from alpha_desk.engine.compute.operators.multiples import PEER_EV_EBITDA_NM_CAP
 
         assert PEER_EV_EBITDA_NM_CAP == 50.0
         # In-band {20, 30} → median 25; the 60x member is NM (> 50) and must drop out.

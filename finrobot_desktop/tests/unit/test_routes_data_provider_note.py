@@ -12,7 +12,7 @@ from __future__ import annotations
 
 from types import SimpleNamespace
 
-from finrobot.routes.data import _fmp_degradation_warning, _with_fmp_degradation_note
+from alpha_desk.routes.data import _fmp_degradation_warning, _with_fmp_degradation_note
 
 
 def _request(fmp_key: str) -> SimpleNamespace:
@@ -81,7 +81,7 @@ def test_price_payload_warnings_strip_internal_urls() -> None:
 def test_historical_metrics_payload_roundtrips_through_note() -> None:
     """/historical appends the note to the cached dict and re-validates it —
     the HistoricalMetrics model must carry data_source + warnings through."""
-    from finrobot.engine.models.financial import HistoricalMetrics
+    from alpha_desk.engine.models.financial import HistoricalMetrics
 
     metrics = HistoricalMetrics(
         data_source="yfinance",

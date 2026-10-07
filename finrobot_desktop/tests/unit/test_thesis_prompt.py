@@ -9,7 +9,7 @@ untrusted-news-headline wrapping of injected catalyst text.
 
 from datetime import datetime, timezone
 
-from finrobot.engine.models.financial import (
+from alpha_desk.engine.models.financial import (
     CatalystAnalysis,
     CatalystEvent,
     DCFInputs,
@@ -20,11 +20,11 @@ from finrobot.engine.models.financial import (
     MarketImpliedCheck,
     ValuationMethod,
 )
-from finrobot.engine.compute.operators.valuation_synthesis import (
+from alpha_desk.engine.compute.operators.valuation_synthesis import (
     resolve_canonical_thesis,
     synthesize_valuations,
 )
-from finrobot.engine.pipelines._thesis_prompt import build_thesis_prompt
+from alpha_desk.engine.pipelines._thesis_prompt import build_thesis_prompt
 
 
 def _financial_data(
@@ -476,7 +476,7 @@ class TestSegmentOverviewGrounding:
     ]
 
     def _overview(self):
-        from finrobot.engine.models.financial import SegmentOverview, SegmentShare
+        from alpha_desk.engine.models.financial import SegmentOverview, SegmentShare
 
         return SegmentOverview(
             ticker="AAPL",
@@ -534,7 +534,7 @@ class TestSegmentOverviewGrounding:
         """A SegmentOverview with zero rows (shouldn't happen upstream, but the
         prompt must degrade honestly rather than injecting an empty whitelist
         header) is treated the same as segment_overview being absent."""
-        from finrobot.engine.models.financial import SegmentOverview
+        from alpha_desk.engine.models.financial import SegmentOverview
 
         empty = SegmentOverview(
             ticker="AAPL",

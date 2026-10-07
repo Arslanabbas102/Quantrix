@@ -39,7 +39,7 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)
 os.makedirs(DATA_DIR, exist_ok=True)
 os.makedirs(LOGS_DIR, exist_ok=True)  # 新增：创建日志目录
 
-app = FastAPI(title="FinRobot Equity Research", version="1.0.0")
+app = FastAPI(title="Alpha Desk Equity Research", version="1.0.0")
 
 # Mount static files and templates
 app.mount("/static", StaticFiles(directory=os.path.join(PROJECT_ROOT, "web_app", "static")), name="static")
@@ -670,8 +670,8 @@ async def list_all_logs(request: Request):
         raise HTTPException(status_code=401, detail="Not authenticated")
     
     # 只有管理员可以查看所有日志
-    # Admin emails can be configured via FINROBOT_ADMIN_EMAILS env var (comma-separated)
-    admin_emails = os.getenv("FINROBOT_ADMIN_EMAILS", "admin@finrobot.com").split(",")
+    # Admin emails can be configured via ALPHA_DESK_ADMIN_EMAILS env var (comma-separated)
+    admin_emails = os.getenv("ALPHA_DESK_ADMIN_EMAILS", "admin@alpha_desk.com").split(",")
     admin_emails = [e.strip() for e in admin_emails]
     if user.get("email") not in admin_emails:
         raise HTTPException(status_code=403, detail="Admin access required")

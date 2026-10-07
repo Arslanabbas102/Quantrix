@@ -9,13 +9,13 @@ option-value verdict from a discount-rate artifact.
 
 from typing import Any
 
-from finrobot.engine.compute.operators.dcf import (
+from alpha_desk.engine.compute.operators.dcf import (
     _price_for,
     classify_market_implied_nature,
     market_implied_check,
 )
-from finrobot.engine.compute.operators.wacc import calculate_wacc
-from finrobot.engine.models.financial import DCFInputs
+from alpha_desk.engine.compute.operators.wacc import calculate_wacc
+from alpha_desk.engine.models.financial import DCFInputs
 
 
 def _make_inputs(**overrides: Any) -> DCFInputs:

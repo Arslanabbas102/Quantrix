@@ -6,18 +6,18 @@ import pytest
 from pydantic_ai import Agent
 from pydantic_ai.models.test import TestModel
 
-from finrobot.engine.data.interface import ProviderError
-from finrobot.engine.deps import FinRobotDeps
-from finrobot.engine.pipelines import _helpers
-from finrobot.engine.pipelines._helpers import _peer_override, execute_peer_analysis
-from finrobot.engine.pipelines.comps import create_comps_pipeline
+from alpha_desk.engine.data.interface import ProviderError
+from alpha_desk.engine.deps import AlphaDeskDeps
+from alpha_desk.engine.pipelines import _helpers
+from alpha_desk.engine.pipelines._helpers import _peer_override, execute_peer_analysis
+from alpha_desk.engine.pipelines.comps import create_comps_pipeline
 
 
 def _make_test_agents(output: str = "analysis output") -> dict[str, Agent]:
     agents = {}
     for role in ["data", "analysis", "modeling", "synthesis", "report"]:
         agents[role] = Agent(
-            TestModel(custom_output_text=output), deps_type=FinRobotDeps, defer_model_check=True
+            TestModel(custom_output_text=output), deps_type=AlphaDeskDeps, defer_model_check=True
         )
     return agents
 
@@ -56,8 +56,8 @@ class TestCompsPipelineStructure:
         NOT LLM free text. The old LLM peer_data / multiples_calc steps are gone
         and statistical_bench carries the deterministic executor + structured
         validator so build_comps_artifact gets a real PeerComps."""
-        from finrobot.engine.pipelines._helpers import execute_peer_analysis
-        from finrobot.engine.pipelines.base import StructuredValidator
+        from alpha_desk.engine.pipelines._helpers import execute_peer_analysis
+        from alpha_desk.engine.pipelines.base import StructuredValidator
 
         pipeline = create_comps_pipeline(_make_test_agents())
         names = [s.name for s in pipeline.steps]
@@ -73,8 +73,8 @@ class TestCompsPipelineStructure:
 
 
 def test_comps_pipeline_has_structured_validator_on_target_data():
-    from finrobot.engine.pipelines.comps import create_comps_pipeline
-    from finrobot.engine.pipelines.base import DefaultAgentExecutor, StructuredValidator
+    from alpha_desk.engine.pipelines.comps import create_comps_pipeline
+    from alpha_desk.engine.pipelines.base import DefaultAgentExecutor, StructuredValidator
     from unittest.mock import MagicMock
 
     agents = {k: MagicMock() for k in ["data", "analysis", "modeling", "report"]}
@@ -250,7 +250,7 @@ class TestStickyPeerSelection:
 
 
 def _canned_company(ticker: str):
-    from finrobot.engine.models.financial import CompanyFinancials
+    from alpha_desk.engine.models.financial import CompanyFinancials
 
     return CompanyFinancials(
         ticker=ticker,
@@ -271,7 +271,7 @@ def _canned_company(ticker: str):
 def _target_financial_data():
     from datetime import datetime, timezone
 
-    from finrobot.engine.models.financial import (
+    from alpha_desk.engine.models.financial import (
         BalanceSheet,
         FinancialData,
         IncomeStatement,
@@ -302,8 +302,8 @@ class TestPeerAnalysisDegradesInsteadOfCrashing:
     def test_two_survivors_returns_thin_comps_with_warning(self, monkeypatch):
         from datetime import datetime, timezone
 
-        from finrobot.engine.data.normalize.contracts import NormalizedFinancials, Provenance
-        from finrobot.engine.models.financial import PeerComps, StepOutput
+        from alpha_desk.engine.data.normalize.contracts import NormalizedFinancials, Provenance
+        from alpha_desk.engine.models.financial import PeerComps, StepOutput
 
         now = datetime.now(tz=timezone.utc)
         good = NormalizedFinancials(
@@ -370,7 +370,7 @@ class TestPeerAnalysisDegradesInsteadOfCrashing:
         'picking 7 firms' rationale contradicting a 6-row table with no drop
         record (KO 2026-07-02: PRMB in trace, absent from table). The trimmed peer
         must now be named so the 7→6 audit trail reconstructs."""
-        from finrobot.engine.models.financial import PeerComps, StepOutput
+        from alpha_desk.engine.models.financial import PeerComps, StepOutput
 
         # Every candidate fetches cleanly; extract keys the company off the ticker
         # so survivors carry distinct identities and the trimmed one is nameable.
@@ -420,7 +420,7 @@ def _financial_sector_target_data():
     """A bank target FinancialData (industry triggers is_balance_sheet_financial)."""
     from datetime import datetime, timezone
 
-    from finrobot.engine.models.financial import (
+    from alpha_desk.engine.models.financial import (
         BalanceSheet,
         FinancialData,
         IncomeStatement,
@@ -446,7 +446,7 @@ def _financial_sector_target_data():
 
 
 def _peer_comps_with_all_medians(target_ticker: str):
-    from finrobot.engine.models.financial import PeerComps
+    from alpha_desk.engine.models.financial import PeerComps
 
     return PeerComps(
         target=_canned_company(target_ticker),
@@ -466,8 +466,8 @@ def test_comps_suppresses_ev_ebitda_for_financial_sector_target():
     P/E and P/B — the relative methods that DO apply — stay."""
     from typing import Any, cast
 
-    from finrobot.artifact.builders import build_comps_artifact
-    from finrobot.engine.pipelines.base import PipelineResult
+    from alpha_desk.artifact.builders import build_comps_artifact
+    from alpha_desk.engine.pipelines.base import PipelineResult
 
     result = PipelineResult(
         steps={"target_data": "ok", "statistical_bench": "ok"},
@@ -488,8 +488,8 @@ def test_comps_keeps_ev_ebitda_for_non_financial_target():
     strictly on is_balance_sheet_financial, never a blanket null (regression-safe)."""
     from typing import Any, cast
 
-    from finrobot.artifact.builders import build_comps_artifact
-    from finrobot.engine.pipelines.base import PipelineResult
+    from alpha_desk.artifact.builders import build_comps_artifact
+    from alpha_desk.engine.pipelines.base import PipelineResult
 
     result = PipelineResult(
         steps={"target_data": "ok", "statistical_bench": "ok"},

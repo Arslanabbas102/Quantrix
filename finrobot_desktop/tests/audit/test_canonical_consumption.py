@@ -1,7 +1,7 @@
 """Audit: PRICE/FINANCIALS raw `.data.get(` must not appear in compute or services.
 
-ADR-0006 Step 7 red-line: After migration, `finrobot/engine/compute` and
-`finrobot/engine/services` must not directly parse raw provider dicts for
+ADR-0006 Step 7 red-line: After migration, `alpha_desk/engine/compute` and
+`alpha_desk/engine/services` must not directly parse raw provider dicts for
 PRICE or FINANCIALS data. All PRICE/FINANCIALS consumption must flow through
 `DataLayer.fetch_canonical` → `NormalizedPrice` / `NormalizedFinancials`.
 
@@ -24,8 +24,8 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-COMPUTE = ROOT / "finrobot" / "engine" / "compute"
-SERVICES = ROOT / "finrobot" / "engine" / "services"
+COMPUTE = ROOT / "alpha_desk" / "engine" / "compute"
+SERVICES = ROOT / "alpha_desk" / "engine" / "services"
 
 # Files that are legitimate exceptions to the raw `.data.get(` prohibition.
 # `normalize/` is the single legal raw-dict consumer by design (ADR-0004/0006).
@@ -34,10 +34,10 @@ SERVICES = ROOT / "finrobot" / "engine" / "services"
 # carry the same provider dict format but have no canonical cache slot.
 _ALLOWED: set[Path] = {
     # normalize/ is the legitimate raw-dict-to-canonical boundary (all of it)
-    ROOT / "finrobot" / "engine" / "data" / "normalize" / "financials.py",
-    ROOT / "finrobot" / "engine" / "data" / "normalize" / "price.py",
-    ROOT / "finrobot" / "engine" / "data" / "normalize" / "window.py",
-    ROOT / "finrobot" / "engine" / "data" / "normalize" / "currency.py",
+    ROOT / "alpha_desk" / "engine" / "data" / "normalize" / "financials.py",
+    ROOT / "alpha_desk" / "engine" / "data" / "normalize" / "price.py",
+    ROOT / "alpha_desk" / "engine" / "data" / "normalize" / "window.py",
+    ROOT / "alpha_desk" / "engine" / "data" / "normalize" / "currency.py",
     # historical_extractor reads yearly DataResult slices (not live snapshots)
     COMPUTE / "coordinators" / "historical_extractor.py",
     # news.py parses DataType.NEWS (not PRICE/FINANCIALS) — no canonical contract

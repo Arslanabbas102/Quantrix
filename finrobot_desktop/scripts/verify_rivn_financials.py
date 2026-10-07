@@ -11,14 +11,14 @@ from __future__ import annotations
 
 import asyncio
 
-from finrobot.config import get_settings
-from finrobot.engine.compute.coordinators.extractor import extract_financial_data
-from finrobot.engine.data.factory import build_data_layer
-from finrobot.engine.data.types import DataType
-from finrobot.paths import SETTINGS_JSON, ensure_home
-from finrobot.routes.settings import load_non_secret_settings
-from finrobot.secret_store import create_secret_store
-from finrobot.server import hydrate_settings_from_secrets
+from alpha_desk.config import get_settings
+from alpha_desk.engine.compute.coordinators.extractor import extract_financial_data
+from alpha_desk.engine.data.factory import build_data_layer
+from alpha_desk.engine.data.types import DataType
+from alpha_desk.paths import SETTINGS_JSON, ensure_home
+from alpha_desk.routes.settings import load_non_secret_settings
+from alpha_desk.secret_store import create_secret_store
+from alpha_desk.server import hydrate_settings_from_secrets
 
 
 async def main() -> None:

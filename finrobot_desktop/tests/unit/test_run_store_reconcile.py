@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-from finrobot.run_store import RunStore
+from alpha_desk.run_store import RunStore
 
 
 @pytest.fixture

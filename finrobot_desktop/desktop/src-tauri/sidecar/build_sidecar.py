@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""Freeze `finrobot serve` into the standalone Tauri sidecar bundle.
+"""Freeze `alpha_desk serve` into the standalone Tauri sidecar bundle.
 
 Cross-platform replacement for the old bash-only ``build.sh``: runs on macOS,
 Windows, and Linux from one source of truth. Output:
-``desktop/src-tauri/sidecar/dist/finrobot-server/`` — a PyInstaller one-dir
+``desktop/src-tauri/sidecar/dist/alpha-desk-server/`` — a PyInstaller one-dir
 bundle (launcher + ``_internal/``). ``tauri.conf.json`` ships the whole
 directory as a bundle resource (dest dir ``sidecar/``) and ``sidecar.rs`` spawns
-the launcher from it: ``finrobot-server`` on macOS/Linux, ``finrobot-server.exe``
+the launcher from it: ``alpha-desk-server`` on macOS/Linux, ``alpha-desk-server.exe``
 on Windows (PyInstaller appends ``.exe`` from the same spec — no spec change).
 
 One-dir, NOT one-file: the one-file bootloader re-extracts ~330 MB / 4200 files
@@ -33,11 +33,11 @@ SCRIPT_DIR = Path(__file__).resolve().parent  # desktop/src-tauri/sidecar
 SRC_TAURI = SCRIPT_DIR.parent  # desktop/src-tauri
 DESKTOP_DIR = SRC_TAURI.parent  # desktop
 REPO_ROOT = DESKTOP_DIR.parent  # repo root
-SPEC = SCRIPT_DIR / "finrobot-server.spec"
+SPEC = SCRIPT_DIR / "alpha-desk-server.spec"
 
 # PyInstaller appends `.exe` to the COLLECT launcher on Windows only; macOS and
 # Linux leave it bare. sidecar.rs resolves the matching name per-OS.
-EXE_NAME = "finrobot-server.exe" if os.name == "nt" else "finrobot-server"
+EXE_NAME = "alpha-desk-server.exe" if os.name == "nt" else "alpha-desk-server"
 
 
 def _pyinstaller_cmd() -> list[str]:
@@ -62,7 +62,7 @@ def _dereference_symlinks(dist_dir: Path) -> None:
     chains); this path only ever runs on macOS. Windows/Linux one-dir bundles
     have no such symlinks, so the caller skips this entirely.
     """
-    deref = dist_dir.parent / ".finrobot-server-deref"
+    deref = dist_dir.parent / ".alpha-desk-server-deref"
     if deref.exists():
         shutil.rmtree(deref)
     subprocess.run(["cp", "-RL", str(dist_dir), str(deref)], check=True)
@@ -80,7 +80,7 @@ def _dereference_symlinks(dist_dir: Path) -> None:
 def main() -> int:
     dist_root = SCRIPT_DIR / "dist"
     work_root = SCRIPT_DIR / "build"
-    dist_dir = dist_root / "finrobot-server"
+    dist_dir = dist_root / "alpha-desk-server"
 
     print("[build-sidecar] running PyInstaller…")
     subprocess.run(

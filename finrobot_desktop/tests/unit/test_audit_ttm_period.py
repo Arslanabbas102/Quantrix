@@ -17,8 +17,8 @@ from __future__ import annotations
 
 from datetime import date, datetime, timezone
 
-from finrobot.engine.compute.operators.audit.ttm_period import audit_ttm_period
-from finrobot.engine.models.financial import (
+from alpha_desk.engine.compute.operators.audit.ttm_period import audit_ttm_period
+from alpha_desk.engine.models.financial import (
     FinancialData,
     IncomeStatement,
     MarketData,

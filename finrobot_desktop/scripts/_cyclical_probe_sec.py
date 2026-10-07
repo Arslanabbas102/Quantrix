@@ -20,11 +20,11 @@ import statistics
 
 import httpx
 
-from finrobot.config import get_settings
-from finrobot.paths import SETTINGS_JSON
-from finrobot.routes.settings import load_non_secret_settings
-from finrobot.secret_store import create_secret_store
-from finrobot.server import hydrate_settings_from_secrets
+from alpha_desk.config import get_settings
+from alpha_desk.paths import SETTINGS_JSON
+from alpha_desk.routes.settings import load_non_secret_settings
+from alpha_desk.secret_store import create_secret_store
+from alpha_desk.server import hydrate_settings_from_secrets
 
 # SEC CIKs (zero-padded to 10 in the URL).
 CIKS = {
@@ -110,7 +110,7 @@ async def main() -> int:
     settings = get_settings(**load_non_secret_settings(SETTINGS_JSON))
     store, _ = create_secret_store()
     settings = await hydrate_settings_from_secrets(settings, store)
-    ua = settings.sec_user_agent or "FinRobot Research research@example.com"
+    ua = settings.sec_user_agent or "Alpha Desk Research research@example.com"
     print(f"SEC User-Agent: {ua}")
 
     async with httpx.AsyncClient(

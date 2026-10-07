@@ -97,7 +97,7 @@ export const useUiStore = create<UiStoreState>()(
       consumePendingChatPrompt: () => set({ pendingChatPrompt: null }),
     }),
     {
-      name: 'finrobot-ui-shell',
+      name: 'alpha_desk-ui-shell',
       storage: createJSONStorage(() => localStorage),
       // Persist only stable chrome prefs.
       partialize: (s) => ({

@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# dev.sh — local dev launcher for FinRobot (live backend source + frontend, no freezing).
+# dev.sh — local dev launcher for Alpha Desk (live backend source + frontend, no freezing).
 #
 # Every run is a clean restart: it kills the old live backend / vite first, then brings both up.
-# The backend runs from finrobot source (including /api/debate; LLM and data keys are read from
+# The backend runs from alpha_desk source (including /api/debate; LLM and data keys are read from
 # the OS keychain, not from .env), so re-run this script after editing backend code.
 # The frontend runs vite HMR — edit and it hot-reloads.
 #
@@ -10,7 +10,7 @@
 #   ./dev.sh         browser posture — frontend served in the browser at http://localhost:5173
 #   ./dev.sh --app   desktop-app posture — frontend in a native Tauri window (cd desktop && cargo tauri dev)
 #
-# --app still uses the live backend: FINROBOT_DEV_LIVE_BACKEND=1 makes the Tauri shell skip the
+# --app still uses the live backend: ALPHA_DESK_DEV_LIVE_BACKEND=1 makes the Tauri shell skip the
 # frozen PyInstaller sidecar, and the window talks to the live backend this script started through
 # the vite proxy (so .py edits take effect immediately). Without --app it never touches cargo tauri dev.
 #
@@ -23,14 +23,14 @@ cd "$ROOT"
 
 BACKEND_PORT=8321
 FRONTEND_PORT=5173
-BACKEND_LOG=/tmp/finrobot-backend.log
+BACKEND_LOG=/tmp/alpha_desk-backend.log
 FRONTEND_DIR="$ROOT/desktop"
 # Upper bound on waiting for backend readiness (seconds). On a fresh .venv the first import has to
 # cold-compile the whole dependency tree to .pyc (temporalio/tokenizers/tiktoken/edgar are heavy),
 # so a cold start can exceed 60s; a warm one is ~12s. The kill -0 liveness check below runs every
 # second, so a real crash exits in ~1s — raising this bound only gives headroom to the legitimate
 # "alive but still cold-compiling" path without weakening crash detection. Override via env.
-BACKEND_READY_TIMEOUT="${FINROBOT_BACKEND_READY_TIMEOUT:-240}"
+BACKEND_READY_TIMEOUT="${ALPHA_DESK_BACKEND_READY_TIMEOUT:-240}"
 
 # ── Frontend shell: browser (default) | app (native Tauri window) ────────────
 FRONTEND_MODE=browser
@@ -40,11 +40,11 @@ case "${1:-}" in
   *) echo "Unknown argument: $1 (usage: ./dev.sh [--app])" >&2; exit 2 ;;
 esac
 
-# ── Pick the backend executable: prefer the venv's finrobot, fall back to uv run ─
-if [ -x ".venv/bin/finrobot" ]; then
-  BACKEND_CMD=(.venv/bin/finrobot serve --host 127.0.0.1 --port "$BACKEND_PORT")
+# ── Pick the backend executable: prefer the venv's alpha_desk, fall back to uv run ─
+if [ -x ".venv/bin/alpha_desk" ]; then
+  BACKEND_CMD=(.venv/bin/alpha_desk serve --host 127.0.0.1 --port "$BACKEND_PORT")
 else
-  BACKEND_CMD=(uv run finrobot serve --host 127.0.0.1 --port "$BACKEND_PORT")
+  BACKEND_CMD=(uv run alpha_desk serve --host 127.0.0.1 --port "$BACKEND_PORT")
 fi
 
 # ── Kill whatever is listening on a port (macOS-safe; no xargs -r) ───────────
@@ -58,7 +58,7 @@ kill_port() {
 }
 
 echo "▸ Stopping any old live backend / vite ..."
-pkill -f "finrobot serve" 2>/dev/null
+pkill -f "alpha_desk serve" 2>/dev/null
 pkill -f "desktop/node_modules/.bin/vite" 2>/dev/null
 kill_port "$BACKEND_PORT"
 kill_port "$FRONTEND_PORT"
@@ -105,8 +105,8 @@ if [ -z "$READY" ]; then
 fi
 
 # dev --app uses the live backend and skips the frozen sidecar at runtime (lib.rs:
-# FINROBOT_DEV_LIVE_BACKEND). But at compile time — dev included — tauri-build copies the sidecar
-# declared in tauri.conf.json bundle.resources (sidecar/dist/finrobot-server), and compilation fails
+# ALPHA_DESK_DEV_LIVE_BACKEND). But at compile time — dev included — tauri-build copies the sidecar
+# declared in tauri.conf.json bundle.resources (sidecar/dist/alpha-desk-server), and compilation fails
 # if that path does not exist. A fresh tree has no such ~330MB PyInstaller artifact (it is only
 # needed for packaging, is produced by src-tauri/sidecar/build.sh, and is not in git). dev should not
 # have to freeze one just to compile, so we drop in a placeholder that is never executed in dev
@@ -114,18 +114,18 @@ fi
 # does get executed (misuse / forgetting the env var), it errors with guidance instead of failing
 # silently.
 ensure_dev_sidecar_placeholder() {
-  local bundle_dir="$FRONTEND_DIR/src-tauri/sidecar/dist/finrobot-server"
+  local bundle_dir="$FRONTEND_DIR/src-tauri/sidecar/dist/alpha-desk-server"
   [ -e "$bundle_dir" ] && return 0   # real frozen artifact or an existing placeholder → leave it alone
   echo "▸ No frozen sidecar found; installing a dev placeholder (not executed in live-backend mode; for packaging, run src-tauri/sidecar/build.sh first)"
   mkdir -p "$bundle_dir"
-  cat > "$bundle_dir/finrobot-server" <<'STUB'
+  cat > "$bundle_dir/alpha-desk-server" <<'STUB'
 #!/usr/bin/env bash
-echo "[finrobot-server] dev placeholder sidecar — this should not be executed." >&2
-echo "  dev:       ./dev.sh --app sets FINROBOT_DEV_LIVE_BACKEND=1 to skip this sidecar and use the live backend." >&2
+echo "[alpha-desk-server] dev placeholder sidecar — this should not be executed." >&2
+echo "  dev:       ./dev.sh --app sets ALPHA_DESK_DEV_LIVE_BACKEND=1 to skip this sidecar and use the live backend." >&2
 echo "  packaging: run desktop/src-tauri/sidecar/build.sh first to produce the real PyInstaller-frozen backend." >&2
 exit 1
 STUB
-  chmod +x "$bundle_dir/finrobot-server"
+  chmod +x "$bundle_dir/alpha-desk-server"
 }
 
 # ── Start the live frontend (foreground; Ctrl+C triggers cleanup to stop the backend) ─
@@ -135,10 +135,10 @@ if [ "$FRONTEND_MODE" = app ]; then
   echo "  (Ctrl+C stops the app / vite / backend together)"
   echo
   ensure_dev_sidecar_placeholder
-  # FINROBOT_DEV_LIVE_BACKEND=1 → the Tauri shell skips the frozen sidecar and the window connects
+  # ALPHA_DESK_DEV_LIVE_BACKEND=1 → the Tauri shell skips the frozen sidecar and the window connects
   # to the live backend above. cargo tauri dev starts vite itself via beforeDevCommand
   # (npm run dev, cwd=desktop/) and opens the window.
-  (cd "$FRONTEND_DIR" && FINROBOT_DEV_LIVE_BACKEND=1 cargo tauri dev)
+  (cd "$FRONTEND_DIR" && ALPHA_DESK_DEV_LIVE_BACKEND=1 cargo tauri dev)
 else
   echo "▸ Starting the live frontend (vite, :${FRONTEND_PORT})"
   echo "  Open in your browser → http://localhost:${FRONTEND_PORT}"

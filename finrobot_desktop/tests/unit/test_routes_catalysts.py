@@ -21,8 +21,8 @@ import pytest
 from httpx import AsyncClient, ASGITransport
 from unittest.mock import patch, AsyncMock
 
-from finrobot.engine.compute.coordinators.news import NewsItem, RawNewsItem
-from finrobot.engine.data.interface import ProviderError
+from alpha_desk.engine.compute.coordinators.news import NewsItem, RawNewsItem
+from alpha_desk.engine.data.interface import ProviderError
 
 
 def _raw() -> list[RawNewsItem]:
@@ -67,9 +67,9 @@ async def test_catalysts_returns_ranked_events_filtering_sub_threshold(app_with_
     """200 with the importance≥3 item; the importance-2 item is filtered out."""
     app = app_with_deps
     with (
-        patch("finrobot.routes.data.fetch_news", new=AsyncMock(return_value=_raw())),
+        patch("alpha_desk.routes.data.fetch_news", new=AsyncMock(return_value=_raw())),
         patch(
-            "finrobot.engine.analysis.news_classifier.classify_news",
+            "alpha_desk.engine.analysis.news_classifier.classify_news",
             new=AsyncMock(return_value=_classified()),
         ),
     ):
@@ -118,9 +118,9 @@ async def test_catalysts_route_clusters_near_duplicates(app_with_deps):
     carrying source_count = cluster size — not N rows each at impact 5."""
     app = app_with_deps
     with (
-        patch("finrobot.routes.data.fetch_news", new=AsyncMock(return_value=_raw())),
+        patch("alpha_desk.routes.data.fetch_news", new=AsyncMock(return_value=_raw())),
         patch(
-            "finrobot.engine.analysis.news_classifier.classify_news",
+            "alpha_desk.engine.analysis.news_classifier.classify_news",
             new=AsyncMock(return_value=_dup_classified()),
         ),
     ):
@@ -140,8 +140,8 @@ async def test_catalysts_cache_hit_skips_llm(app_with_deps):
     app = app_with_deps
     classify = AsyncMock(return_value=_classified())
     with (
-        patch("finrobot.routes.data.fetch_news", new=AsyncMock(return_value=_raw())),
-        patch("finrobot.engine.analysis.news_classifier.classify_news", new=classify),
+        patch("alpha_desk.routes.data.fetch_news", new=AsyncMock(return_value=_raw())),
+        patch("alpha_desk.engine.analysis.news_classifier.classify_news", new=classify),
     ):
         transport = ASGITransport(app=app)
         async with AsyncClient(transport=transport, base_url="http://test") as client:
@@ -159,8 +159,8 @@ async def test_catalysts_min_importance_keys_cache(app_with_deps):
     app = app_with_deps
     classify = AsyncMock(return_value=_classified())
     with (
-        patch("finrobot.routes.data.fetch_news", new=AsyncMock(return_value=_raw())),
-        patch("finrobot.engine.analysis.news_classifier.classify_news", new=classify),
+        patch("alpha_desk.routes.data.fetch_news", new=AsyncMock(return_value=_raw())),
+        patch("alpha_desk.engine.analysis.news_classifier.classify_news", new=classify),
     ):
         transport = ASGITransport(app=app)
         async with AsyncClient(transport=transport, base_url="http://test") as client:
@@ -180,8 +180,8 @@ async def test_catalysts_min_importance_bounded_at_edge(app_with_deps):
     app = app_with_deps
     classify = AsyncMock(return_value=_classified())
     with (
-        patch("finrobot.routes.data.fetch_news", new=AsyncMock(return_value=_raw())),
-        patch("finrobot.engine.analysis.news_classifier.classify_news", new=classify),
+        patch("alpha_desk.routes.data.fetch_news", new=AsyncMock(return_value=_raw())),
+        patch("alpha_desk.engine.analysis.news_classifier.classify_news", new=classify),
     ):
         transport = ASGITransport(app=app)
         async with AsyncClient(transport=transport, base_url="http://test") as client:
@@ -197,8 +197,8 @@ async def test_catalysts_empty_news_returns_empty_without_classify(app_with_deps
     app = app_with_deps
     classify = AsyncMock(return_value=_classified())
     with (
-        patch("finrobot.routes.data.fetch_news", new=AsyncMock(return_value=[])),
-        patch("finrobot.engine.analysis.news_classifier.classify_news", new=classify),
+        patch("alpha_desk.routes.data.fetch_news", new=AsyncMock(return_value=[])),
+        patch("alpha_desk.engine.analysis.news_classifier.classify_news", new=classify),
     ):
         transport = ASGITransport(app=app)
         async with AsyncClient(transport=transport, base_url="http://test") as client:
@@ -215,8 +215,8 @@ async def test_catalysts_classification_failure_500_not_cached(app_with_deps):
     app = app_with_deps
     classify = AsyncMock(side_effect=RuntimeError("LLM provider 503"))
     with (
-        patch("finrobot.routes.data.fetch_news", new=AsyncMock(return_value=_raw())),
-        patch("finrobot.engine.analysis.news_classifier.classify_news", new=classify),
+        patch("alpha_desk.routes.data.fetch_news", new=AsyncMock(return_value=_raw())),
+        patch("alpha_desk.engine.analysis.news_classifier.classify_news", new=classify),
     ):
         transport = ASGITransport(app=app)
         async with AsyncClient(transport=transport, base_url="http://test") as client:
@@ -244,7 +244,7 @@ async def test_catalysts_provider_error_returns_502(app_with_deps):
     """fetch_news ProviderError → 502 (upstream down), not a default 500."""
     app = app_with_deps
     with patch(
-        "finrobot.routes.data.fetch_news",
+        "alpha_desk.routes.data.fetch_news",
         new=AsyncMock(side_effect=ProviderError("news api 429")),
     ):
         transport = ASGITransport(app=app)

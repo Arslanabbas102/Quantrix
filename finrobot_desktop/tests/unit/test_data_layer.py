@@ -4,18 +4,18 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from finrobot.engine.data.cache import DataCache, raw_slot_key
-from finrobot.engine.data.interface import (
+from alpha_desk.engine.data.cache import DataCache, raw_slot_key
+from alpha_desk.engine.data.interface import (
     DataProvider,
     DataResult,
     ProviderError,
     RateLimitedProviderError,
     is_rate_limit_error,
 )
-from finrobot.engine.data.layer import DataLayer
-from finrobot.engine.data.provider_health import ProviderHealth
-from finrobot.engine.data.normalize import NormalizedFinancials, NormalizedPrice
-from finrobot.engine.data.normalize.contracts import (
+from alpha_desk.engine.data.layer import DataLayer
+from alpha_desk.engine.data.provider_health import ProviderHealth
+from alpha_desk.engine.data.normalize import NormalizedFinancials, NormalizedPrice
+from alpha_desk.engine.data.normalize.contracts import (
     DEGRADED_CIRCUIT_OPEN_PREFIX,
     DEGRADED_FX_NORMALIZED,
     DEGRADED_FX_UNAVAILABLE,
@@ -24,7 +24,7 @@ from finrobot.engine.data.normalize.contracts import (
     degraded_price_divergence,
     degraded_provider_divergence,
 )
-from finrobot.engine.data.types import DataType
+from alpha_desk.engine.data.types import DataType
 
 
 # ---------------------------------------------------------------------------
@@ -147,7 +147,7 @@ class TestFetchFromProvider:
         await layer.fetch("financials", "AAPL")
 
         # Backdate cache entry
-        from finrobot.engine.data.cache import raw_slot_key
+        from alpha_desk.engine.data.cache import raw_slot_key
 
         old_time = (datetime.now(tz=timezone.utc) - timedelta(hours=25)).isoformat()
         async with aiosqlite.connect(str(tmp_path / "layer_test.db")) as conn:
@@ -172,7 +172,7 @@ class TestProviderFailure:
         await layer.fetch("financials", "AAPL")
 
         # Backdate so it's stale
-        from finrobot.engine.data.cache import raw_slot_key
+        from alpha_desk.engine.data.cache import raw_slot_key
 
         old_time = (datetime.now(tz=timezone.utc) - timedelta(hours=25)).isoformat()
         async with aiosqlite.connect(str(tmp_path / "layer_test.db")) as conn:
@@ -742,7 +742,7 @@ class TestReadCanonicalCached:
         import aiosqlite
         from datetime import timedelta
 
-        from finrobot.engine.data.cache import canonical_key
+        from alpha_desk.engine.data.cache import canonical_key
 
         provider = MockProvider("mock", ["financials"])
         layer = DataLayer([provider], cache)
@@ -973,7 +973,7 @@ class TestCanonicalFinancialsProviderKeying:
 
         # BOTH calibers coexist in DISTINCT slots — the fmp TTM snapshot was not
         # clobbered by the yfinance annual one.
-        from finrobot.engine.data.cache import canonical_key
+        from alpha_desk.engine.data.cache import canonical_key
 
         fmp_slot = await cache.get_canonical(DataType.FINANCIALS, "AAPL", provider="fmp")
         yf_slot = await cache.get_canonical(DataType.FINANCIALS, "AAPL", provider="yfinance")
@@ -1481,8 +1481,8 @@ class TestQuoteOnlyHistoryGraft:
         import aiosqlite
         from datetime import timedelta
 
-        from finrobot.engine.data.cache import canonical_key
-        from finrobot.engine.data.normalize.contracts import DEGRADED_PRICE_HISTORY_STALE
+        from alpha_desk.engine.data.cache import canonical_key
+        from alpha_desk.engine.data.normalize.contracts import DEGRADED_PRICE_HISTORY_STALE
 
         seed = MockProvider("fmp", ["price"], result=_price_result(provider="fmp"))
         await DataLayer([seed], cache).fetch_canonical("price", "AAPL")
@@ -1774,7 +1774,7 @@ class TestCircuitBreakerWiring:
         ill-health: it must fall through the chain WITHOUT counting toward the
         breaker, or a news burst would open the breaker and block the endpoints
         the plan CAN serve (financials / profile / price)."""
-        from finrobot.engine.data.interface import ProviderPlanError
+        from alpha_desk.engine.data.interface import ProviderPlanError
 
         health = ProviderHealth(failure_threshold=2, base_cooldown_s=600)
         gated = MockProvider(
@@ -1987,7 +1987,7 @@ class TestCanonicalFxNormalization:
         async def fake_fx(ccy, *, fmp_api_key=None):
             return 0.03176 if ccy.upper() == "TWD" else 1.0
 
-        monkeypatch.setattr("finrobot.engine.data.providers.fx.fetch_fx_rate_to_usd", fake_fx)
+        monkeypatch.setattr("alpha_desk.engine.data.providers.fx.fetch_fx_rate_to_usd", fake_fx)
         layer = DataLayer(
             [MockProvider("fmp", ["financials"], result=_adr_financials_result())], cache
         )
@@ -2014,7 +2014,7 @@ class TestCanonicalFxNormalization:
             called = True
             return 1.0
 
-        monkeypatch.setattr("finrobot.engine.data.providers.fx.fetch_fx_rate_to_usd", fake_fx)
+        monkeypatch.setattr("alpha_desk.engine.data.providers.fx.fetch_fx_rate_to_usd", fake_fx)
         result = DataResult(
             data={"revenue": 1_000, "financial_currency": "USD"},
             provider="fmp",
@@ -2038,7 +2038,7 @@ class TestCanonicalFxNormalization:
         async def boom(ccy, *, fmp_api_key=None):
             raise ProviderError("no spot FX quote for TWD→USD")
 
-        monkeypatch.setattr("finrobot.engine.data.providers.fx.fetch_fx_rate_to_usd", boom)
+        monkeypatch.setattr("alpha_desk.engine.data.providers.fx.fetch_fx_rate_to_usd", boom)
         layer = DataLayer(
             [MockProvider("fmp", ["financials"], result=_adr_financials_result())], cache
         )
@@ -2066,7 +2066,7 @@ class TestFxRateToUsd:
         async def fake_fx(ccy, *, fmp_api_key=None):
             return 1.0 if ccy.upper() == "USD" else pytest.fail(f"unexpected {ccy}")
 
-        monkeypatch.setattr("finrobot.engine.data.providers.fx.fetch_fx_rate_to_usd", fake_fx)
+        monkeypatch.setattr("alpha_desk.engine.data.providers.fx.fetch_fx_rate_to_usd", fake_fx)
         layer = DataLayer([MockProvider("fmp", ["financials"])], cache)
         assert await layer.fx_rate_to_usd("USD") == 1.0
         assert await layer.fx_rate_to_usd("usd") == 1.0
@@ -2076,7 +2076,7 @@ class TestFxRateToUsd:
             assert ccy.upper() == "TWD"
             return 0.03125
 
-        monkeypatch.setattr("finrobot.engine.data.providers.fx.fetch_fx_rate_to_usd", fake_fx)
+        monkeypatch.setattr("alpha_desk.engine.data.providers.fx.fetch_fx_rate_to_usd", fake_fx)
         layer = DataLayer([MockProvider("fmp", ["financials"])], cache)
         assert await layer.fx_rate_to_usd("TWD") == pytest.approx(0.03125)
 
@@ -2087,7 +2087,7 @@ class TestFxRateToUsd:
         async def boom(ccy, *, fmp_api_key=None):
             raise ProviderError("no spot FX quote for TWD→USD")
 
-        monkeypatch.setattr("finrobot.engine.data.providers.fx.fetch_fx_rate_to_usd", boom)
+        monkeypatch.setattr("alpha_desk.engine.data.providers.fx.fetch_fx_rate_to_usd", boom)
         layer = DataLayer([MockProvider("fmp", ["financials"])], cache)
         with pytest.raises(ProviderError):
             await layer.fx_rate_to_usd("TWD")
@@ -2120,7 +2120,7 @@ def _make_stub_edgar(
     parent __init__ — the real one calls ``set_identity`` and would hit SEC —
     and stubs the one method ``fetch_deep_history`` invokes.
     """
-    from finrobot.engine.data.providers.edgar_provider import EdgarToolsProvider
+    from alpha_desk.engine.data.providers.edgar_provider import EdgarToolsProvider
 
     class _StubEdgar(EdgarToolsProvider):
         def __init__(self) -> None:
@@ -2181,7 +2181,7 @@ def _make_stub_edgar_segments(result=None, raises=None):
     """EdgarToolsProvider subclass stubbing only ``fetch_annual_segments`` (the
     method ``fetch_segments`` routes to), skipping the network-touching parent
     __init__ — mirrors ``_make_stub_edgar`` for the SOTP-floor segments path."""
-    from finrobot.engine.data.providers.edgar_provider import EdgarToolsProvider
+    from alpha_desk.engine.data.providers.edgar_provider import EdgarToolsProvider
 
     class _StubEdgarSeg(EdgarToolsProvider):
         def __init__(self) -> None:
@@ -2261,7 +2261,7 @@ class TestSentimentRateLimitEntersFailureMachinery:
         import httpx
         from unittest.mock import AsyncMock, patch
 
-        from finrobot.engine.data.providers.adanos_provider import AdanosProvider
+        from alpha_desk.engine.data.providers.adanos_provider import AdanosProvider
 
         provider = AdanosProvider(api_key="test-key")
         request = httpx.Request("GET", "https://adanos.example/api")

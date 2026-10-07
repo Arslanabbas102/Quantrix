@@ -1,4 +1,4 @@
-# Database module for FinRobot Web App
+# Database module for Alpha Desk Web App
 from .connection import get_db, init_db, engine
 from .models import User, Session, RequestLog, ReportRequest
 from .crud import (

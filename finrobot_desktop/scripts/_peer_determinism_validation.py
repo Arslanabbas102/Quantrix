@@ -15,18 +15,18 @@ import asyncio
 import sys
 from unittest.mock import MagicMock
 
-from finrobot.config import get_settings
-from finrobot.engine.compute.operators.peer_screen import screen_peers
-from finrobot.engine.compute.coordinators.extractor import extract_financial_data
-from finrobot.engine.data.factory import build_data_layer
-from finrobot.engine.data.types import DataType
-from finrobot.engine.deps import FinRobotDeps
-from finrobot.engine.models.financial import PeerComps
-from finrobot.engine.pipelines._helpers import execute_peer_analysis
-from finrobot.paths import SETTINGS_JSON
-from finrobot.routes.settings import load_non_secret_settings
-from finrobot.secret_store import create_secret_store
-from finrobot.server import hydrate_settings_from_secrets
+from alpha_desk.config import get_settings
+from alpha_desk.engine.compute.operators.peer_screen import screen_peers
+from alpha_desk.engine.compute.coordinators.extractor import extract_financial_data
+from alpha_desk.engine.data.factory import build_data_layer
+from alpha_desk.engine.data.types import DataType
+from alpha_desk.engine.deps import AlphaDeskDeps
+from alpha_desk.engine.models.financial import PeerComps
+from alpha_desk.engine.pipelines._helpers import execute_peer_analysis
+from alpha_desk.paths import SETTINGS_JSON
+from alpha_desk.routes.settings import load_non_secret_settings
+from alpha_desk.secret_store import create_secret_store
+from alpha_desk.server import hydrate_settings_from_secrets
 
 TICKERS = sys.argv[1:] or ["MSFT", "KO", "NVDA"]
 
@@ -36,7 +36,7 @@ async def main() -> None:
     store, _ = create_secret_store()
     settings = await hydrate_settings_from_secrets(settings, store)
     data_layer = build_data_layer(settings)
-    deps = FinRobotDeps(data_layer=data_layer, settings=settings, skill_runtime=None)
+    deps = AlphaDeskDeps(data_layer=data_layer, settings=settings, skill_runtime=None)
 
     try:
         for t in TICKERS:
@@ -74,7 +74,7 @@ async def main() -> None:
     finally:
         # Non-server entrypoint: join the aiosqlite workers + checkpoint WAL so the
         # process exits cleanly instead of hanging on "Event loop is closed" (2026-06-24).
-        from finrobot.engine.data.factory import shutdown_data_layer
+        from alpha_desk.engine.data.factory import shutdown_data_layer
 
         await shutdown_data_layer(data_layer)
 

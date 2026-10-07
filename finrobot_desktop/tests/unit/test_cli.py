@@ -7,10 +7,10 @@ import pytest
 from click.testing import CliRunner
 from pydantic_ai.models.test import TestModel
 
-from finrobot.cli import cli
-from finrobot.engine.data.interface import DataResult
-from finrobot.engine.data.types import DataType
-from finrobot.engine.deps import FinRobotDeps
+from alpha_desk.cli import cli
+from alpha_desk.engine.data.interface import DataResult
+from alpha_desk.engine.data.types import DataType
+from alpha_desk.engine.deps import AlphaDeskDeps
 
 FIXTURES_DIR = Path(__file__).parent.parent / "fixtures" / "skills"
 
@@ -105,10 +105,10 @@ class FakeDataLayer:
 
     async def fetch_canonical(self, data_type, ticker, **kwargs):
         """Return NormalizedFinancials / NormalizedPrice (ADR-0006 canonical contract)."""
-        from finrobot.engine.data.interface import ProviderError
-        from finrobot.engine.data.normalize.financials import normalize_financials
-        from finrobot.engine.data.normalize.price import normalize_price
-        from finrobot.engine.data.types import DataType
+        from alpha_desk.engine.data.interface import ProviderError
+        from alpha_desk.engine.data.normalize.financials import normalize_financials
+        from alpha_desk.engine.data.normalize.price import normalize_price
+        from alpha_desk.engine.data.types import DataType
 
         dtype = DataType(data_type)
         if dtype not in (DataType.PRICE, DataType.FINANCIALS):
@@ -127,20 +127,20 @@ class FakeDataLayer:
 
 def _fake_deps():
     """Create fake deps for testing."""
-    from finrobot.config import get_settings
+    from alpha_desk.config import get_settings
 
     settings = get_settings(model_name="test")
-    return FinRobotDeps(data_layer=FakeDataLayer(), settings=settings)
+    return AlphaDeskDeps(data_layer=FakeDataLayer(), settings=settings)
 
 
 def _patch_build_runtime(monkeypatch, call_tools=None):
     """Patch _build_runtime to return a TestModel agent + fake deps."""
-    from finrobot.config import get_settings
-    from finrobot.engine.orchestrator import create_lead_agent
+    from alpha_desk.config import get_settings
+    from alpha_desk.engine.orchestrator import create_lead_agent
 
     settings = get_settings(model_name="test")
     agent = create_lead_agent(settings)
-    fake_deps = FinRobotDeps(data_layer=FakeDataLayer(), settings=settings)
+    fake_deps = AlphaDeskDeps(data_layer=FakeDataLayer(), settings=settings)
 
     # Override the agent model to TestModel
     test_model = TestModel(
@@ -151,7 +151,7 @@ def _patch_build_runtime(monkeypatch, call_tools=None):
     def mock_build_runtime(model=None):
         return agent, fake_deps
 
-    monkeypatch.setattr("finrobot.cli._build_runtime", mock_build_runtime)
+    monkeypatch.setattr("alpha_desk.cli._build_runtime", mock_build_runtime)
     return agent, test_model
 
 
@@ -162,7 +162,7 @@ def _patch_build_deps(monkeypatch):
     def mock_build_deps(model=None):
         return fake_deps
 
-    monkeypatch.setattr("finrobot.cli._build_deps", mock_build_deps)
+    monkeypatch.setattr("alpha_desk.cli._build_deps", mock_build_deps)
     # Sub-agents built from these settings must not actually CALL tools:
     # query_financial_data raises ModelRetry on a bad data_type so a real
     # model can self-correct (b9b26d24), but TestModel keeps re-sending the
@@ -200,7 +200,7 @@ class TestRunCommand:
 class TestResearchCommand:
     def test_research_doesnt_crash_with_test_model(self, monkeypatch):
         _patch_build_deps(monkeypatch)
-        from finrobot.engine.pipelines.base import PipelineResult
+        from alpha_desk.engine.pipelines.base import PipelineResult
 
         async def mock_execute(self, deps, ticker, **kwargs):
             return PipelineResult(
@@ -215,7 +215,7 @@ class TestResearchCommand:
             )
 
         monkeypatch.setattr(
-            "finrobot.engine.pipelines.base.Pipeline.execute",
+            "alpha_desk.engine.pipelines.base.Pipeline.execute",
             mock_execute,
         )
         runner = CliRunner()
@@ -243,7 +243,7 @@ class TestCompsCommand:
         def _explode(*args, **kwargs):
             raise AssertionError("pipeline must not run for an invalid --peers")
 
-        monkeypatch.setattr("finrobot.engine.pipelines.base.Pipeline.execute", _explode)
+        monkeypatch.setattr("alpha_desk.engine.pipelines.base.Pipeline.execute", _explode)
         _patch_build_deps(monkeypatch)
         runner = CliRunner()
         result = runner.invoke(cli, ["comps", "AAPL", "--peers", "MSFT,GOOGL"])
@@ -254,7 +254,7 @@ class TestCompsCommand:
         def _explode(*args, **kwargs):
             raise AssertionError("pipeline must not run for an invalid --peers")
 
-        monkeypatch.setattr("finrobot.engine.pipelines.base.Pipeline.execute", _explode)
+        monkeypatch.setattr("alpha_desk.engine.pipelines.base.Pipeline.execute", _explode)
         _patch_build_deps(monkeypatch)
         runner = CliRunner()
         eleven = ",".join(f"PEER{i}" for i in range(11))
@@ -269,7 +269,7 @@ class TestCompsCommand:
         def _explode(*args, **kwargs):
             raise AssertionError("pipeline must not run for an invalid --peers")
 
-        monkeypatch.setattr("finrobot.engine.pipelines.base.Pipeline.execute", _explode)
+        monkeypatch.setattr("alpha_desk.engine.pipelines.base.Pipeline.execute", _explode)
         _patch_build_deps(monkeypatch)
         runner = CliRunner()
         result = runner.invoke(cli, ["comps", "AAPL", "--peers", "MSFT,苹果,!!!"])
@@ -280,13 +280,13 @@ class TestCompsCommand:
         """A valid 3-peer set passes the entry check and reaches the pipeline,
         which receives the normalised (upper-cased) tickers."""
         captured: dict[str, object] = {}
-        from finrobot.engine.pipelines.base import PipelineResult
+        from alpha_desk.engine.pipelines.base import PipelineResult
 
         async def mock_execute(self, deps, ticker, **kwargs):
             captured["peers"] = kwargs.get("peers")
             return PipelineResult(steps={"data_collection": "ok"})
 
-        monkeypatch.setattr("finrobot.engine.pipelines.base.Pipeline.execute", mock_execute)
+        monkeypatch.setattr("alpha_desk.engine.pipelines.base.Pipeline.execute", mock_execute)
         _patch_build_deps(monkeypatch)
         runner = CliRunner()
         result = runner.invoke(cli, ["comps", "AAPL", "--peers", "msft, googl ,amzn"])
@@ -297,7 +297,7 @@ class TestCompsCommand:
 class TestDcfCommand:
     def test_dcf_doesnt_crash_with_test_model(self, monkeypatch):
         _patch_build_deps(monkeypatch)
-        from finrobot.engine.pipelines.base import PipelineResult
+        from alpha_desk.engine.pipelines.base import PipelineResult
 
         async def mock_execute(self, deps, ticker, **kwargs):
             return PipelineResult(
@@ -309,7 +309,7 @@ class TestDcfCommand:
             )
 
         monkeypatch.setattr(
-            "finrobot.engine.pipelines.base.Pipeline.execute",
+            "alpha_desk.engine.pipelines.base.Pipeline.execute",
             mock_execute,
         )
         runner = CliRunner()
@@ -318,7 +318,7 @@ class TestDcfCommand:
 
     def test_dcf_with_model_option(self, monkeypatch):
         _patch_build_deps(monkeypatch)
-        from finrobot.engine.pipelines.base import PipelineResult
+        from alpha_desk.engine.pipelines.base import PipelineResult
 
         async def mock_execute(self, deps, ticker, **kwargs):
             return PipelineResult(
@@ -330,7 +330,7 @@ class TestDcfCommand:
             )
 
         monkeypatch.setattr(
-            "finrobot.engine.pipelines.base.Pipeline.execute",
+            "alpha_desk.engine.pipelines.base.Pipeline.execute",
             mock_execute,
         )
         runner = CliRunner()
@@ -344,7 +344,7 @@ class TestDcfCommand:
         throwaway loop and hung the interpreter at shutdown."""
         import inspect
 
-        from finrobot.cli import _should_use_ddm
+        from alpha_desk.cli import _should_use_ddm
 
         assert inspect.iscoroutinefunction(_should_use_ddm)
 
@@ -363,8 +363,8 @@ class TestDcfCommand:
             """
             import asyncio, tempfile, os
             from datetime import datetime, timezone
-            from finrobot.engine.data.cache import DataCache
-            from finrobot.engine.data.interface import DataResult
+            from alpha_desk.engine.data.cache import DataCache
+            from alpha_desk.engine.data.interface import DataResult
 
             db = os.path.join(tempfile.mkdtemp(), "c.db")
             cache = DataCache(db_path=db)
@@ -398,7 +398,7 @@ class TestDcfCommand:
 
 class TestBuildDeps:
     def test_build_deps_returns_deps_with_settings(self):
-        from finrobot.cli import _build_deps
+        from alpha_desk.cli import _build_deps
 
         # Use the "test" provider — config is app-stored only, so the default
         # (deepseek) provider would fail-fast on a missing key here.
@@ -408,7 +408,7 @@ class TestBuildDeps:
         assert hasattr(deps, "skill_runtime")
 
     def test_build_runtime_returns_agent_and_deps(self):
-        from finrobot.cli import _build_runtime
+        from alpha_desk.cli import _build_runtime
 
         agent, deps = _build_runtime(model="test")
         assert agent is not None
@@ -417,28 +417,28 @@ class TestBuildDeps:
 
 class TestSkillCommands:
     def test_skill_list_prints_skills(self, monkeypatch):
-        monkeypatch.setenv("FINROBOT_SKILLS_DIR", str(FIXTURES_DIR))
+        monkeypatch.setenv("ALPHA_DESK_SKILLS_DIR", str(FIXTURES_DIR))
         runner = CliRunner()
         result = runner.invoke(cli, ["skill", "list"])
         assert result.exit_code == 0, result.output
         assert "comps-analysis" in result.output
 
     def test_skill_search_finds_comps(self, monkeypatch):
-        monkeypatch.setenv("FINROBOT_SKILLS_DIR", str(FIXTURES_DIR))
+        monkeypatch.setenv("ALPHA_DESK_SKILLS_DIR", str(FIXTURES_DIR))
         runner = CliRunner()
         result = runner.invoke(cli, ["skill", "search", "comps"])
         assert result.exit_code == 0, result.output
         assert "comps-analysis" in result.output
 
     def test_skill_search_no_match(self, monkeypatch):
-        monkeypatch.setenv("FINROBOT_SKILLS_DIR", str(FIXTURES_DIR))
+        monkeypatch.setenv("ALPHA_DESK_SKILLS_DIR", str(FIXTURES_DIR))
         runner = CliRunner()
         result = runner.invoke(cli, ["skill", "search", "zzz_nonexistent"])
         assert result.exit_code == 0
         assert "No skills matching" in result.output
 
     def test_skill_list_no_skills_dir(self, monkeypatch, tmp_path):
-        monkeypatch.setenv("FINROBOT_SKILLS_DIR", str(tmp_path / "nonexistent"))
+        monkeypatch.setenv("ALPHA_DESK_SKILLS_DIR", str(tmp_path / "nonexistent"))
         runner = CliRunner()
         result = runner.invoke(cli, ["skill", "list"])
         assert "No skills directory" in result.output
@@ -448,7 +448,7 @@ class TestCliProgress:
     @pytest.mark.asyncio
     async def test_cli_progress_retry_reprints_step_label(self, capsys):
         """I3: after retry, step label must be reprinted so 'done' has context."""
-        from finrobot.cli import CliProgress
+        from alpha_desk.cli import CliProgress
 
         progress = CliProgress()
         await progress.on_step_start(1, 3, "data_collection")
@@ -464,7 +464,7 @@ class TestCliProgress:
 
 class TestBacktestCommand:
     def test_backtest_basic(self, monkeypatch):
-        from finrobot.engine.backtest.engine import BacktestResult
+        from alpha_desk.engine.backtest.engine import BacktestResult
 
         async def mock_run(self, config):
             return BacktestResult(
@@ -479,7 +479,7 @@ class TestBacktestCommand:
             )
 
         monkeypatch.setattr(
-            "finrobot.engine.backtest.backtrader_adapter.BackTraderAdapter.run",
+            "alpha_desk.engine.backtest.backtrader_adapter.BackTraderAdapter.run",
             mock_run,
         )
         runner = CliRunner()
@@ -499,7 +499,7 @@ class TestBacktestCommand:
         assert "10.00%" in result.output
 
     def test_backtest_with_params(self, monkeypatch):
-        from finrobot.engine.backtest.engine import BacktestResult
+        from alpha_desk.engine.backtest.engine import BacktestResult
 
         captured_configs = []
 
@@ -512,7 +512,7 @@ class TestBacktestCommand:
             )
 
         monkeypatch.setattr(
-            "finrobot.engine.backtest.backtrader_adapter.BackTraderAdapter.run",
+            "alpha_desk.engine.backtest.backtrader_adapter.BackTraderAdapter.run",
             mock_run,
         )
         runner = CliRunner()
@@ -564,7 +564,7 @@ class TestAskCommand:
             return f"Based on [Item 1A], {ticker} faces regulatory risks."
 
         monkeypatch.setattr(
-            "finrobot.engine.analysis.qa.run_qa",
+            "alpha_desk.engine.analysis.qa.run_qa",
             mock_run_qa,
         )
         runner = CliRunner()
@@ -582,7 +582,7 @@ class TestAskCommand:
             return "Answer"
 
         monkeypatch.setattr(
-            "finrobot.engine.analysis.qa.run_qa",
+            "alpha_desk.engine.analysis.qa.run_qa",
             mock_run_qa,
         )
         runner = CliRunner()
@@ -599,7 +599,7 @@ class TestAnalyzeCommand:
             return f"## Income Analysis for {ticker}\n\nRevenue is $385B."
 
         monkeypatch.setattr(
-            "finrobot.engine.analysis.prompts.run_analysis",
+            "alpha_desk.engine.analysis.prompts.run_analysis",
             mock_run_analysis,
         )
         runner = CliRunner()
@@ -615,7 +615,7 @@ class TestAnalyzeCommand:
             return f"Analysis: {analysis_type}"
 
         monkeypatch.setattr(
-            "finrobot.engine.analysis.prompts.run_analysis",
+            "alpha_desk.engine.analysis.prompts.run_analysis",
             mock_run_analysis,
         )
         runner = CliRunner()
@@ -648,7 +648,7 @@ class TestParentDeathWatchdog:
         import os
         import threading
 
-        from finrobot.cli import _start_parent_death_watchdog
+        from alpha_desk.cli import _start_parent_death_watchdog
 
         # Watch our own (always-alive) pid: the watchdog must start but never
         # fire os._exit, so the test process survives.
@@ -665,7 +665,7 @@ class TestParentDeathWatchdog:
         import subprocess
         import threading
 
-        from finrobot.cli import _start_parent_death_watchdog
+        from alpha_desk.cli import _start_parent_death_watchdog
 
         # A reaped subprocess gives a pid that is reliably dead.
         dead = subprocess.Popen(["true"])

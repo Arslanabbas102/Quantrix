@@ -1,7 +1,7 @@
 @import 'tailwindcss';
 
 /* ═══════════════════════════════════════════════════════════════
-   FINROBOT DESIGN SYSTEM · COSMIC DESKTOP
+   ALPHA_DESK DESIGN SYSTEM · COSMIC DESKTOP
    Graphite terminal dark + restrained blue/violet edge light + cyan signal
    See the cosmic desktop style spec, §2/§3:
    project-memory/编码模式/UI-风格规范-cosmic桌面版.md
@@ -16,7 +16,7 @@
   --bg-elevated: #121722;
   --bg-overlay: rgba(8, 10, 16, 0.84);
 
-  /* Universal shell backdrop copied from finrobot-graphite-terminal-demo.html:
+  /* Universal shell backdrop copied from alpha_desk-graphite-terminal-demo.html:
      graphite center for dense data, low blue/violet/cyan glow parked at edges. */
   --cockpit-base: #06070c;
   --cockpit-glow-core: rgba(59, 130, 246, 0.18);
@@ -171,7 +171,7 @@
   --aipanel-user-edge: rgba(96, 140, 240, 0.5);
 
   /* The panel's SIGNATURE accent — one knob for everything that says
-     "this is the assistant" (FinRobot wordmark, agent reply rail, code,
+     "this is the assistant" (Alpha Desk wordmark, agent reply rail, code,
      list bullets, input focus ring, caret, send, status dot). Blue, the
      same cool family as the data desk, so the panel reads as one product
      with the workspace — NOT a violet bolt-on. Re-theme = swap these. */
@@ -313,7 +313,7 @@
   --sp-8: 32px;
   --sp-10: 48px;
 
-  /* ── Three-rail font system (FinRobot.html research-cockpit reference) ──
+  /* ── Three-rail font system (Alpha Desk.html research-cockpit reference) ──
      Space Grotesk + IBM Plex Sans are Latin faces; the app is zh/en bilingual,
      so every stack ends in a system CJK fallback (PingFang SC / Microsoft
      YaHei) — Latin glyphs render in the brand face, CJK in the OS font. */
@@ -4024,7 +4024,7 @@ select.settings-input {
 
 /* ═══════════════════════════════════════════════
    DESKTOP SHELL — IDE Layout
-   Phase 1: static 5-zone skeleton matching finrobot.html prototype.
+   Phase 1: static 5-zone skeleton matching alpha_desk.html prototype.
    All colours use --bg-X / --text-X / --accent / --line tokens (set in :root above).
    DO NOT add hex values here.
    ═══════════════════════════════════════════════ */
@@ -4328,7 +4328,7 @@ select.settings-input {
     inset 0 0 0 1px var(--border-soft);
 }
 
-/* ── TitleBar HUD instrument cluster (FinRobot.html cockpit shell §5.1) ──
+/* ── TitleBar HUD instrument cluster (Alpha Desk.html cockpit shell §5.1) ──
    Three product doors as free-floating icon glyphs, centered in the bar:
    Research / Coverage / Settings. Each is an inline-SVG glyph + a mono
    caption. The active door ignites in cyan with a STATIC neon halo + anchor
@@ -4821,7 +4821,7 @@ select.settings-input {
 
 /* ═══════════════════════════════════════════
    DASHBOARD — Phase 2
-   Source: finrobot.html §222-368 (CSS) + §752-912 (HTML)
+   Source: alpha_desk.html §222-368 (CSS) + §752-912 (HTML)
    All colours use Phase 0 tokens; no hardcoded hex.
    ═══════════════════════════════════════════ */
 
@@ -5121,7 +5121,7 @@ select.settings-input {
 
 /* ═══════════════════════════════════════════════
    AI PANEL — Graphite terminal glass, 420px
-   All classes 1:1 from finrobot.html prototype.
+   All classes 1:1 from alpha_desk.html prototype.
    ═══════════════════════════════════════════════ */
 
 .ai-panel {
@@ -6842,14 +6842,14 @@ body.app-bg .cosmic-stars.cosmic-stars-fast {
 
 /* Display letter-spacing helper — Space Grotesk reads cleanly at small
    sizes, but a touch of tracking keeps section titles / badges feeling
-   like the FinRobot.html cockpit reference (cosmic spec §3). */
+   like the Alpha Desk.html cockpit reference (cosmic spec §3). */
 .cosmic-display {
   font-family: var(--font-display);
   letter-spacing: 2px;
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   RESEARCH COCKPIT — homepage hero (FinRobot.html reference)
+   RESEARCH COCKPIT — homepage hero (Alpha Desk.html reference)
    Centered SplineHero robot presiding over the ticker command console,
    a capability dock docked at the bottom. Tokens only.
    ═══════════════════════════════════════════════════════════════ */

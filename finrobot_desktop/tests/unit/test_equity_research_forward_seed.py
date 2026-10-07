@@ -10,9 +10,9 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 
-from finrobot.config import get_settings
-from finrobot.engine.deps import FinRobotDeps
-from finrobot.engine.models.financial import (
+from alpha_desk.config import get_settings
+from alpha_desk.engine.deps import AlphaDeskDeps
+from alpha_desk.engine.models.financial import (
     BalanceSheet,
     FinancialData,
     HistoricalMetrics,
@@ -20,7 +20,7 @@ from finrobot.engine.models.financial import (
     MarketData,
     ValuationMetrics,
 )
-from finrobot.engine.pipelines.equity_research import _execute_financial_modeling
+from alpha_desk.engine.pipelines.equity_research import _execute_financial_modeling
 
 NOW = datetime.now(tz=timezone.utc)
 
@@ -33,8 +33,8 @@ class _FakeDataLayer:
         raise AssertionError("data_layer should not be hit when context is preloaded")
 
 
-def _deps() -> FinRobotDeps:
-    return FinRobotDeps(data_layer=_FakeDataLayer(), settings=get_settings(model_name="test"))
+def _deps() -> AlphaDeskDeps:
+    return AlphaDeskDeps(data_layer=_FakeDataLayer(), settings=get_settings(model_name="test"))
 
 
 def _financials() -> FinancialData:

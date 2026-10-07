@@ -1,7 +1,7 @@
 import logging
 
-from finrobot.obs.context import bind_run
-from finrobot.obs.filters import TraceFilter
+from alpha_desk.obs.context import bind_run
+from alpha_desk.obs.filters import TraceFilter
 
 
 def _record() -> logging.LogRecord:

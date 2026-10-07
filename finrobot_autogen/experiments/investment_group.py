@@ -1,4 +1,4 @@
-from finrobot.data_source import RedditUtils, FinnHubUtils, FMPUtils, YFinanceUtils
+from alpha_desk.data_source import RedditUtils, FinnHubUtils, FMPUtils, YFinanceUtils
 
 group_config = {
     "CIO": {

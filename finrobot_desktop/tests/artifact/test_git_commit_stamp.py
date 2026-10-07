@@ -17,7 +17,7 @@ import subprocess
 
 import pytest
 
-from finrobot.artifact import builders
+from alpha_desk.artifact import builders
 
 
 def test_get_git_commit_returns_none_when_git_missing(

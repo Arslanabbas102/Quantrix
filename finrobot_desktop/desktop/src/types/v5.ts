@@ -2,7 +2,7 @@
 // `hooks/useTickerData.ts` (which carries the ArtifactSummary shape used by
 // HistoryTab and friends).
 
-// Keep this list in sync with `finrobot.artifact.models.ArtifactType`
+// Keep this list in sync with `alpha_desk.artifact.models.ArtifactType`
 // (Literal). Drift between frontend and backend silently breaks type-narrow
 // switches in chapter renderers.
 export type ArtifactType =
@@ -18,7 +18,7 @@ export type ArtifactType =
 
 export type Signal = 'hit' | 'watching' | 'failed'
 
-/** Mirror of `finrobot.artifact.models.ArtifactSummary` (PR1 ADR-0001). */
+/** Mirror of `alpha_desk.artifact.models.ArtifactSummary` (PR1 ADR-0001). */
 export interface ArtifactSummaryV5 {
   id: string
   ticker: string | null

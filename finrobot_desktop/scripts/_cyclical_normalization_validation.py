@@ -38,14 +38,14 @@ from dataclasses import dataclass
 
 import httpx
 
-from finrobot.config import get_settings
-from finrobot.engine.compute.operators.dcf import calculate_dcf
-from finrobot.engine.compute.operators.wacc import adjust_beta_blume
-from finrobot.engine.models.financial import DCFInputs
-from finrobot.paths import SETTINGS_JSON
-from finrobot.routes.settings import load_non_secret_settings
-from finrobot.secret_store import create_secret_store
-from finrobot.server import hydrate_settings_from_secrets
+from alpha_desk.config import get_settings
+from alpha_desk.engine.compute.operators.dcf import calculate_dcf
+from alpha_desk.engine.compute.operators.wacc import adjust_beta_blume
+from alpha_desk.engine.models.financial import DCFInputs
+from alpha_desk.paths import SETTINGS_JSON
+from alpha_desk.routes.settings import load_non_secret_settings
+from alpha_desk.secret_store import create_secret_store
+from alpha_desk.server import hydrate_settings_from_secrets
 
 SINGLE_METHOD_BAND = (0.5, 2.0)  # SINGLE_METHOD_DIVERGENCE_RATIO_K = 2.0
 
@@ -312,7 +312,7 @@ async def main() -> int:
     s = get_settings(**load_non_secret_settings(SETTINGS_JSON))
     store, _ = create_secret_store()
     s = await hydrate_settings_from_secrets(s, store)
-    ua = s.sec_user_agent or "FinRobot Research r@example.com"
+    ua = s.sec_user_agent or "Alpha Desk Research r@example.com"
     print(
         f"SEC UA: {ua}\nSingle-method calibration band: [{SINGLE_METHOD_BAND[0]}x, {SINGLE_METHOD_BAND[1]}x]"
     )

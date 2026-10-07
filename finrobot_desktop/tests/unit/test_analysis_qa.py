@@ -18,8 +18,8 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from finrobot.engine.analysis.qa import run_qa
-from finrobot.engine.data.interface import DataResult
+from alpha_desk.engine.analysis.qa import run_qa
+from alpha_desk.engine.data.interface import DataResult
 
 
 def _chunk(text: str, source: str, chunk_index: int = 0, char_start: int = 0) -> dict:
@@ -104,7 +104,7 @@ class TestRunQA:
         mock_run_result.output = "Based on [Item 1A], regulatory risk is the primary concern."
         mock_agent_instance.run = AsyncMock(return_value=mock_run_result)
         monkeypatch.setattr(
-            "finrobot.engine.analysis.qa.Agent", MagicMock(return_value=mock_agent_instance)
+            "alpha_desk.engine.analysis.qa.Agent", MagicMock(return_value=mock_agent_instance)
         )
 
         result = await run_qa(layer, _make_settings(), "AAPL", "What are the regulatory risks?")
@@ -142,7 +142,7 @@ class TestRunQA:
         mock_run_result.output = "answer"
         mock_agent_instance.run = AsyncMock(return_value=mock_run_result)
         monkeypatch.setattr(
-            "finrobot.engine.analysis.qa.Agent", MagicMock(return_value=mock_agent_instance)
+            "alpha_desk.engine.analysis.qa.Agent", MagicMock(return_value=mock_agent_instance)
         )
 
         await run_qa(layer, _make_settings(), "AAPL", "What are the regulatory risks?")

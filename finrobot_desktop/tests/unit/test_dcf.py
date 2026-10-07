@@ -1,8 +1,8 @@
 import pytest
 from pydantic import ValidationError
 
-from finrobot.engine.models.financial import DCFInputs, DCFResult
-from finrobot.engine.compute.operators.dcf import calculate_dcf, calculate_sensitivity
+from alpha_desk.engine.models.financial import DCFInputs, DCFResult
+from alpha_desk.engine.compute.operators.dcf import calculate_dcf, calculate_sensitivity
 
 
 def _make_inputs(**overrides):
@@ -81,7 +81,7 @@ def test_wacc_override():
 
 
 def test_tg_override():
-    from finrobot.engine.compute.operators.dcf import _terminal_fcf
+    from alpha_desk.engine.compute.operators.dcf import _terminal_fcf
 
     inputs = _make_inputs()
     result = calculate_dcf(inputs, tg_override=0.03)
@@ -162,7 +162,7 @@ def test_negative_terminal_fcf_raises_no_negative_price():
 
     # Sanity: the NORMALIZED terminal FCF really is negative for these inputs, so
     # this exercises the terminal-FCF guard specifically (not the tg >= WACC one).
-    from finrobot.engine.compute.operators.dcf import _project_full, _terminal_fcf
+    from alpha_desk.engine.compute.operators.dcf import _project_full, _terminal_fcf
 
     revenue, _, _ = _project_full(inputs)
     assert _terminal_fcf(inputs, revenue[-1], inputs.terminal_growth_rate) < 0

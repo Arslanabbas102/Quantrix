@@ -5,7 +5,7 @@ process on the box. These tests pin the contract that closes the residual
 local-process vector (read /api/settings to steal keys, POST /api/runs to burn
 quota) that TrustedHost + CORS do not cover:
 
-  - env var unset            → no-op (dev `finrobot serve`, in-process tests)
+  - env var unset            → no-op (dev `alpha_desk serve`, in-process tests)
   - env var set, no token    → 401 before the request reaches any route
   - env var set, good token  → passes the middleware (route handles it)
   - good token via ?token=   → passes (EventSource cannot set headers)
@@ -19,9 +19,9 @@ import logging
 import pytest
 from httpx import ASGITransport, AsyncClient
 
-from finrobot.auth import CAPABILITY_TOKEN_ENV
-from finrobot.obs.filters import RedactSecretsFilter
-from finrobot.server import app
+from alpha_desk.auth import CAPABILITY_TOKEN_ENV
+from alpha_desk.obs.filters import RedactSecretsFilter
+from alpha_desk.server import app
 
 _TOKEN = "test-capability-token-abc123"
 

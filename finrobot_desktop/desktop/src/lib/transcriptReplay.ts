@@ -2,8 +2,8 @@
 // transcript so a past conversation can be re-seeded into `useChat` and the
 // user can keep chatting (not just read it).
 //
-// The backend side-logs every turn to ~/.finrobot/sessions/<id>.jsonl via
-// `finrobot.audit.transcript.TranscriptWriter`. The event names and `data`
+// The backend side-logs every turn to ~/.alpha_desk/sessions/<id>.jsonl via
+// `alpha_desk.audit.transcript.TranscriptWriter`. The event names and `data`
 // shapes are the authoritative contract this mapping depends on (verified
 // against transcript.py — do NOT guess):
 //

@@ -80,7 +80,7 @@ export interface PriceData {
   technicals?: Technicals
 }
 
-// Mirror of finrobot.engine.models.financial.FinancialData — backend nests
+// Mirror of alpha_desk.engine.models.financial.FinancialData — backend nests
 // values under income / balance / market / valuation buckets. Tile readers
 // must traverse the nested path; e.g. market cap lives at
 // `financials.market.market_cap`, NOT at the root.
@@ -136,7 +136,7 @@ export interface FinancialsData {
   warnings?: string[]
 }
 
-// Mirror of finrobot.engine.compute.catalyst output. Backend fields:
+// Mirror of alpha_desk.engine.compute.catalyst output. Backend fields:
 //   category, headline, sentiment (positive/negative/neutral),
 //   impact_score (1..5 integer), probability (0..1), reasoning.
 // `title`/`date`/`impact_direction`/`impact_magnitude` are UI-derived from
@@ -248,7 +248,7 @@ export function useTickerCatalysts(ticker: string) {
   })
 }
 
-// Mirror of finrobot.engine.primitives.historical_valuation output — the
+// Mirror of alpha_desk.engine.primitives.historical_valuation output — the
 // current multiple vs the company's OWN multi-year percentile band. Same shape
 // the report freezes into technical_analysis.historical_bands.
 export interface HistoricalBand {

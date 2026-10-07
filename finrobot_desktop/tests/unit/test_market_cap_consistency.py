@@ -16,9 +16,9 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 
-from finrobot.engine.data.interface import DataResult
-from finrobot.engine.data.types import DataType
-from finrobot.engine.data.validator import market_cap_consistency
+from alpha_desk.engine.data.interface import DataResult
+from alpha_desk.engine.data.types import DataType
+from alpha_desk.engine.data.validator import market_cap_consistency
 
 
 def _fmp(ticker: str, mc: float, price: float) -> DataResult:

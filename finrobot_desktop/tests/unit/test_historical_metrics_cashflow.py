@@ -18,10 +18,10 @@ from typing import Any
 
 import pytest
 
-from finrobot.engine.compute.coordinators.historical_extractor import fetch_historical_metrics
-from finrobot.engine.data.interface import DataResult, ProviderError
-from finrobot.engine.data.types import DataType
-from finrobot.engine.models.financial import HistoricalMetrics
+from alpha_desk.engine.compute.coordinators.historical_extractor import fetch_historical_metrics
+from alpha_desk.engine.data.interface import DataResult, ProviderError
+from alpha_desk.engine.data.types import DataType
+from alpha_desk.engine.models.financial import HistoricalMetrics
 
 
 # ---------------------------------------------------------------------------
@@ -211,7 +211,7 @@ class FakeDataLayer:
 
     async def fetch_canonical(self, data_type: Any, ticker: str, **kwargs: Any):
         """Return NormalizedFinancials built from the snapshot dict."""
-        from finrobot.engine.data.normalize.financials import normalize_financials
+        from alpha_desk.engine.data.normalize.financials import normalize_financials
 
         if self._snapshot_raises:
             raise ProviderError("snapshot unavailable")
@@ -505,7 +505,7 @@ class TestDataSourceProvenance:
         assert result.data_source == "test"
 
     def test_mixed_providers_disclosed_not_last_wins(self):
-        from finrobot.engine.compute.coordinators.historical_extractor import (
+        from alpha_desk.engine.compute.coordinators.historical_extractor import (
             _aggregate_provider,
         )
 

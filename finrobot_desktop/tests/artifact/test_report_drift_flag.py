@@ -9,15 +9,15 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from typing import Any, cast
 
-from finrobot.artifact.builders import build_equity_research_artifact
-from finrobot.engine.models.financial import (
+from alpha_desk.artifact.builders import build_equity_research_artifact
+from alpha_desk.engine.models.financial import (
     BalanceSheet,
     FinancialData,
     IncomeStatement,
     MarketData,
     ValuationMetrics,
 )
-from finrobot.engine.pipelines.base import PipelineResult
+from alpha_desk.engine.pipelines.base import PipelineResult
 
 UTC = timezone.utc
 
@@ -106,7 +106,7 @@ def test_earnings_builder_scans_its_two_narrative_steps() -> None:
     """The earnings builder was the ONE builder outside the shared drift sink
     ('no artifact type is silently left unscanned'). Its two LLM narrative
     steps must be scanned against the artifact's frozen leaves."""
-    from finrobot.artifact.builders import build_earnings_artifact
+    from alpha_desk.artifact.builders import build_earnings_artifact
 
     result = PipelineResult(
         steps={

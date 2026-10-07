@@ -1,10 +1,10 @@
-//! FinRobot Desktop — Tauri application entry point.
+//! Alpha Desk Desktop — Tauri application entry point.
 //!
 //! Architecture:
 //!   1. Tauri Rust shell (this process) — owns the window and menu bar.
 //!   2. Python sidecar — spawned at startup via `tauri-plugin-shell`;
 //!      runs the FastAPI server on 127.0.0.1:8321 (provides /api/* + /chat).
-//!      Skipped when `FINROBOT_DEV_LIVE_BACKEND` is set, so a live source-tree
+//!      Skipped when `ALPHA_DESK_DEV_LIVE_BACKEND` is set, so a live source-tree
 //!      backend can serve :8321 instead (see `dev.sh --app`).
 //!   3. WebView — loads the React UI from Vite dev server (http://localhost:5173
 //!      in dev) or the bundled frontendDist (../dist/index.html in build).
@@ -28,7 +28,7 @@ use tauri_plugin_shell::process::CommandChild;
 struct SidecarHandle(Mutex<Option<CommandChild>>);
 
 /// Per-launch capability token. Minted at startup, handed to the sidecar via
-/// FINROBOT_CAPABILITY_TOKEN and to the WebView via the `capability_token`
+/// ALPHA_DESK_CAPABILITY_TOKEN and to the WebView via the `capability_token`
 /// command, so a *different* local process — which can reach loopback but
 /// cannot drive this WebView's IPC — cannot read /api/settings or burn quota.
 struct CapabilityToken(String);
@@ -57,12 +57,12 @@ async fn fatal_startup_dialog(handle: &tauri::AppHandle, detail: &str) {
         handle
             .dialog()
             .message(format!(
-                "FinRobot could not start its backend.\n\n{detail}\n\nThis usually \
+                "Alpha Desk could not start its backend.\n\n{detail}\n\nThis usually \
                  means port 8321 is already in use by another process (often a \
-                 leftover FinRobot backend). Quit that process — or any app holding \
-                 the port — and relaunch FinRobot."
+                 leftover Alpha Desk backend). Quit that process — or any app holding \
+                 the port — and relaunch Alpha Desk."
             ))
-            .title("FinRobot failed to start")
+            .title("Alpha Desk failed to start")
             .kind(MessageDialogKind::Error)
             .buttons(MessageDialogButtons::Ok)
             .blocking_show();
@@ -97,15 +97,15 @@ pub fn run() {
             let token = uuid::Uuid::new_v4().simple().to_string();
             app.manage(CapabilityToken(token.clone()));
 
-            // Live-backend dev posture (see `dev.sh --app`): a `finrobot serve`
+            // Live-backend dev posture (see `dev.sh --app`): a `alpha_desk serve`
             // process from this machine's source tree is already running on :8321,
             // so backend edits take effect immediately. Skip the frozen PyInstaller
             // sidecar entirely — the WebView reaches the live backend through the
             // Vite proxy, exactly like the browser dev loop. Production launches
             // (env var unset) keep spawning the bundled sidecar as before.
-            if std::env::var_os("FINROBOT_DEV_LIVE_BACKEND").is_some() {
+            if std::env::var_os("ALPHA_DESK_DEV_LIVE_BACKEND").is_some() {
                 eprintln!(
-                    "[desktop] FINROBOT_DEV_LIVE_BACKEND set — skipping bundled sidecar; \
+                    "[desktop] ALPHA_DESK_DEV_LIVE_BACKEND set — skipping bundled sidecar; \
                      WebView will use the live backend already on 127.0.0.1:8321"
                 );
                 return Ok(());

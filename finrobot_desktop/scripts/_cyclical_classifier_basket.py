@@ -27,12 +27,12 @@ from datetime import date
 
 import httpx
 
-from finrobot.config import get_settings
-from finrobot.engine.primitives.industry import is_commodity_cyclical
-from finrobot.paths import SETTINGS_JSON
-from finrobot.routes.settings import load_non_secret_settings
-from finrobot.secret_store import create_secret_store
-from finrobot.server import hydrate_settings_from_secrets
+from alpha_desk.config import get_settings
+from alpha_desk.engine.primitives.industry import is_commodity_cyclical
+from alpha_desk.paths import SETTINGS_JSON
+from alpha_desk.routes.settings import load_non_secret_settings
+from alpha_desk.secret_store import create_secret_store
+from alpha_desk.server import hydrate_settings_from_secrets
 
 # Real provider (yfinance) industry/sector tags + the design's expected verdict.
 # Autos are cyclical BY DESIGN (§2.2 white-list). Memory/storage ride generic
@@ -127,7 +127,7 @@ async def main() -> int:
     s = get_settings(**load_non_secret_settings(SETTINGS_JSON))
     store, _ = create_secret_store()
     s = await hydrate_settings_from_secrets(s, store)
-    ua = s.sec_user_agent or "FinRobot Research r@example.com"
+    ua = s.sec_user_agent or "Alpha Desk Research r@example.com"
     print(f"SEC UA: {ua}")
 
     # ---------- HALF A: PRODUCTION CLASSIFIER (the gate the seed actually uses) -

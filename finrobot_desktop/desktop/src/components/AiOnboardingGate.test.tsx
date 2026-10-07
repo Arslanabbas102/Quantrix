@@ -78,7 +78,7 @@ describe('AiOnboardingGate', () => {
   it('re-prompts on a fresh mount (relaunch) while still no model — no persistence', () => {
     // A prior session's dismissal must NOT leak across launches: dismissal is
     // in-memory only, so a stale persisted flag can never suppress a fresh mount.
-    localStorage.setItem('finrobot-ai-onboarding-dismissed', 'true')
+    localStorage.setItem('alpha_desk-ai-onboarding-dismissed', 'true')
     render(<AiOnboardingGate />)
     expect(shown()).toBe(true)
   })

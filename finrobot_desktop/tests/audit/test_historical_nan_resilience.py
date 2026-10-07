@@ -22,11 +22,11 @@ from typing import Any
 
 import pytest
 
-from finrobot.engine.compute.operators.data_processor import calculate_cagr
-from finrobot.engine.compute.operators.dcf_seed import _median_ratio, seed_dcf_inputs
-from finrobot.engine.compute.coordinators.historical_extractor import _build_from_yearly
-from finrobot.engine.data.interface import DataResult
-from finrobot.engine.data.types import DataType
+from alpha_desk.engine.compute.operators.data_processor import calculate_cagr
+from alpha_desk.engine.compute.operators.dcf_seed import _median_ratio, seed_dcf_inputs
+from alpha_desk.engine.compute.coordinators.historical_extractor import _build_from_yearly
+from alpha_desk.engine.data.interface import DataResult
+from alpha_desk.engine.data.types import DataType
 
 
 # ---------------------------------------------------------------------------
@@ -288,7 +288,7 @@ def _make_minimal_financials() -> Any:
     """Import here to avoid circular import at module level."""
     from datetime import datetime, timezone
 
-    from finrobot.engine.models.financial import (
+    from alpha_desk.engine.models.financial import (
         BalanceSheet,
         FinancialData,
         IncomeStatement,
@@ -328,7 +328,7 @@ def _make_minimal_financials() -> Any:
 
 class TestDcfSeedProvenance:
     def test_real_cagr_provenance_contains_cagr_value(self) -> None:
-        from finrobot.engine.models.financial import HistoricalMetrics
+        from alpha_desk.engine.models.financial import HistoricalMetrics
 
         hist = HistoricalMetrics(
             years=[2022, 2023, 2024, 2025],
@@ -361,7 +361,7 @@ class TestDcfSeedProvenance:
 
     def test_nan_cagr_provenance_is_honest(self) -> None:
         """When cagr_revenue is NaN (not None), provenance must say 'NaN缺口', not '历史增长率不可得'."""
-        from finrobot.engine.models.financial import HistoricalMetrics
+        from alpha_desk.engine.models.financial import HistoricalMetrics
 
         hist = HistoricalMetrics(
             years=[2022, 2023],
@@ -389,7 +389,7 @@ class TestDcfSeedProvenance:
 
     def test_none_cagr_provenance_says_data_insufficient(self) -> None:
         """When cagr_revenue is None (no data), provenance says 'histor data insufficient'."""
-        from finrobot.engine.models.financial import HistoricalMetrics
+        from alpha_desk.engine.models.financial import HistoricalMetrics
 
         hist = HistoricalMetrics(
             years=[],

@@ -18,11 +18,11 @@ from datetime import datetime, timezone
 
 import pytest
 
-from finrobot.engine.data.interface import DataResult
-from finrobot.engine.data.normalize.financials import normalize_financials
-from finrobot.engine.data.normalize.price import normalize_price
-from finrobot.engine.data.types import DataType
-from finrobot.routes.valuation import _current_ev_ebitda_override
+from alpha_desk.engine.data.interface import DataResult
+from alpha_desk.engine.data.normalize.financials import normalize_financials
+from alpha_desk.engine.data.normalize.price import normalize_price
+from alpha_desk.engine.data.types import DataType
+from alpha_desk.routes.valuation import _current_ev_ebitda_override
 
 
 def _make_fin():

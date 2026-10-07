@@ -1,4 +1,4 @@
-// ResearchPage — the default search-first entry. This is the FinRobot wow
+// ResearchPage — the default search-first entry. This is the Alpha Desk wow
 // surface: the research cockpit (SplineHero robot presiding over the ticker
 // console + capability dock). Opening a ticker lands in the single-stock
 // workspace; that workspace auto-enrols the ticker into Coverage.

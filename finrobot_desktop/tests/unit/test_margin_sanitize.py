@@ -12,12 +12,12 @@ WITHHOLD (None → N/A), never clamp to a fabricated 100%.
 import pytest
 from pydantic import ValidationError
 
-from finrobot.engine.compute.coordinators.extractor import (
+from alpha_desk.engine.compute.coordinators.extractor import (
     _MARGIN_CEILING,
     _MARGIN_FLOOR,
     _sanitize_margin,
 )
-from finrobot.engine.models.financial import IncomeStatement
+from alpha_desk.engine.models.financial import IncomeStatement
 
 
 class TestSanitizeMarginBoundaries:

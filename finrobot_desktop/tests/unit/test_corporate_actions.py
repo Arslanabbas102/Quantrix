@@ -10,7 +10,7 @@ their pre-deal baseline; every non-merger control reads ≤1.00×.
 
 from __future__ import annotations
 
-from finrobot.engine.primitives.corporate_actions import detect_mna_transition
+from alpha_desk.engine.primitives.corporate_actions import detect_mna_transition
 
 
 def test_stock_funded_merger_fires() -> None:

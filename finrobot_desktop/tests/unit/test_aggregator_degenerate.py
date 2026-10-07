@@ -15,7 +15,7 @@ from __future__ import annotations
 
 import pytest
 
-from finrobot.engine.compute.operators.valuation_aggregator import _ev_ebitda_method
+from alpha_desk.engine.compute.operators.valuation_aggregator import _ev_ebitda_method
 
 
 def test_ev_ebitda_method_drops_when_debt_exceeds_whole_band() -> None:

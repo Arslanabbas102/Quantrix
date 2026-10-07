@@ -25,7 +25,7 @@ export const useNavMemoryStore = create<NavMemoryState>()(
       clearLastStocksPath: () => set({ lastStocksPath: null }),
     }),
     {
-      name: 'finrobot-nav-memory',
+      name: 'alpha_desk-nav-memory',
       storage: createJSONStorage(() => localStorage),
     },
   ),

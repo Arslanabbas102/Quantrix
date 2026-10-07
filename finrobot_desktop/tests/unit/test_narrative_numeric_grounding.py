@@ -13,10 +13,10 @@ Pure, deterministic — no LLM involved. Pins:
 
 from __future__ import annotations
 
-from finrobot.engine.compute.operators.audit.narrative_numeric_grounding import (
+from alpha_desk.engine.compute.operators.audit.narrative_numeric_grounding import (
     audit_narrative_numeric_grounding,
 )
-from finrobot.engine.models.financial import ThesisResult
+from alpha_desk.engine.models.financial import ThesisResult
 
 
 def _thesis(

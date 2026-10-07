@@ -117,8 +117,8 @@ export function AiOnboardingGate(): React.ReactElement | null {
 
         <div style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.6 }}>
           {zh
-            ? 'FinRobot 的数字由确定性引擎算出、可逐项溯源——无需任何 API key 就能用。上层的 AI 分析只是渲染口,需要你选一个模型并填好 key。'
-            : 'FinRobot’s numbers come from a deterministic, fully-traceable engine — usable with no API key at all. The AI analysis layered on top is just a rendering layer; it needs a model you pick and key.'}
+            ? 'Alpha Desk 的数字由确定性引擎算出、可逐项溯源——无需任何 API key 就能用。上层的 AI 分析只是渲染口,需要你选一个模型并填好 key。'
+            : 'Alpha Desk’s numbers come from a deterministic, fully-traceable engine — usable with no API key at all. The AI analysis layered on top is just a rendering layer; it needs a model you pick and key.'}
         </div>
 
         <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>

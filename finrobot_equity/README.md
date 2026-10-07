@@ -1,8 +1,8 @@
-# FinRobot Equity — V1
+# Alpha Desk Equity — V1
 
 > **A self-hosted web app.** AI-powered equity research report generator: fetches financial data, runs LLM-based analysis, and produces professional multi-page HTML/PDF reports — from a browser or a single command.
 
-This is V1 in the [FinRobot version lineage](../README.md). It is a **web service you deploy**, not a desktop application and not a framework — you run `./deploy.sh start`, open a browser, and people on your network get a form that turns a ticker into a report. That narrow shape is the point: one job, done through a UI.
+This is V1 in the [Alpha Desk version lineage](../README.md). It is a **web service you deploy**, not a desktop application and not a framework — you run `./deploy.sh start`, open a browser, and people on your network get a form that turns a ticker into a report. That narrow shape is the point: one job, done through a UI.
 
 Where it sits relative to the others:
 
@@ -221,9 +221,9 @@ Run from this directory, or from the repo root as `./finrobot_equity/deploy.sh �
 | `DATABASE_URL` | local SQLite | Database connection string |
 | `GITHUB_CLIENT_ID` | — | GitHub OAuth client ID |
 | `GITHUB_CLIENT_SECRET` | — | GitHub OAuth client secret |
-| `FINROBOT_ADMIN_EMAIL` | `admin@finrobot.com` | Initial admin account |
-| `FINROBOT_ADMIN_EMAILS` | — | Additional admin emails (comma-separated) |
-| `FINROBOT_ADMIN_PASSWORD` | random | Initial admin password — printed on first start if unset |
+| `ALPHA_DESK_ADMIN_EMAIL` | `admin@alpha_desk.com` | Initial admin account |
+| `ALPHA_DESK_ADMIN_EMAILS` | — | Additional admin emails (comma-separated) |
+| `ALPHA_DESK_ADMIN_PASSWORD` | random | Initial admin password — printed on first start if unset |
 | `ADANOS_API_KEY` | — | Retail sentiment key (alternative to `config.ini`) |
 | `ADANOS_BASE_URL` | provider default | Override the retail sentiment endpoint |
 

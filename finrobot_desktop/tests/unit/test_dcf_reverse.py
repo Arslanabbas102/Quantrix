@@ -6,7 +6,7 @@ produce, plus edge cases. The forward formula itself is already covered by
 test_dcf.py and tests/audit/test_financial_sanity.py.
 """
 
-from finrobot.engine.compute.operators.dcf import (
+from alpha_desk.engine.compute.operators.dcf import (
     ReverseSolveReason,
     _price_for,
     calculate_dcf,
@@ -14,7 +14,7 @@ from finrobot.engine.compute.operators.dcf import (
     solve_for_implied_horizon,
     solve_for_implied_wacc,
 )
-from finrobot.engine.models.financial import DCFInputs
+from alpha_desk.engine.models.financial import DCFInputs
 
 
 def _make_inputs(**overrides):
@@ -259,7 +259,7 @@ def test_equivalence_line_holds_wacc_fixed_and_descends_with_growth():
     """Every point reprices to the SAME target at the SAME WACC; as growth rises,
     the explicit window needed shrinks (the line slopes down). This is the curve
     the expert probe draws — a family of (growth, horizon) combos, not one point."""
-    from finrobot.routes.compute import build_equivalence_line
+    from alpha_desk.routes.compute import build_equivalence_line
 
     inputs = _make_inputs()
     # A target reachable across the mid/high growth range.
@@ -279,7 +279,7 @@ def test_equivalence_line_holds_wacc_fixed_and_descends_with_growth():
 def test_equivalence_line_marks_unreachable_growths_as_none():
     """Below some growth the target is unreachable at any horizon — those points
     are None (a gap in the line), never fabricated to 0."""
-    from finrobot.routes.compute import build_equivalence_line
+    from alpha_desk.routes.compute import build_equivalence_line
 
     inputs = _make_inputs()
     target = _price_for(inputs, 0.45, 0.10, inputs.terminal_growth_rate, 9, False)
@@ -301,7 +301,7 @@ def test_dcf_reverse_result_preserves_converged_flag():
     """The bisection reports converged in its dict, but DcfReverseResult silently
     dropped the key (extra ignored), so an API caller couldn't tell an exact solve
     from a capped approximation. The model must carry it through (BUG-035)."""
-    from finrobot.routes.compute import DcfReverseResult
+    from alpha_desk.routes.compute import DcfReverseResult
 
     inputs = _make_inputs()
     out = solve_for_implied_growth(inputs, target_price=300.0, wacc_override=0.10)
@@ -314,7 +314,7 @@ def test_dcf_reverse_result_converged_defaults_true_for_horizon():
     """solve_for_implied_horizon emits no converged key; the model defaults it to
     True so the horizon path (which reports solvability via implied_horizon/message)
     doesn't read as non-converged."""
-    from finrobot.routes.compute import DcfReverseResult
+    from alpha_desk.routes.compute import DcfReverseResult
 
     inputs = _make_inputs()
     out = solve_for_implied_horizon(
@@ -330,7 +330,7 @@ def test_dcf_reverse_result_converged_defaults_true_for_horizon():
 
 
 def _capm_wacc(inputs):
-    from finrobot.engine.compute.operators.wacc import calculate_wacc
+    from alpha_desk.engine.compute.operators.wacc import calculate_wacc
 
     _, wacc = calculate_wacc(
         inputs.risk_free_rate,
@@ -346,7 +346,7 @@ def _capm_wacc(inputs):
 def test_market_implied_check_reachable_round_trip():
     """When the market price equals what 8% growth justifies (under CAPM WACC),
     the reality check reports ~8% implied growth and growth_unreachable=False."""
-    from finrobot.engine.compute.operators.dcf import _price_for, market_implied_check
+    from alpha_desk.engine.compute.operators.dcf import _price_for, market_implied_check
 
     inputs = _make_inputs()
     wacc = _capm_wacc(inputs)
@@ -364,7 +364,7 @@ def test_market_implied_check_unreachable_option_value():
     """A price far above what even +50% growth justifies (the TSLA case) must set
     growth_unreachable=True, implied_growth=None, and surface the ceiling so the
     narrative can say 'even 50% growth implies only $X'."""
-    from finrobot.engine.compute.operators.dcf import _price_for, market_implied_check
+    from alpha_desk.engine.compute.operators.dcf import _price_for, market_implied_check
 
     inputs = _make_inputs()
     wacc = _capm_wacc(inputs)

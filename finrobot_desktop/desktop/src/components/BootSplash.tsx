@@ -49,7 +49,7 @@ export function BootSplash(): React.ReactElement {
             textShadow: 'var(--glow-blue)',
           }}
         >
-          FinRobot
+          Alpha Desk
         </div>
         <div
           style={{

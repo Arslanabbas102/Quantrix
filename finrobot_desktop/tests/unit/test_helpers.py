@@ -10,11 +10,11 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from finrobot.engine.data.interface import DataResult, ProviderError
-from finrobot.engine.data.normalize.financials import normalize_financials
-from finrobot.engine.data.normalize.price import normalize_price
-from finrobot.engine.data.types import DataType
-from finrobot.engine.pipelines._helpers import (
+from alpha_desk.engine.data.interface import DataResult, ProviderError
+from alpha_desk.engine.data.normalize.financials import normalize_financials
+from alpha_desk.engine.data.normalize.price import normalize_price
+from alpha_desk.engine.data.types import DataType
+from alpha_desk.engine.pipelines._helpers import (
     execute_financial_data_step,
     fmt_market_cap,
     fmt_multiple,
@@ -216,7 +216,7 @@ async def test_historical_metrics_injected_into_structured_context():
     assert "historical_metrics" in structured_context, (
         f"Missing historical_metrics. Keys: {list(structured_context.keys())}"
     )
-    from finrobot.engine.models.financial import HistoricalMetrics
+    from alpha_desk.engine.models.financial import HistoricalMetrics
 
     hm = structured_context["historical_metrics"]
     assert isinstance(hm, HistoricalMetrics)
@@ -352,8 +352,8 @@ async def test_enrich_company_forward_populates_row(monkeypatch):
     """
     from types import SimpleNamespace
 
-    from finrobot.engine.models.financial import CompanyFinancials
-    from finrobot.engine.pipelines import _helpers
+    from alpha_desk.engine.models.financial import CompanyFinancials
+    from alpha_desk.engine.pipelines import _helpers
 
     fwd = SimpleNamespace(forward_eps=8.7514, forward_net_income=1.31e11)
     monkeypatch.setattr(_helpers, "get_forward_financials", lambda **kw: fwd)
@@ -386,8 +386,8 @@ async def test_enrich_company_forward_swallows_typeerror(monkeypatch):
     rather than bubble up and vaporize the whole comps step."""
     from types import SimpleNamespace
 
-    from finrobot.engine.models.financial import CompanyFinancials
-    from finrobot.engine.pipelines import _helpers
+    from alpha_desk.engine.models.financial import CompanyFinancials
+    from alpha_desk.engine.pipelines import _helpers
 
     def _boom(**_kw):
         raise TypeError("'NoneType' object is not subscriptable")

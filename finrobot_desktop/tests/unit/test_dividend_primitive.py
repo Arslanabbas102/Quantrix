@@ -2,7 +2,7 @@
 (``primitives.dividend``) — the single authority shared by the canonical FX normalize
 (display DPS) and the DDM seed."""
 
-from finrobot.engine.primitives.dividend import reconcile_per_share_dividend_to_quote_unit
+from alpha_desk.engine.primitives.dividend import reconcile_per_share_dividend_to_quote_unit
 
 
 def test_adr_mismatch_rederives_to_yield_times_price():

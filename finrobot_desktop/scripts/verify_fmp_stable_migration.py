@@ -13,7 +13,7 @@
 4. 历史价排序方向(代码已显式排序,这里只记录 API 原生顺序供文档)。
 
 用法:.venv/bin/python scripts/verify_fmp_stable_migration.py
-key 从 keychain(FinRobot/fmp_api_key)读,绝不打印。
+key 从 keychain(Alpha Desk/fmp_api_key)读,绝不打印。
 """
 
 from __future__ import annotations
@@ -25,7 +25,7 @@ from datetime import date
 import httpx
 import keyring
 
-from finrobot.engine.primitives.industry import is_bank, is_commodity_cyclical
+from alpha_desk.engine.primitives.industry import is_bank, is_commodity_cyclical
 
 BASE = "https://financialmodelingprep.com/stable"
 
@@ -173,9 +173,9 @@ async def check_industry_whitelists(client: httpx.AsyncClient, key: str) -> int:
 
 
 async def main() -> int:
-    key = keyring.get_password("FinRobot", "fmp_api_key")
+    key = keyring.get_password("Alpha Desk", "fmp_api_key")
     if not key:
-        print("NO KEY in keychain (FinRobot/fmp_api_key)")
+        print("NO KEY in keychain (Alpha Desk/fmp_api_key)")
         return 2
     failures = 0
     async with httpx.AsyncClient(timeout=20.0) as client:

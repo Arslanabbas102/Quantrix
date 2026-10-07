@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# FinRobot Equity Research — Google Cloud Run One-Click Deployment
+# Alpha Desk Equity Research — Google Cloud Run One-Click Deployment
 #
 # Prerequisites:
 #   - gcloud CLI installed and authenticated
@@ -22,19 +22,19 @@ REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 # ── Configuration ────────────────────────────────────────────────────────────
 PROJECT_ID="your-project-id"
 REGION="us-central1"
-SERVICE_NAME="finrobot-equity"
-REPO_NAME="finrobot"                         # Artifact Registry repository
+SERVICE_NAME="alpha_desk-equity"
+REPO_NAME="alpha_desk"                         # Artifact Registry repository
 IMAGE="${REGION}-docker.pkg.dev/${PROJECT_ID}/${REPO_NAME}/${SERVICE_NAME}"
-BUCKET_NAME="finrobot-reports-${PROJECT_ID}"
-SQL_INSTANCE_NAME="finrobot-db"
-DB_NAME="finrobot"
-DB_USER="finrobot"
+BUCKET_NAME="alpha_desk-reports-${PROJECT_ID}"
+SQL_INSTANCE_NAME="alpha_desk-db"
+DB_NAME="alpha_desk"
+DB_USER="alpha_desk"
 DB_PASS="$(openssl rand -base64 24)"         # random password, stored in secret
-SECRET_NAME="finrobot-config-ini"
+SECRET_NAME="alpha_desk-config-ini"
 CONFIG_INI_PATH="${SCRIPT_DIR}/core/config/config.ini"
 
 echo "=========================================="
-echo " FinRobot Cloud Run Deployment"
+echo " Alpha Desk Cloud Run Deployment"
 echo "=========================================="
 echo "Project : ${PROJECT_ID}"
 echo "Region  : ${REGION}"

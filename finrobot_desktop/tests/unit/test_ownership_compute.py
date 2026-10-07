@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 
-from finrobot.engine.compute.operators.ownership import (
+from alpha_desk.engine.compute.operators.ownership import (
     _canonical_transaction_type,
     _money_from_text,
     build_institutional_holdings,
@@ -322,7 +322,7 @@ def test_form4_build_insider_transactions_normalises_M_derivative_label() -> Non
     """End-to-end regression on the 2026-05-28 TSLA artifact bug: the
     derivative-leg row for a code-M exercise must read ``exercise``, not
     ``derivative_sale``. Mirrors the actual payload the artifact stored."""
-    from finrobot.engine.compute.operators.ownership import build_insider_transactions
+    from alpha_desk.engine.compute.operators.ownership import build_insider_transactions
 
     rows = build_insider_transactions(
         {
@@ -373,7 +373,7 @@ def test_form4_missing_shares_value_become_none_not_zero() -> None:
     """A Form 4 leg whose provider omitted shares/value must carry None — a
     fabricated 0 makes a parse failure look like a real 0-share/$0 transaction,
     wasting analyst time. An *explicit* value=0 (forfeit/gift) stays 0 (None≠0)."""
-    from finrobot.engine.compute.operators.ownership import build_insider_transactions
+    from alpha_desk.engine.compute.operators.ownership import build_insider_transactions
 
     rows = build_insider_transactions(
         {
@@ -506,7 +506,7 @@ def test_ceo_name_uses_form4_officer_title_over_prose_scrape() -> None:
 def test_ceo_name_from_insiders_skips_former_and_nonceo_titles() -> None:
     """The Form-4 CEO resolver picks the current-CEO title, skipping a departed
     CEO's residual filings and non-CEO officers."""
-    from finrobot.engine.compute.operators.ownership import (
+    from alpha_desk.engine.compute.operators.ownership import (
         _ceo_name_from_insiders,
         build_insider_transactions,
     )
@@ -556,7 +556,7 @@ def test_extract_ceo_name_rejects_paragraph_spanning_phrase() -> None:
     stay on one line, and any function-word token (Us, All, …) rejects
     the candidate.
     """
-    from finrobot.engine.compute.operators.ownership import _extract_ceo_name
+    from alpha_desk.engine.compute.operators.ownership import _extract_ceo_name
 
     text = (
         "A More Profitable Future for Tesla and a Better Future for Us All\n\n"
@@ -579,7 +579,7 @@ def test_extract_ceo_name_rejects_section_heading_above_ceo_paragraph() -> None:
     additional tokens — i.e. a one-word "name". Real SCT table entries
     always carry at least "Firstname Lastname".
     """
-    from finrobot.engine.compute.operators.ownership import _extract_ceo_name
+    from alpha_desk.engine.compute.operators.ownership import _extract_ceo_name
 
     text = (
         "Compensation Discussion and Analysis\n\n"
@@ -592,7 +592,7 @@ def test_extract_ceo_name_keeps_canonical_table_pattern() -> None:
     """The 'Name\\nCEO' table layout (Google/Alphabet proxy style) must
     still work — the regression test guards against tightening that
     breaks the high-confidence cases."""
-    from finrobot.engine.compute.operators.ownership import _extract_ceo_name
+    from alpha_desk.engine.compute.operators.ownership import _extract_ceo_name
 
     text = "Sundar Pichai\nCEO Total Compensation $74M"
     assert _extract_ceo_name(text) == "Sundar Pichai"
@@ -600,7 +600,7 @@ def test_extract_ceo_name_keeps_canonical_table_pattern() -> None:
 
 def test_extract_ceo_name_keeps_honorific_pattern() -> None:
     """`Mr./Ms./Dr. Lastname` near a CEO anchor must still resolve."""
-    from finrobot.engine.compute.operators.ownership import _extract_ceo_name
+    from alpha_desk.engine.compute.operators.ownership import _extract_ceo_name
 
     text = "The Board reappointed Mr. Cook as Chief Executive Officer for another term."
     assert _extract_ceo_name(text) == "Cook"
@@ -618,7 +618,7 @@ def test_extract_ceo_name_msft_prose_fragment_does_not_bind_honorific_fragment()
     """The false strategy-0 hit ("Mr. Smith.\\n\\nCEO Pay Ratio") must lose to
     the real signature layout ("Satya Nadella\\n\\nChairman and Chief Executive
     Officer") that the bare-CEO branch used to miss entirely."""
-    from finrobot.engine.compute.operators.ownership import _extract_ceo_name
+    from alpha_desk.engine.compute.operators.ownership import _extract_ceo_name
 
     text = (
         "Satya Nadella\n\nChairman and Chief Executive Officer\n\n"
@@ -633,7 +633,7 @@ def test_extract_ceo_name_msft_prose_fragment_does_not_bind_honorific_fragment()
 def test_extract_ceo_name_prose_fragment_alone_abstains() -> None:
     """With no trustworthy layout elsewhere, the fragment must yield None —
     never "Mr. Smith."."""
-    from finrobot.engine.compute.operators.ownership import _extract_ceo_name
+    from alpha_desk.engine.compute.operators.ownership import _extract_ceo_name
 
     text = "stock vesting of SAs: $6,254,433 for Mr. Smith.\n\nCEO Pay Ratio\n\n"
     assert _extract_ceo_name(text) is None
@@ -642,7 +642,7 @@ def test_extract_ceo_name_prose_fragment_alone_abstains() -> None:
 def test_extract_ceo_name_does_not_bind_directors_outside_ceo_role() -> None:
     """A director's OUTSIDE 'Chief Executive Officer, Acme Corp' line is not
     this issuer's CEO — the full-title branch must reject ', <Company>'."""
-    from finrobot.engine.compute.operators.ownership import _extract_ceo_name
+    from alpha_desk.engine.compute.operators.ownership import _extract_ceo_name
 
     text = "Jane Roe\nChief Executive Officer, Acme Corp\n"
     assert _extract_ceo_name(text) is None
@@ -651,7 +651,7 @@ def test_extract_ceo_name_does_not_bind_directors_outside_ceo_role() -> None:
 def test_is_blacklisted_name_rejects_sentence_boundary_tokens() -> None:
     """Initials ("B.") and suffixes ("Jr.") are legitimate; a full-stop token
     like "Smith." / "Mr." marks a prose boundary and poisons the whole run."""
-    from finrobot.engine.compute.operators.ownership import _is_blacklisted_name
+    from alpha_desk.engine.compute.operators.ownership import _is_blacklisted_name
 
     assert _is_blacklisted_name("Mr. Smith.")
     assert _is_blacklisted_name("Smith. Satya")
@@ -673,7 +673,7 @@ def test_extract_ceo_name_ko_succession_proxy_binds_named_ceo_not_successor() ->
     person). The appositive comma-bind must win and the proximity heuristic must
     never override it.
     """
-    from finrobot.engine.compute.operators.ownership import _extract_ceo_name
+    from alpha_desk.engine.compute.operators.ownership import _extract_ceo_name
 
     text = (
         "As I prepare to pass the baton to Henrique Braun, I'm proud of our team. "
@@ -698,7 +698,7 @@ def test_extract_ceo_name_abstains_when_two_honorifics_flank_ceo_anchor() -> Non
     near CEO anchors (a succession/co-leadership proxy), the extractor cannot
     confidently pick one and must abstain (None) rather than coin-flip a wrong
     person. A single unambiguous honorific still resolves (locked above)."""
-    from finrobot.engine.compute.operators.ownership import _extract_ceo_name
+    from alpha_desk.engine.compute.operators.ownership import _extract_ceo_name
 
     text = (
         "Mr. Smith stepped down. The Board announced that Mr. Jones will serve "
@@ -714,7 +714,7 @@ def test_extract_ceo_name_appositive_handles_chairman_and_ceo() -> None:
     """The appositive bind must accept the canonical "<Name>, our Chairman and
     Chief Executive Officer" / "<Name>, President and Chief Executive Officer"
     forms, not only the bare "Chief Executive Officer"."""
-    from finrobot.engine.compute.operators.ownership import _extract_ceo_name
+    from alpha_desk.engine.compute.operators.ownership import _extract_ceo_name
 
     assert (
         _extract_ceo_name("Reelect James Quincey, our Chairman and Chief Executive Officer.")
@@ -751,7 +751,7 @@ _CERT_AAPL = (
 
 def test_extract_ceo_name_from_cert_bare_i_certify() -> None:
     """Bare "I, <Name>, certify" opening (AAPL/MSFT/JPM/NVDA/XOM/AMZN/META)."""
-    from finrobot.engine.compute.operators.ownership import _extract_ceo_name_from_cert
+    from alpha_desk.engine.compute.operators.ownership import _extract_ceo_name_from_cert
 
     assert _extract_ceo_name_from_cert(_CERT_AAPL) == "Timothy D. Cook"
     assert _extract_ceo_name_from_cert("I, Satya Nadella, certify that:") == "Satya Nadella"
@@ -763,7 +763,7 @@ def test_extract_ceo_name_from_cert_bare_i_certify() -> None:
 def test_extract_ceo_name_from_cert_title_clause_between_name_and_certify() -> None:
     """KO/DIS format: a title clause sits between the name and "certify". The
     comma right after the name bounds the capture so the title never leaks in."""
-    from finrobot.engine.compute.operators.ownership import _extract_ceo_name_from_cert
+    from alpha_desk.engine.compute.operators.ownership import _extract_ceo_name_from_cert
 
     assert _extract_ceo_name_from_cert(_CERT_KO) == "Henrique Braun"
     # DIS: apostrophe surname + parenthetical issuer clause before "certify".
@@ -777,7 +777,7 @@ def test_extract_ceo_name_from_cert_title_clause_between_name_and_certify() -> N
 def test_extract_ceo_name_from_cert_signature_block_fallback() -> None:
     """When the opening sentence can't yield a name, the closing signature block
     (typed name directly above the CEO title line) is the fallback."""
-    from finrobot.engine.compute.operators.ownership import _extract_ceo_name_from_cert
+    from alpha_desk.engine.compute.operators.ownership import _extract_ceo_name_from_cert
 
     cert = (
         "Exhibit 31.1\nI, the undersigned officer, certify that:\n"
@@ -791,7 +791,7 @@ def test_extract_ceo_name_from_cert_signature_block_fallback() -> None:
 def test_extract_ceo_name_from_cert_rejects_garbage_via_choke() -> None:
     """Every cert candidate funnels through _is_blacklisted_name — a title-only,
     corporate-vocabulary, or sentence-fragment run can never surface as a CEO."""
-    from finrobot.engine.compute.operators.ownership import _extract_ceo_name_from_cert
+    from alpha_desk.engine.compute.operators.ownership import _extract_ceo_name_from_cert
 
     assert _extract_ceo_name_from_cert("I, Chief Executive Officer, certify that:") is None
     assert _extract_ceo_name_from_cert("I, Median Employee, certify that:") is None
@@ -802,7 +802,7 @@ def test_extract_ceo_name_from_cert_rejects_garbage_via_choke() -> None:
 
 def test_extract_ceo_name_from_cert_missing_returns_none() -> None:
     """No cert text / no matchable name → None (caller falls back to proxy)."""
-    from finrobot.engine.compute.operators.ownership import _extract_ceo_name_from_cert
+    from alpha_desk.engine.compute.operators.ownership import _extract_ceo_name_from_cert
 
     assert _extract_ceo_name_from_cert("") is None
     assert _extract_ceo_name_from_cert("This exhibit contains no certification opening.") is None
@@ -937,7 +937,7 @@ def test_ceo_from_insiders_rejects_divisional_regional_ceo_title() -> None:
     unit CEO). The regional CEO filed enough Form-4s to win the (count, recency)
     tie-break and was wrongly resolved as the parent CEO. A business-unit CEO
     title must be skipped so only the parent CEO can resolve."""
-    from finrobot.engine.compute.operators.ownership import (
+    from alpha_desk.engine.compute.operators.ownership import (
         _ceo_name_from_insiders,
         build_insider_transactions,
     )
@@ -978,7 +978,7 @@ def test_is_divisional_ceo_title_distinguishes_parent_from_unit() -> None:
     """Anchor the divisional check: parent-company CEO titles (unqualified, or
     continued only by a connector / "of the Company") are NOT divisional;
     a named region/brand/segment after the CEO token IS divisional."""
-    from finrobot.engine.compute.operators.ownership import _is_divisional_ceo_title
+    from alpha_desk.engine.compute.operators.ownership import _is_divisional_ceo_title
 
     # Parent-company CEO titles — must NOT be flagged divisional.
     for title in (

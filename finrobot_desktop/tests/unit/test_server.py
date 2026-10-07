@@ -1,7 +1,7 @@
 import pytest
 from httpx import ASGITransport, AsyncClient
 
-from finrobot.server import app
+from alpha_desk.server import app
 
 
 @pytest.fixture
@@ -28,14 +28,14 @@ class TestChatEndpoint:
         """Verify route exists by manually setting app.state before request.
         ASGITransport doesn't trigger lifespan events."""
 
-        from finrobot.config import get_settings
-        from finrobot.engine.deps import FinRobotDeps
-        from finrobot.engine.orchestrator import create_lead_agent
+        from alpha_desk.config import get_settings
+        from alpha_desk.engine.deps import AlphaDeskDeps
+        from alpha_desk.engine.orchestrator import create_lead_agent
 
         settings = get_settings(model_name="test")
         agent = create_lead_agent(settings)
         app.state.agent = agent
-        app.state.deps = FinRobotDeps(
+        app.state.deps = AlphaDeskDeps(
             data_layer=None,
             settings=settings,  # type: ignore[arg-type]
         )
@@ -77,9 +77,9 @@ class TestHydrateSettingsKeychainRefusal:
     async def test_hydrate_does_not_crash_when_keychain_denied(self):
         import keyring.errors
 
-        from finrobot.config import get_settings
-        from finrobot.secret_store import KeychainSecretStore
-        from finrobot.server import hydrate_settings_from_secrets
+        from alpha_desk.config import get_settings
+        from alpha_desk.secret_store import KeychainSecretStore
+        from alpha_desk.server import hydrate_settings_from_secrets
 
         class _RefusingKeyring:
             errors = keyring.errors
@@ -89,7 +89,7 @@ class TestHydrateSettingsKeychainRefusal:
 
         store = KeychainSecretStore.__new__(KeychainSecretStore)
         store._keyring = _RefusingKeyring()  # type: ignore[assignment]
-        store._service_name = "FinRobotTest"
+        store._service_name = "AlphaDeskTest"
         store._degraded_keys = set()
 
         settings = get_settings(model_name="openai:gpt-4o")
@@ -107,21 +107,21 @@ class TestArchitecturalRedLines:
     wrapper were removed when SSE runs were consolidated under ``/api/runs``
     (RunStore-backed, see ``routes/runs.py``). The behavioural tests for that
     endpoint were retired along with the code; the bare-except guard stays
-    because it covers the entire ``finrobot/`` tree.
+    because it covers the entire ``alpha_desk/`` tree.
     """
 
-    def test_no_bare_except_exception_in_finrobot(self):
+    def test_no_bare_except_exception_in_alpha_desk(self):
         """Regression guard for P3 audit D1 / CLAUDE.md N2 discipline.
 
         The SSE endpoint previously used `except Exception as e:` which
         swallowed BaseException subclasses (KeyboardInterrupt, SystemExit,
         MemoryError) and, worse, CancelledError — breaking client-disconnect
         cleanup. This test fails the moment someone reintroduces a bare
-        `except Exception` anywhere under finrobot/.
+        `except Exception` anywhere under alpha_desk/.
         """
         import pathlib
 
-        root = pathlib.Path(__file__).resolve().parents[2] / "finrobot"
+        root = pathlib.Path(__file__).resolve().parents[2] / "alpha_desk"
         offenders: list[str] = []
         for py in root.rglob("*.py"):
             for lineno, line in enumerate(py.read_text().splitlines(), start=1):
@@ -131,7 +131,7 @@ class TestArchitecturalRedLines:
                 if "except Exception" in stripped and "BaseException" not in stripped:
                     offenders.append(f"{py.relative_to(root.parent)}:{lineno}: {stripped}")
         assert offenders == [], (
-            "`except Exception` is banned in finrobot/ (P3 audit D1). "
+            "`except Exception` is banned in alpha_desk/ (P3 audit D1). "
             "Catch concrete exception types and re-raise CancelledError. "
             f"Found: {offenders}"
         )
@@ -152,7 +152,7 @@ class TestArchitecturalRedLines:
         (desktop/src-tauri/sidecar/entry.py) injects the ``serve`` subcommand and hands
         off to the Click CLI. It must never inject ``--reload`` — that would
         spin up uvicorn's file-watching reloader inside the shipped desktop app.
-        (The previous artifact was a uv shell shim with a FINROBOT_SERVER_RELOAD
+        (The previous artifact was a uv shell shim with a ALPHA_DESK_SERVER_RELOAD
         opt-in; the frozen sidecar dropped both the shim and the env hook.)
         """
         from pathlib import Path
@@ -172,7 +172,7 @@ class TestTranscriptWriterLRU:
     async def test_lru_evicts_oldest_when_cap_reached(self) -> None:
         """When the cap is hit, the oldest writer is evicted from the dict."""
 
-        from finrobot.server import _TRANSCRIPT_WRITERS_MAX, _get_or_create_writer
+        from alpha_desk.server import _TRANSCRIPT_WRITERS_MAX, _get_or_create_writer
 
         class _FakeState:
             pass
@@ -192,7 +192,7 @@ class TestTranscriptWriterLRU:
     @pytest.mark.asyncio
     async def test_lru_moves_accessed_session_to_end(self) -> None:
         """Accessing an existing session promotes it to MRU so it isn't evicted first."""
-        from finrobot.server import _TRANSCRIPT_WRITERS_MAX, _get_or_create_writer
+        from alpha_desk.server import _TRANSCRIPT_WRITERS_MAX, _get_or_create_writer
 
         class _FakeState:
             pass
@@ -213,7 +213,7 @@ class TestTranscriptWriterLRU:
     @pytest.mark.asyncio
     async def test_lru_creates_dict_when_state_missing(self) -> None:
         """Defensively creates transcript_writers if not present on app_state."""
-        from finrobot.server import _get_or_create_writer
+        from alpha_desk.server import _get_or_create_writer
 
         class _FakeState:
             pass
@@ -253,7 +253,7 @@ class TestRequestTraceMiddleware:
     def test_response_has_request_id_header(self) -> None:
         from fastapi.testclient import TestClient
 
-        from finrobot.server import app
+        from alpha_desk.server import app
 
         with TestClient(app) as client:
             resp = client.get("/health")
@@ -265,8 +265,8 @@ class TestSubAgentsCaching:
 
     @pytest.mark.asyncio
     async def test_app_state_has_sub_agents_after_setup(self):
-        from finrobot.config import get_settings
-        from finrobot.engine.agents.factory import create_sub_agents
+        from alpha_desk.config import get_settings
+        from alpha_desk.engine.agents.factory import create_sub_agents
 
         settings = get_settings(model_name="test")
         sub_agents = create_sub_agents(settings, skill_registry=None)
@@ -280,7 +280,7 @@ class TestSubAgentsCaching:
         import ast
         from pathlib import Path
 
-        runs_path = Path(__file__).resolve().parents[2] / "finrobot" / "routes" / "runs.py"
+        runs_path = Path(__file__).resolve().parents[2] / "alpha_desk" / "routes" / "runs.py"
         tree = ast.parse(runs_path.read_text())
         for node in ast.walk(tree):
             if isinstance(node, ast.ImportFrom):
@@ -316,15 +316,15 @@ class TestQuoteWarmupBudget:
         import asyncio
         import logging
 
-        from finrobot import server as server_mod
-        from finrobot.engine.data import quote_batch
+        from alpha_desk import server as server_mod
+        from alpha_desk.engine.data import quote_batch
 
         async def _hangs(tickers, data_layer):
             await asyncio.sleep(30)  # far past the test budget — must be cut off
 
         monkeypatch.setattr(quote_batch, "fetch_quotes_batch_cached", _hangs)
         app_ns = self._app()
-        with caplog.at_level(logging.WARNING, logger="finrobot.server"):
+        with caplog.at_level(logging.WARNING, logger="alpha_desk.server"):
             await server_mod.warm_quote_cache(app_ns, self._Store(), None, budget_seconds=0.05)
         assert app_ns.state.quotes_warmed is True
         assert app_ns.state.quotes_warmed_ticker_count == 2
@@ -332,8 +332,8 @@ class TestQuoteWarmupBudget:
 
     @pytest.mark.asyncio
     async def test_fast_path_marks_warmed_with_ticker_count(self, monkeypatch):
-        from finrobot import server as server_mod
-        from finrobot.engine.data import quote_batch
+        from alpha_desk import server as server_mod
+        from alpha_desk.engine.data import quote_batch
 
         seen: dict[str, object] = {}
 
@@ -350,7 +350,7 @@ class TestQuoteWarmupBudget:
     @pytest.mark.asyncio
     async def test_store_failure_still_flips_warmed_flag(self, monkeypatch):
         """A store outage must not leave the frontend polling forever."""
-        from finrobot import server as server_mod
+        from alpha_desk import server as server_mod
 
         class _BrokenStore:
             async def list_by_ticker(self, ticker, include_archived, limit):

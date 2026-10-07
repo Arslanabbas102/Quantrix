@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-from finrobot.artifact.models import (
+from alpha_desk.artifact.models import (
     Artifact,
     ArtifactAssumptions,
     ArtifactComputeVersion,

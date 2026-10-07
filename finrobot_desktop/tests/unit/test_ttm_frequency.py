@@ -6,7 +6,7 @@ Anchored to live FMP `period=quarter` payloads (2026-07-06): UL/RIO/BHP/DEO retu
 4 three-month rows. The detector reads the cadence off the fiscal period-end dates.
 """
 
-from finrobot.engine.data.providers.fmp_provider import (
+from alpha_desk.engine.data.providers.fmp_provider import (
     _period_end_months_apart,
     _ttm_trailing_row_count,
 )

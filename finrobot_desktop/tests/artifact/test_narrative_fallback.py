@@ -4,7 +4,7 @@ summary from the frozen structured data — so a report never publishes empty se
 
 from __future__ import annotations
 
-from finrobot.artifact.builders import _fill_narrative_fallbacks
+from alpha_desk.artifact.builders import _fill_narrative_fallbacks
 
 
 def _structured() -> dict:

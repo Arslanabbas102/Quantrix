@@ -123,7 +123,7 @@ export function CompetitiveBody({
                 {/* Core P/E keeps its bespoke comps-reconciliation gloss (the
                   football-field "Comps (core P/E)" target is computed on this
                   column's median). TermTip supplies the standard hover + "ask
-                  FinRobot" deep dive; the inline `title` stays as a quick
+                  Alpha Desk" deep dive; the inline `title` stays as a quick
                   reconciliation hint that the tooltip text spells out. */}
                 <th
                   style={{ ...thStyle, textAlign: 'right', cursor: 'help' }}

@@ -15,7 +15,7 @@ import math
 
 import pytest
 
-from finrobot.engine.compute.operators.sotp_scenario import compute_scenario_band
+from alpha_desk.engine.compute.operators.sotp_scenario import compute_scenario_band
 
 # --- External anchors (FMP price-target endpoints, TSLA, probed 2026-07-06) ----
 TSLA_LOW = 360.0

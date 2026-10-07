@@ -10,7 +10,7 @@ from __future__ import annotations
 
 from datetime import date
 
-from finrobot.engine.compute.operators.forward_estimates import get_forward_revenue_growth
+from alpha_desk.engine.compute.operators.forward_estimates import get_forward_revenue_growth
 
 AS_OF = date(2026, 6, 9)
 

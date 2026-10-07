@@ -1,6 +1,6 @@
 """Tests for BM25 RAG compute module."""
 
-from finrobot.engine.primitives.rag import Chunk, BM25Index, chunk_text
+from alpha_desk.engine.primitives.rag import Chunk, BM25Index, chunk_text
 
 
 class TestChunkText:

@@ -1,4 +1,4 @@
-// Brand wordmark + About popover. The FinRobot wordmark in the TitleBar is the
+// Brand wordmark + About popover. The Alpha Desk wordmark in the TitleBar is the
 // affordance (the macOS / desktop "About" convention): clicking it opens a
 // cosmic popover with version · license, the foundation site, a GitHub star
 // link, and the copyright / 501(c)(3) attribution. Costs zero layout space and

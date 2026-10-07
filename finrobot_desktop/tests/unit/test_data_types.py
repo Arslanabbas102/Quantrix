@@ -1,4 +1,4 @@
-from finrobot.engine.data.types import DataType
+from alpha_desk.engine.data.types import DataType
 
 
 def test_data_type_values():

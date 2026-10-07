@@ -17,18 +17,18 @@ from __future__ import annotations
 
 import asyncio
 
-from finrobot.config import get_settings
-from finrobot.engine.compute.operators.ownership import (
+from alpha_desk.config import get_settings
+from alpha_desk.engine.compute.operators.ownership import (
     _ceo_name_from_insiders,
     _extract_ceo_name,
     build_insider_transactions,
     compute_ownership_governance,
 )
-from finrobot.engine.data.providers.edgar_provider import EdgarToolsProvider
-from finrobot.paths import SETTINGS_JSON, ensure_home
-from finrobot.routes.settings import load_non_secret_settings
-from finrobot.secret_store import create_secret_store
-from finrobot.server import hydrate_settings_from_secrets
+from alpha_desk.engine.data.providers.edgar_provider import EdgarToolsProvider
+from alpha_desk.paths import SETTINGS_JSON, ensure_home
+from alpha_desk.routes.settings import load_non_secret_settings
+from alpha_desk.secret_store import create_secret_store
+from alpha_desk.server import hydrate_settings_from_secrets
 
 BASKET = ("KO", "AAPL", "NVDA", "TSLA", "RIVN", "F", "SAP")
 

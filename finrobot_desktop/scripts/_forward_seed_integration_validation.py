@@ -26,19 +26,19 @@ import asyncio
 import math
 import sys
 
-from finrobot.config import get_settings
-from finrobot.engine.compute.coordinators.dcf_seed import fetch_forward_growth
-from finrobot.engine.compute.coordinators.extractor import extract_financial_data
-from finrobot.engine.compute.coordinators.historical_extractor import fetch_historical_metrics
-from finrobot.engine.compute.operators.dcf import calculate_dcf
-from finrobot.engine.compute.operators.dcf_seed import seed_dcf_inputs
-from finrobot.engine.compute.operators.forward_estimates import get_forward_revenue_growth
-from finrobot.engine.data.factory import build_data_layer
-from finrobot.engine.data.types import DataType
-from finrobot.paths import SETTINGS_JSON
-from finrobot.routes.settings import load_non_secret_settings
-from finrobot.secret_store import create_secret_store
-from finrobot.server import hydrate_settings_from_secrets
+from alpha_desk.config import get_settings
+from alpha_desk.engine.compute.coordinators.dcf_seed import fetch_forward_growth
+from alpha_desk.engine.compute.coordinators.extractor import extract_financial_data
+from alpha_desk.engine.compute.coordinators.historical_extractor import fetch_historical_metrics
+from alpha_desk.engine.compute.operators.dcf import calculate_dcf
+from alpha_desk.engine.compute.operators.dcf_seed import seed_dcf_inputs
+from alpha_desk.engine.compute.operators.forward_estimates import get_forward_revenue_growth
+from alpha_desk.engine.data.factory import build_data_layer
+from alpha_desk.engine.data.types import DataType
+from alpha_desk.paths import SETTINGS_JSON
+from alpha_desk.routes.settings import load_non_secret_settings
+from alpha_desk.secret_store import create_secret_store
+from alpha_desk.server import hydrate_settings_from_secrets
 
 # AAPL = reaccelerator (consensus >> trailing); KO/JNJ = stable sanity;
 # SAP = ADR/FX path; RIVN = loss-maker crash-check; MSFT/NVDA/GOOGL = mega-cap.
@@ -141,7 +141,7 @@ async def main() -> int:
     finally:
         # Non-server entrypoint: join the aiosqlite workers + checkpoint WAL so the
         # process exits cleanly instead of hanging on "Event loop is closed" (2026-06-24).
-        from finrobot.engine.data.factory import shutdown_data_layer
+        from alpha_desk.engine.data.factory import shutdown_data_layer
 
         await shutdown_data_layer(dl)
 

@@ -16,12 +16,12 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 
-from finrobot.engine.compute.operators.audit.currency_caliber import (
+from alpha_desk.engine.compute.operators.audit.currency_caliber import (
     audit_currency_caliber,
     audit_foreign_issuer_usd_tags,
 )
-from finrobot.engine.data.normalize.contracts import DEGRADED_FX_NORMALIZED
-from finrobot.engine.models.financial import (
+from alpha_desk.engine.data.normalize.contracts import DEGRADED_FX_NORMALIZED
+from alpha_desk.engine.models.financial import (
     DataProvenance,
     FinancialData,
     IncomeStatement,

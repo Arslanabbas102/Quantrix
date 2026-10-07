@@ -16,10 +16,10 @@ from pathlib import Path
 
 import pytest
 
-from finrobot.engine.compute.operators.ddm import calculate_ddm
-from finrobot.engine.compute.operators.ddm_seed import seed_ddm_inputs
-from finrobot.engine.data.normalize.contracts import NormalizedFinancials, Provenance
-from finrobot.engine.models.financial import (
+from alpha_desk.engine.compute.operators.ddm import calculate_ddm
+from alpha_desk.engine.compute.operators.ddm_seed import seed_ddm_inputs
+from alpha_desk.engine.data.normalize.contracts import NormalizedFinancials, Provenance
+from alpha_desk.engine.models.financial import (
     BalanceSheet,
     FinancialData,
     IncomeStatement,
@@ -95,7 +95,7 @@ def test_ddm_params_step_uses_seed_not_llm() -> None:
     prompt. CLAUDE.md's determinism red-line forbids that path for valuation
     numbers; this guard greps the source so it can't return.
     """
-    src = (REPO_ROOT / "finrobot" / "engine" / "pipelines" / "ddm.py").read_text()
+    src = (REPO_ROOT / "alpha_desk" / "engine" / "pipelines" / "ddm.py").read_text()
 
     # The deterministic executor must exist and be wired into the step.
     assert "async def _execute_ddm_seed(" in src, (

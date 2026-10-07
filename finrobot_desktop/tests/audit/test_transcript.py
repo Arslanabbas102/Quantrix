@@ -1,4 +1,4 @@
-"""Tests for finrobot.audit.transcript and finrobot.audit.persistence."""
+"""Tests for alpha_desk.audit.transcript and alpha_desk.audit.persistence."""
 
 from __future__ import annotations
 
@@ -10,13 +10,13 @@ from pathlib import Path
 
 import pytest
 
-from finrobot.audit.persistence import (
+from alpha_desk.audit.persistence import (
     _summarize_session_file,
     list_sessions,
     load_session_transcript,
     prune_sessions,
 )
-from finrobot.audit.transcript import (
+from alpha_desk.audit.transcript import (
     TranscriptWriter,
     is_valid_session_id,
     sanitize_session_id,
@@ -376,7 +376,7 @@ async def test_session_start_triggers_retention_prune(
         calls.append(base_dir)
         return 0
 
-    monkeypatch.setattr("finrobot.audit.persistence.prune_sessions", spy_prune)
+    monkeypatch.setattr("alpha_desk.audit.persistence.prune_sessions", spy_prune)
     writer = TranscriptWriter("prune-wire", base_dir=tmp_session_dir)
     await writer.log_session_start(user_id="local", model="m")
     assert calls == [tmp_session_dir]

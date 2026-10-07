@@ -15,10 +15,10 @@ from datetime import datetime, timezone
 
 import pytest
 
-from finrobot.engine.compute.coordinators.extractor import extract_financial_data
-from finrobot.engine.data.interface import DataResult
-from finrobot.engine.data.normalize.financials import normalize_financials
-from finrobot.engine.data.normalize.price import normalize_price
+from alpha_desk.engine.compute.coordinators.extractor import extract_financial_data
+from alpha_desk.engine.data.interface import DataResult
+from alpha_desk.engine.data.normalize.financials import normalize_financials
+from alpha_desk.engine.data.normalize.price import normalize_price
 
 
 def _extracted(industry: str, sector: str = "Financial Services"):

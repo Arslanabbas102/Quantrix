@@ -18,7 +18,7 @@ describe('assembleInteractiveHtml', () => {
 
   it('inlines the css, the data payload, and the viewer bundle', () => {
     expect(out).toContain('.card{color:red}')
-    expect(out).toContain('window.__FINROBOT_REPORT__ = ')
+    expect(out).toContain('window.__ALPHA_DESK_REPORT__ = ')
     expect(out).toContain('console.log("viewer")')
     expect(out).toContain('"id":"a1"')
   })

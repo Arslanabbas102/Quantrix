@@ -9,7 +9,7 @@ FMP serves gross revenue 73.661B and interestExpense 23.825B for that quarter;
 73.661B − 23.825B = 49.836B ties to SEC to the penny.
 """
 
-from finrobot.engine.primitives.industry import (
+from alpha_desk.engine.primitives.industry import (
     bank_net_revenue,
     bank_operating_income_net_caliber,
     commodity_cyclical_basis,

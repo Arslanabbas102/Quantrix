@@ -1,4 +1,4 @@
-"""Tests for finrobot.artifact.store.ArtifactStore.
+"""Tests for alpha_desk.artifact.store.ArtifactStore.
 
 Coverage:
 - save → get round-trip: full Artifact survives serialisation + deserialisation
@@ -18,8 +18,8 @@ from pathlib import Path
 
 import pytest
 
-from finrobot.artifact.models import Artifact
-from finrobot.artifact.store import ArtifactStore
+from alpha_desk.artifact.models import Artifact
+from alpha_desk.artifact.store import ArtifactStore
 from tests.artifact.conftest import _make_artifact
 
 UTC = timezone.utc

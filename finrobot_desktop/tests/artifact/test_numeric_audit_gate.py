@@ -14,14 +14,14 @@ from typing import Any, cast
 
 import pytest
 
-from finrobot.artifact.builders import (
+from alpha_desk.artifact.builders import (
     build_comps_artifact,
     build_dcf_artifact,
     build_equity_research_artifact,
     build_ic_memo_artifact,
     build_lbo_artifact,
 )
-from finrobot.engine.models.financial import (
+from alpha_desk.engine.models.financial import (
     CompanyFinancials,
     DCFInputs,
     DCFResult,
@@ -34,7 +34,7 @@ from finrobot.engine.models.financial import (
     PeerComps,
     ValuationMetrics,
 )
-from finrobot.engine.pipelines.base import PipelineResult
+from alpha_desk.engine.pipelines.base import PipelineResult
 
 UTC = timezone.utc
 
@@ -168,8 +168,8 @@ def test_synthesis_dial_withhold_sets_top_level_flag_like_numeric_audit():
     cause-independent 'point withheld' signal _is_withheld / _summary_text read.
     Before the fix it stayed None on the dial path while True on the audit path —
     identical withheld states reading differently downstream."""
-    from finrobot.engine.compute.operators.valuation_synthesis import synthesize_valuations
-    from finrobot.engine.models.financial import ValuationMethod
+    from alpha_desk.engine.compute.operators.valuation_synthesis import synthesize_valuations
+    from alpha_desk.engine.models.financial import ValuationMethod
 
     # lone comps_pb far below market → outside the [0.5x, 2x] single-method band →
     # the dial withholds the point (the verdict still ships directionally).

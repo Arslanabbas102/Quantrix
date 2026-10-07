@@ -1,7 +1,7 @@
 import pytest
 from pathlib import Path
 
-from finrobot.engine.skills.loader import (
+from alpha_desk.engine.skills.loader import (
     load_skill,
     _parse_frontmatter,
     _extract_description,

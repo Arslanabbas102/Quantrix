@@ -27,8 +27,8 @@ from datetime import datetime, timezone
 
 import pytest
 
-from finrobot.artifact.contract import CONTRACT_CLAUSES, enforce_artifact_contract
-from finrobot.artifact.models import (
+from alpha_desk.artifact.contract import CONTRACT_CLAUSES, enforce_artifact_contract
+from alpha_desk.artifact.models import (
     Artifact,
     ArtifactAssumptions,
     ArtifactComputeVersion,
@@ -36,7 +36,7 @@ from finrobot.artifact.models import (
     ArtifactMeta,
     ArtifactOutputs,
 )
-from finrobot.artifact.summary_extractor import extract_target_price
+from alpha_desk.artifact.summary_extractor import extract_target_price
 
 UTC = timezone.utc
 CREATED = datetime(2026, 6, 8, tzinfo=UTC)

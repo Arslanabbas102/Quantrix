@@ -2,7 +2,7 @@ import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
-// Default port avoids collision with FinRobot backend (8321)
+// Default port avoids collision with Alpha Desk backend (8321)
 export default defineConfig({
   // '/' for the desktop bundle. Set VITE_BASE_PATH (e.g. '/v2/') to emit asset
   // URLs for a build served from a sub-path; it also becomes import.meta.env
@@ -13,7 +13,7 @@ export default defineConfig({
     port: 5173,
     strictPort: true,
     proxy: {
-      // In dev, proxy API/chat/health to FinRobot FastAPI backend
+      // In dev, proxy API/chat/health to Alpha Desk FastAPI backend
       '/api': 'http://127.0.0.1:8321',
       '/chat': 'http://127.0.0.1:8321',
       '/health': 'http://127.0.0.1:8321',

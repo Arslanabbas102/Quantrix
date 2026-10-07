@@ -1,8 +1,8 @@
-"""Tests for the SSE event TypedDicts in finrobot.events."""
+"""Tests for the SSE event TypedDicts in alpha_desk.events."""
 
 from __future__ import annotations
 
-from finrobot.events import (
+from alpha_desk.events import (
     ArtifactReady,
     RunCompleted,
     RunEvent,

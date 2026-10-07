@@ -6,8 +6,8 @@ warning strings and thresholds rather than just "non-empty list".
 
 from datetime import datetime, timezone
 
-from finrobot.engine.data.interface import DataResult
-from finrobot.engine.data.validator import (
+from alpha_desk.engine.data.interface import DataResult
+from alpha_desk.engine.data.validator import (
     cross_validate,
     has_comparable_financials,
     key_field_divergences,

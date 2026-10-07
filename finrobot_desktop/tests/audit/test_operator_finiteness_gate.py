@@ -12,7 +12,7 @@ injecting NaN / +Inf / −Inf must produce an EXPLICIT rejection — ``None`` or
 raised ``ValueError`` — never a non-finite (or fabricated finite) return.
 
 Adding a numeric operator (or a new float parameter on an existing one) to
-``finrobot/engine/compute/operators/`` requires registering its injection cases
+``alpha_desk/engine/compute/operators/`` requires registering its injection cases
 below — the development checklist (T4#5) points here.
 """
 
@@ -23,18 +23,18 @@ from typing import Any, Callable
 
 import pytest
 
-from finrobot.engine.compute.operators.data_processor import calculate_cagr
-from finrobot.engine.compute.operators.fx_normalize import (
+from alpha_desk.engine.compute.operators.data_processor import calculate_cagr
+from alpha_desk.engine.compute.operators.fx_normalize import (
     normalize_company_to_usd,
     normalize_financialdata_to_usd,
 )
-from finrobot.engine.compute.operators.multiples import (
+from alpha_desk.engine.compute.operators.multiples import (
     _sanity,
     compute_ttm_fcf,
     current_ev_ebitda,
     fcf_yield,
 )
-from finrobot.engine.models.financial import (
+from alpha_desk.engine.models.financial import (
     BalanceSheet,
     CompanyFinancials,
     FinancialData,

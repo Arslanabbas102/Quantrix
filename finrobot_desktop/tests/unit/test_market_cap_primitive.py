@@ -13,7 +13,7 @@ from __future__ import annotations
 
 import pytest
 
-from finrobot.engine.primitives.market_cap import market_cap_on_live_price
+from alpha_desk.engine.primitives.market_cap import market_cap_on_live_price
 
 
 def test_marks_to_live_with_reported_shares():

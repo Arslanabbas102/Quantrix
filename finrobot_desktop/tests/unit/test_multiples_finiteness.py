@@ -14,13 +14,13 @@ import math
 
 import pytest
 
-from finrobot.engine.compute.operators.multiples import (
+from alpha_desk.engine.compute.operators.multiples import (
     _sanity,
     calculate_peer_statistics,
     compute_ttm_fcf,
     fcf_yield,
 )
-from finrobot.engine.models.financial import CompanyFinancials, PeerComps
+from alpha_desk.engine.models.financial import CompanyFinancials, PeerComps
 
 
 def _company(ticker: str, **kw: float) -> CompanyFinancials:

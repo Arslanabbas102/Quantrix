@@ -26,8 +26,8 @@ from pathlib import Path
 
 import pytest
 
-from finrobot.engine.compute.operators.valuation_aggregator import aggregate_valuation
-from finrobot.engine.models.financial import (
+from alpha_desk.engine.compute.operators.valuation_aggregator import aggregate_valuation
+from alpha_desk.engine.models.financial import (
     CompanyFinancials,
     DCFInputs,
     DCFResult,
@@ -40,7 +40,7 @@ from finrobot.engine.models.financial import (
 
 AGG_SRC = (
     Path(__file__).resolve().parents[2]
-    / "finrobot"
+    / "alpha_desk"
     / "engine"
     / "compute"
     / "operators"
@@ -61,10 +61,10 @@ class TestAggregatorLeafIsolation:
     def test_no_forbidden_imports_in_aggregator_source(self) -> None:
         src = AGG_SRC.read_text()
         forbidden = (
-            "from finrobot.engine.pipelines",
-            "from finrobot.engine.agents",
-            "from finrobot.engine.orchestrator",
-            "from finrobot.engine.data",
+            "from alpha_desk.engine.pipelines",
+            "from alpha_desk.engine.agents",
+            "from alpha_desk.engine.orchestrator",
+            "from alpha_desk.engine.data",
             "import pydantic_ai",
             "from pydantic_ai",
             "import openai",
@@ -83,9 +83,9 @@ class TestAggregatorLeafIsolation:
         src = AGG_SRC.read_text()
         forbidden_call_patterns = (
             re.compile(
-                r"^\s*from\s+finrobot\.engine\.compute\.operators\.lbo\s+import", re.MULTILINE
+                r"^\s*from\s+alpha_desk\.engine\.compute\.operators\.lbo\s+import", re.MULTILINE
             ),
-            re.compile(r"^\s*import\s+finrobot\.engine\.compute\.operators\.lbo", re.MULTILINE),
+            re.compile(r"^\s*import\s+alpha_desk\.engine\.compute\.operators\.lbo", re.MULTILINE),
             re.compile(r"\bcalculate_lbo\s*\("),
             re.compile(r"\bcalculate_lbo_sensitivity\s*\("),
         )
@@ -297,7 +297,7 @@ class TestAggregatorContract:
         # sponsor hurdle (ability-to-pay) before sharing the football-field
         # axis with PV methods and the current price — the undiscounted band
         # overstated the LBO row ~2x over a 5y hold.
-        from finrobot.engine.models.valuation_thresholds import SPONSOR_IRR_HURDLE
+        from alpha_desk.engine.models.valuation_thresholds import SPONSOR_IRR_HURDLE
 
         remaining_debt = lbo.schedule[-1].ending_debt
         discount = (1 + SPONSOR_IRR_HURDLE) ** len(lbo.schedule)
@@ -468,7 +468,7 @@ class TestAggregatorContract:
             as_of=AS_OF,
         )
         lbo_row = next(m for m in agg.methods if m.method == "lbo")
-        from finrobot.engine.models.valuation_thresholds import SPONSOR_IRR_HURDLE
+        from alpha_desk.engine.models.valuation_thresholds import SPONSOR_IRR_HURDLE
 
         remaining_debt = lbo.schedule[-1].ending_debt
         discount = (1 + SPONSOR_IRR_HURDLE) ** len(lbo.schedule)

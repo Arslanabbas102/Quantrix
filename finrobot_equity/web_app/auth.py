@@ -179,8 +179,8 @@ def init_default_admin():
     """Initialize default admin user if no users exist.
     
     Admin credentials can be configured via environment variables:
-        FINROBOT_ADMIN_EMAIL (default: admin@finrobot.com)
-        FINROBOT_ADMIN_PASSWORD (default: randomly generated)
+        ALPHA_DESK_ADMIN_EMAIL (default: admin@alpha_desk.com)
+        ALPHA_DESK_ADMIN_PASSWORD (default: randomly generated)
     
     IMPORTANT: Change the default admin password immediately after first login.
     """
@@ -189,8 +189,8 @@ def init_default_admin():
     try:
         stats = crud.get_user_stats(db)
         if stats["total_users"] == 0:
-            admin_email = os.getenv("FINROBOT_ADMIN_EMAIL", "admin@finrobot.com")
-            admin_password = os.getenv("FINROBOT_ADMIN_PASSWORD", secrets.token_urlsafe(12))
+            admin_email = os.getenv("ALPHA_DESK_ADMIN_EMAIL", "admin@alpha_desk.com")
+            admin_password = os.getenv("ALPHA_DESK_ADMIN_PASSWORD", secrets.token_urlsafe(12))
             crud.create_user(
                 db=db,
                 email=admin_email,
@@ -199,7 +199,7 @@ def init_default_admin():
                 provider="local"
             )
             print(f"✅ Created default admin user: {admin_email}")
-            if not os.getenv("FINROBOT_ADMIN_PASSWORD"):
+            if not os.getenv("ALPHA_DESK_ADMIN_PASSWORD"):
                 print(f"⚠️  Generated admin password: {admin_password}")
                 print("⚠️  Please change this password immediately after first login!")
     finally:

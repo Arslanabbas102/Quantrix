@@ -15,16 +15,16 @@ from pydantic_ai import Agent
 from pydantic_ai.exceptions import AgentRunError
 from pydantic_ai.models.test import TestModel
 
-from finrobot.engine.data.interface import DataResult, ProviderError
-from finrobot.engine.data.normalize.contracts import (
+from alpha_desk.engine.data.interface import DataResult, ProviderError
+from alpha_desk.engine.data.normalize.contracts import (
     NormalizedFinancials,
     NormalizedPrice,
     PriceBar,
     Provenance,
 )
-from finrobot.engine.data.types import DataType
-from finrobot.engine.models.financial import StepOutput
-from finrobot.engine.pipelines.base import (
+from alpha_desk.engine.data.types import DataType
+from alpha_desk.engine.models.financial import StepOutput
+from alpha_desk.engine.pipelines.base import (
     Pipeline,
     PipelineResult,
     PipelineStep,
@@ -34,7 +34,7 @@ from finrobot.engine.pipelines.base import (
     _PROMPT_MAX_STEP_DATA_CHARS,
     _is_recoverable_exception,
 )
-from finrobot.engine.pipelines.runner import (
+from alpha_desk.engine.pipelines.runner import (
     _PROMPT_MAX_DICT_KEYS,
     _PROMPT_MAX_OMITTED_KEY_NAMES,
     _PROMPT_MAX_STRING_CHARS,
@@ -44,7 +44,7 @@ from finrobot.engine.pipelines.runner import (
     _compact_for_prompt,
     _render_structured_prompt_value,
 )
-from finrobot.engine.pipelines.validators import ValidationResult, validate_is_non_empty
+from alpha_desk.engine.pipelines.validators import ValidationResult, validate_is_non_empty
 
 
 # ---------------------------------------------------------------------------
@@ -389,7 +389,7 @@ class TestPipelineResult:
         summary = result.format_summary()
         lines = summary.splitlines()
         # Document H1 is the scaffold's — the step's H1 is demoted below it.
-        assert lines[0] == "# FinRobot Analysis Report"
+        assert lines[0] == "# Alpha Desk Analysis Report"
         assert "### Microsoft Corporation" in lines
         assert "#### Sub Section" in lines
         assert "# Microsoft Corporation" not in lines
@@ -472,7 +472,7 @@ class TestPipelineResult:
 def _minimal_artifact():
     """Smallest valid Artifact a builder could return — meta.language is the
     field under test; everything else uses minimal valid values."""
-    from finrobot.artifact.models import (
+    from alpha_desk.artifact.models import (
         Artifact,
         ArtifactAssumptions,
         ArtifactComputeVersion,
@@ -499,7 +499,7 @@ class TestArtifactLanguageStamping:
     write point in execute() — see ADR-0008."""
 
     def test_artifact_meta_defaults_to_zh(self):
-        from finrobot.artifact.models import ArtifactMeta
+        from alpha_desk.artifact.models import ArtifactMeta
 
         # Legacy artifacts (written before this field existed) were all generated
         # in Chinese; the default MUST be 'zh' so old JSON deserializes with
@@ -775,7 +775,7 @@ async def test_pipeline_logs_structured_data_type(caplog):
     mock_deps = MagicMock()
     mock_deps.skill_runtime = None
 
-    with caplog.at_level(logging.INFO, logger="finrobot.engine.pipelines.runner"):
+    with caplog.at_level(logging.INFO, logger="alpha_desk.engine.pipelines.runner"):
         await pipeline.execute(mock_deps, "AAPL")
 
     log_messages = " ".join(caplog.messages)
@@ -820,7 +820,7 @@ def test_structured_context_catalyst_headlines_are_untrusted_wrapped():
     headlines via the generic structured_context JSON dump. They must arrive
     flattened + wrapped in <untrusted_news_headline> — the thesis prompt got
     this treatment (BUG-087) but this sibling path shipped raw."""
-    from finrobot.engine.models.financial import CatalystAnalysis, CatalystEvent
+    from alpha_desk.engine.models.financial import CatalystAnalysis, CatalystEvent
 
     evil = CatalystEvent(
         category="regulatory",
@@ -1828,8 +1828,8 @@ async def test_failed_validation_purges_structured_output():
     used to leave its last INVALID payload in structured_data — Monte Carlo
     seeding / valuation synthesis / the builder all consumed it as if it had
     passed. The degraded prose stays; the structured numbers are purged."""
-    from finrobot.engine.models.financial import StepOutput
-    from finrobot.engine.pipelines.validators import ValidationResult
+    from alpha_desk.engine.models.financial import StepOutput
+    from alpha_desk.engine.pipelines.validators import ValidationResult
 
     async def bad_numbers_executor(agent, deps, prompt, structured_context, ticker):
         return StepOutput(text="prose stays", structured={"implied_price": -1.0})
@@ -1886,7 +1886,7 @@ async def test_step_output_warnings_reach_pipeline_result():
 def test_store_output_dedups_warnings_across_retries():
     """A step re-attempted after a validation failure re-emits identical
     warnings; the artifact must not list them N times."""
-    from finrobot.engine.pipelines.base import Pipeline as _P
+    from alpha_desk.engine.pipelines.base import Pipeline as _P
 
     run_warnings: list[str] = []
     out = StepOutput(text="t", warnings=["w1", "w2"])

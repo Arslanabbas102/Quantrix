@@ -14,12 +14,12 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from typing import Any
 
-from finrobot.engine.compute.coordinators.dcf_seed import fetch_forward_growth
-from finrobot.engine.compute.operators.forward_estimates import get_forward_revenue_growth
-from finrobot.engine.data.interface import ProviderError
-from finrobot.engine.data.normalize import NormalizedForwardEstimates
-from finrobot.engine.data.normalize.contracts import Provenance
-from finrobot.engine.data.types import DataType
+from alpha_desk.engine.compute.coordinators.dcf_seed import fetch_forward_growth
+from alpha_desk.engine.compute.operators.forward_estimates import get_forward_revenue_growth
+from alpha_desk.engine.data.interface import ProviderError
+from alpha_desk.engine.data.normalize import NormalizedForwardEstimates
+from alpha_desk.engine.data.normalize.contracts import Provenance
+from alpha_desk.engine.data.types import DataType
 
 NOW = datetime.now(tz=timezone.utc)
 

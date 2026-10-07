@@ -3,7 +3,7 @@
 // and any future surface share ONE definition of what counts as an anomaly.
 //
 // This MIRRORS the backend's deterministic anomaly call-outs in
-// finrobot/coverage/prompt.py (`_movers` / `_below_target`) so the chat snapshot
+// alpha_desk/coverage/prompt.py (`_movers` / `_below_target`) so the chat snapshot
 // the LLM sees and the strip the analyst sees flag the exact same names — zero
 // caliber drift. The護城河 is that "what counts as a mover" is a deterministic
 // number, defined once, never delegated to the LLM. v1 covers the two backend
@@ -28,7 +28,7 @@ export interface TriageItem {
 
 // Absolute 1-day % move (percentage points) at/above which a name is a "mover".
 // = the backend's `coverage_anomaly_change_threshold` default (3.0, a ~2σ daily
-// move for a typical large-cap). Kept in sync with finrobot/config.py.
+// move for a typical large-cap). Kept in sync with alpha_desk/config.py.
 export const MOVER_THRESHOLD = 3.0
 
 // How many triage cards the strip spells out before collapsing the tail to a

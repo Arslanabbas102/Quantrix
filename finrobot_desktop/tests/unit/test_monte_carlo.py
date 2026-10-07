@@ -3,15 +3,15 @@ from __future__ import annotations
 import numpy as np
 import pytest
 
-from finrobot.engine.compute.operators.dcf import calculate_dcf
-from finrobot.engine.compute.operators.monte_carlo import (
+from alpha_desk.engine.compute.operators.dcf import calculate_dcf
+from alpha_desk.engine.compute.operators.monte_carlo import (
     MonteCarloRequest,
     _bounded_perturb,
     _percentile_rank,
     deterministic_seed,
     run_monte_carlo,
 )
-from finrobot.engine.models.financial import DCFInputs
+from alpha_desk.engine.models.financial import DCFInputs
 
 
 def _inputs() -> DCFInputs:

@@ -1,5 +1,5 @@
 // CoverageHero — the research cockpit that fronts the Research homepage
-// (FinRobot.html reference). Submitting a ticker drills into /stocks/:ticker.
+// (Alpha Desk.html reference). Submitting a ticker drills into /stocks/:ticker.
 //
 // Layout, top → bottom:
 //   eyebrow      — "AI 研究驾驶舱" with cyan side rules

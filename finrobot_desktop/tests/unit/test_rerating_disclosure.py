@@ -26,11 +26,11 @@ from __future__ import annotations
 
 import pytest
 
-from finrobot.engine.compute.operators.valuation_aggregator import (
+from alpha_desk.engine.compute.operators.valuation_aggregator import (
     _comps_pe_method,
     _ev_ebitda_method,
 )
-from finrobot.engine.models.financial import CompanyFinancials, PeerComps
+from alpha_desk.engine.models.financial import CompanyFinancials, PeerComps
 
 # The common tail of every re-rating WARNING (both methods) — a stable, unique
 # detector so a test can count / exclude the re-rating warning without matching

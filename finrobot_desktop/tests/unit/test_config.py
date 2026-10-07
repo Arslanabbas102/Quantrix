@@ -2,32 +2,32 @@ from pathlib import Path
 
 import pytest
 
-from finrobot.config import BUILTIN_PROVIDERS, FinRobotSettings, ProviderConfig, get_settings
+from alpha_desk.config import BUILTIN_PROVIDERS, AlphaDeskSettings, ProviderConfig, get_settings
 
 
 class TestDefaults:
-    # Config is app-stored-only: FinRobotSettings reads ONLY constructor kwargs,
+    # Config is app-stored-only: AlphaDeskSettings reads ONLY constructor kwargs,
     # never env / .env (settings_customise_sources drops those sources). So a
-    # bare FinRobotSettings() reflects the class defaults regardless of the
+    # bare AlphaDeskSettings() reflects the class defaults regardless of the
     # developer's shell or repo-root .env — no monkeypatch.delenv scaffolding
     # needed any more.
     def test_default_model_name_is_empty(self):
         # Empty on purpose: a fresh install has no LLM key, so a baked-in default
         # forced every first boot into a startup_error banner that read like the
         # product demanded OpenAI. Empty = "no model chosen yet" (onboarding).
-        s = FinRobotSettings()
+        s = AlphaDeskSettings()
         assert s.model_name == ""
         assert s.is_model_configured is False
 
     def test_default_has_no_provider_keys(self):
-        s = FinRobotSettings()
+        s = AlphaDeskSettings()
         # LLM keys live in the keychain (provider_key:<id>), never in defaults.
         assert s.provider_key("openai") is None
         assert s.provider_key("anthropic") is None
         assert s.custom_providers == []
 
     def test_default_providers_are_the_builtins(self):
-        s = FinRobotSettings()
+        s = AlphaDeskSettings()
         ids = [p.id for p in s.providers]
         # Only the two majors are built in; everything else is a custom provider.
         assert ids == ["anthropic", "openai"]
@@ -53,21 +53,21 @@ class TestDefaults:
         assert myhost is not None and myhost.base_url == "https://h/v1"
 
     def test_env_var_is_ignored_for_user_config(self, monkeypatch):
-        """A FINROBOT_* env var must NOT leak into user config — the whole point
+        """A ALPHA_DESK_* env var must NOT leak into user config — the whole point
         of the app-stored-only model (packaging safety + no source ambiguity)."""
-        monkeypatch.setenv("FINROBOT_OPENAI_API_KEY", "sk-from-env")
-        monkeypatch.setenv("FINROBOT_MODEL_NAME", "anthropic:claude-sonnet-4-6")
-        s = FinRobotSettings()
+        monkeypatch.setenv("ALPHA_DESK_OPENAI_API_KEY", "sk-from-env")
+        monkeypatch.setenv("ALPHA_DESK_MODEL_NAME", "anthropic:claude-sonnet-4-6")
+        s = AlphaDeskSettings()
         assert s.provider_key("openai") is None
         assert s.model_name == ""
 
     def test_default_cache_db_path(self):
         s = get_settings()
-        # Resolved at runtime: legacy cwd ``finrobot_cache.db`` if present,
-        # else unified ``~/.finrobot/data_cache.db`` from paths.py.
+        # Resolved at runtime: legacy cwd ``alpha_desk_cache.db`` if present,
+        # else unified ``~/.alpha_desk/data_cache.db`` from paths.py.
         assert s.cache_db_path  # non-empty after model_post_init
         assert s.cache_db_path.endswith("data_cache.db") or s.cache_db_path.endswith(
-            "finrobot_cache.db"
+            "alpha_desk_cache.db"
         )
 
     def test_default_skills_dir(self):
@@ -80,11 +80,11 @@ class TestDefaults:
         assert Path(s.skills_dir).is_absolute()
 
     def test_sec_holdings_refresh_is_opt_in(self):
-        s = FinRobotSettings()
+        s = AlphaDeskSettings()
         assert s.sec_holdings_auto_refresh is False
 
     def test_peer_sticky_window_defaults_to_one_week(self):
-        s = FinRobotSettings()
+        s = AlphaDeskSettings()
         assert s.peer_sticky_max_age_days == 7
 
 
@@ -99,13 +99,13 @@ class TestProviderKeyPrivacy:
         assert "_provider_keys" not in s.model_dump()
 
     def test_with_provider_keys_returns_copy(self):
-        base = FinRobotSettings()
+        base = AlphaDeskSettings()
         keyed = base.with_provider_keys({"openai": "sk-x"})
         assert base.provider_key("openai") is None  # original untouched
         assert keyed.provider_key("openai") == "sk-x"
 
     def test_blank_keys_are_dropped(self):
-        s = FinRobotSettings().with_provider_keys({"openai": "", "anthropic": "sk-a"})
+        s = AlphaDeskSettings().with_provider_keys({"openai": "", "anthropic": "sk-a"})
         assert s.provider_key("openai") is None
         assert s.provider_key("anthropic") == "sk-a"
 
@@ -203,7 +203,7 @@ class TestCreateModel:
         """
         import httpx
 
-        from finrobot.config import _shared_llm_http_client
+        from alpha_desk.config import _shared_llm_http_client
 
         client = _shared_llm_http_client()
         assert isinstance(client, httpx.AsyncClient)
@@ -223,7 +223,7 @@ class TestCreateModel:
         dispatcher — a fresh client per call would reintroduce the per-turn TLS
         handshake the fix exists to kill).
         """
-        from finrobot.config import _shared_llm_http_client
+        from alpha_desk.config import _shared_llm_http_client
 
         captured: list[object] = []
 
@@ -369,7 +369,7 @@ class TestEmptyModelOnboarding:
 
 
 class TestNoEnvReading:
-    """Config is app-stored-only — neither a FINROBOT_* env var nor a .env file
+    """Config is app-stored-only — neither a ALPHA_DESK_* env var nor a .env file
     may feed user config. These guard the settings_customise_sources override
     that drops the env + dotenv sources (packaging safety + source clarity).
 
@@ -379,31 +379,31 @@ class TestNoEnvReading:
 
     def test_user_config_env_vars_ignored(self, monkeypatch):
         for var, val in {
-            "FINROBOT_OPENAI_API_KEY": "sk-oai",
-            "FINROBOT_FMP_API_KEY": "fmp",
-            "FINROBOT_SEC_USER_AGENT": "Hacker evil@example.com",
-            "FINROBOT_LOG_LEVEL": "DEBUG",
+            "ALPHA_DESK_OPENAI_API_KEY": "sk-oai",
+            "ALPHA_DESK_FMP_API_KEY": "fmp",
+            "ALPHA_DESK_SEC_USER_AGENT": "Hacker evil@example.com",
+            "ALPHA_DESK_LOG_LEVEL": "DEBUG",
         }.items():
             monkeypatch.setenv(var, val)
         s = get_settings()
         assert s.provider_key("openai") is None
         assert s.fmp_api_key == ""
-        assert s.sec_user_agent == "FinRobot admin@example.com"  # class default
+        assert s.sec_user_agent == "Alpha Desk admin@example.com"  # class default
         assert s.log_level == "INFO"  # class default
 
     def test_dotenv_file_not_read(self, tmp_path, monkeypatch):
         """Even a .env sitting in the process cwd must be ignored."""
         env = tmp_path / ".env"
-        env.write_text("FINROBOT_OPENAI_API_KEY=sk-from-dotenv\n", encoding="utf-8")
+        env.write_text("ALPHA_DESK_OPENAI_API_KEY=sk-from-dotenv\n", encoding="utf-8")
         monkeypatch.chdir(tmp_path)
         s = get_settings()
         assert s.provider_key("openai") is None
 
 
 def test_logging_defaults() -> None:
-    from finrobot.config import FinRobotSettings
+    from alpha_desk.config import AlphaDeskSettings
 
-    s = FinRobotSettings()
+    s = AlphaDeskSettings()
     assert s.log_to_file is True
     assert s.log_retention_days == 7
     assert s.log_level == "INFO"

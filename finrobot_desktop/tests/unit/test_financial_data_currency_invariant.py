@@ -15,7 +15,7 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 
-from finrobot.engine.models.financial import (
+from alpha_desk.engine.models.financial import (
     BalanceSheet,
     FinancialData,
     IncomeStatement,
