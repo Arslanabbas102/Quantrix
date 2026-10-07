@@ -6,9 +6,9 @@ import pytest
 from pydantic_ai import Agent
 from pydantic_ai.models.test import TestModel
 
-from finrobot.engine.data.interface import DataResult
-from finrobot.engine.deps import FinRobotDeps
-from finrobot.engine.pipelines.equity_research import create_equity_research_pipeline
+from alpha_desk.engine.data.interface import DataResult
+from alpha_desk.engine.deps import AlphaDeskDeps
+from alpha_desk.engine.pipelines.equity_research import create_equity_research_pipeline
 
 
 # ---------------------------------------------------------------------------
@@ -47,10 +47,10 @@ class FakeDataLayer:
 
     async def fetch_canonical(self, data_type, ticker, **kwargs):
         """Return NormalizedFinancials / NormalizedPrice (ADR-0006 canonical contract)."""
-        from finrobot.engine.data.interface import ProviderError
-        from finrobot.engine.data.normalize.financials import normalize_financials
-        from finrobot.engine.data.normalize.price import normalize_price
-        from finrobot.engine.data.types import DataType
+        from alpha_desk.engine.data.interface import ProviderError
+        from alpha_desk.engine.data.normalize.financials import normalize_financials
+        from alpha_desk.engine.data.normalize.price import normalize_price
+        from alpha_desk.engine.data.types import DataType
 
         dtype = DataType(data_type)
         if dtype not in (DataType.PRICE, DataType.FINANCIALS):
@@ -96,7 +96,7 @@ def _make_test_agents(output: str = "analysis output") -> dict[str, Agent]:
     agents = {}
     for role in ["data", "analysis", "modeling", "synthesis", "report"]:
         agents[role] = Agent(
-            TestModel(custom_output_text=output), deps_type=FinRobotDeps, defer_model_check=True
+            TestModel(custom_output_text=output), deps_type=AlphaDeskDeps, defer_model_check=True
         )
     return agents
 
@@ -165,7 +165,7 @@ class TestPipelineStructure:
     def test_ownership_step_accepts_structured_model(self):
         from datetime import datetime, timezone
 
-        from finrobot.engine.models.sec import OwnershipGovernanceAnalysis
+        from alpha_desk.engine.models.sec import OwnershipGovernanceAnalysis
 
         pipeline = create_equity_research_pipeline(_make_test_agents())
         step = next(s for s in pipeline.steps if s.name == "ownership_governance_analysis")
@@ -180,7 +180,7 @@ class TestPipelineStructure:
     def test_ownership_step_rejects_empty_structured_model(self):
         from datetime import datetime, timezone
 
-        from finrobot.engine.models.sec import OwnershipGovernanceAnalysis
+        from alpha_desk.engine.models.sec import OwnershipGovernanceAnalysis
 
         pipeline = create_equity_research_pipeline(_make_test_agents())
         step = next(s for s in pipeline.steps if s.name == "ownership_governance_analysis")
@@ -222,7 +222,7 @@ class TestPipelineStructure:
 
 def _make_stub_execute_fn(step_name: str):
     """Return an async stub execute_fn that returns a minimal valid StepOutput."""
-    from finrobot.engine.models.financial import StepOutput
+    from alpha_desk.engine.models.financial import StepOutput
 
     async def _stub(agent, deps, prompt, structured_context, ticker):
         return StepOutput(
@@ -239,8 +239,8 @@ class TestPipelineExecution:
             _make_test_agents("revenue 385B ebitda 130B price_history available")
         )
         # Stub executor to avoid real compute in unit test of orchestration
-        from finrobot.engine.pipelines.base import TextValidator
-        from finrobot.engine.pipelines.validators import validate_is_non_empty
+        from alpha_desk.engine.pipelines.base import TextValidator
+        from alpha_desk.engine.pipelines.validators import validate_is_non_empty
 
         for step in pipeline.steps:
             step.executor = _make_stub_execute_fn(step.name)
@@ -265,8 +265,8 @@ class TestPipelineExecution:
                 _make_test_agents("revenue 385B ebitda 130B price_history available")
             )
             # Stub executor to avoid real compute in unit test of orchestration
-            from finrobot.engine.pipelines.base import TextValidator
-            from finrobot.engine.pipelines.validators import validate_is_non_empty
+            from alpha_desk.engine.pipelines.base import TextValidator
+            from alpha_desk.engine.pipelines.validators import validate_is_non_empty
 
             for step in pipeline.steps:
                 step.executor = _make_stub_execute_fn(step.name)
@@ -307,10 +307,10 @@ async def test_step1_produces_financial_data(mock_deps):
     ADR-0006 Step 4: execute_financial_data_step calls fetch_canonical, so the
     mock returns NormalizedFinancials / NormalizedPrice (wrapped via normalize_*).
     """
-    from finrobot.engine.data.normalize.financials import normalize_financials
-    from finrobot.engine.data.normalize.price import normalize_price
-    from finrobot.engine.pipelines._helpers import execute_financial_data_step
-    from finrobot.engine.models.financial import FinancialData, StepOutput
+    from alpha_desk.engine.data.normalize.financials import normalize_financials
+    from alpha_desk.engine.data.normalize.price import normalize_price
+    from alpha_desk.engine.pipelines._helpers import execute_financial_data_step
+    from alpha_desk.engine.models.financial import FinancialData, StepOutput
 
     fin_raw = DataResult(
         data=dict(
@@ -352,7 +352,7 @@ async def test_step1_produces_financial_data(mock_deps):
     mock_result.output = "Analysis text"
     mock_agent.run = AsyncMock(return_value=mock_result)
 
-    from finrobot.engine.data.types import DataType
+    from alpha_desk.engine.data.types import DataType
 
     async def mock_fetch_canonical(data_type, ticker):
         dtype = DataType(data_type)
@@ -363,7 +363,7 @@ async def test_step1_produces_financial_data(mock_deps):
         # FORWARD_ESTIMATES etc. (638a8164 canonical gate): refuse honestly —
         # the caller's tolerated branch handles it; returning norm_price here
         # would crash on the .payload() unwrap.
-        from finrobot.engine.data.interface import ProviderError
+        from alpha_desk.engine.data.interface import ProviderError
 
         raise ProviderError(f"no canonical fake for {dtype}")
 
@@ -388,7 +388,7 @@ async def test_step3_dcf_deterministic(mock_deps):
     """
     from datetime import datetime, timezone
 
-    from finrobot.engine.models.financial import (
+    from alpha_desk.engine.models.financial import (
         BalanceSheet,
         DCFResult,
         FinancialData,
@@ -397,7 +397,7 @@ async def test_step3_dcf_deterministic(mock_deps):
         MarketData,
         ValuationMetrics,
     )
-    from finrobot.engine.pipelines.equity_research import _execute_financial_modeling
+    from alpha_desk.engine.pipelines.equity_research import _execute_financial_modeling
 
     fd = FinancialData(
         ticker="AAPL",
@@ -454,13 +454,13 @@ async def test_step3_dcf_deterministic(mock_deps):
 async def test_peer_analysis_raises_when_target_financials_missing(mock_deps):
     """execute_peer_analysis (shared, in _helpers) raises ValueError when no
     target FinancialData is present in structured_context (any step key)."""
-    from finrobot.engine.pipelines._helpers import execute_peer_analysis
+    from alpha_desk.engine.pipelines._helpers import execute_peer_analysis
 
     # fetch_canonical returns NormalizedFinancials so _fetch_one_peer succeeds
     # for all 3 tickers; the test expects that the code then raises "target
     # FinancialData" because structured_context is empty (no prior data step).
-    from finrobot.engine.data.interface import DataResult
-    from finrobot.engine.data.normalize.financials import normalize_financials
+    from alpha_desk.engine.data.interface import DataResult
+    from alpha_desk.engine.data.normalize.financials import normalize_financials
 
     fin_raw = DataResult(
         data=dict(
@@ -484,8 +484,8 @@ async def test_peer_analysis_raises_when_target_financials_missing(mock_deps):
     norm_fin = normalize_financials(fin_raw)
 
     async def _canon(data_type, ticker, **kw):
-        from finrobot.engine.data.interface import ProviderError
-        from finrobot.engine.data.types import DataType as _DT
+        from alpha_desk.engine.data.interface import ProviderError
+        from alpha_desk.engine.data.types import DataType as _DT
 
         # FORWARD_ESTIMATES (638a8164 canonical gate) is unwrapped via
         # .payload() — refuse it honestly so the enricher takes its tolerated
@@ -516,7 +516,7 @@ async def test_peer_analysis_raises_when_target_financials_missing(mock_deps):
 
 def test_build_sensitivity_ranges_returns_valid_ranges():
     """build_sensitivity_ranges returns non-empty tg_range that stays below min(rate_range)."""
-    from finrobot.engine.pipelines._helpers import build_sensitivity_ranges
+    from alpha_desk.engine.pipelines._helpers import build_sensitivity_ranges
 
     wacc_range, tg_range = build_sensitivity_ranges(0.09, 0.025)
 
@@ -531,7 +531,7 @@ def test_build_sensitivity_ranges_returns_valid_ranges():
 def test_sensitivity_center_equals_discount_rate_normal():
     """Center cell (index 2) must equal the base discount_rate so the heatmap
     center matches the narrative base-case implied price (BUG-013)."""
-    from finrobot.engine.pipelines._helpers import build_sensitivity_ranges
+    from alpha_desk.engine.pipelines._helpers import build_sensitivity_ranges
 
     wacc_range, _ = build_sensitivity_ranges(0.09, 0.025)
     assert wacc_range[2] == pytest.approx(0.09)
@@ -540,7 +540,7 @@ def test_sensitivity_center_equals_discount_rate_normal():
 def test_sensitivity_center_preserved_for_low_wacc():
     """The old absolute 3% floor clobbered the center when WACC < 3%; the
     terminal-growth-relative floor keeps the center exact (BUG-013)."""
-    from finrobot.engine.pipelines._helpers import build_sensitivity_ranges
+    from alpha_desk.engine.pipelines._helpers import build_sensitivity_ranges
 
     # WACC 2%, terminal growth 1% — valid (WACC > g) but below the old 3% floor.
     wacc_range, tg_range = build_sensitivity_ranges(0.02, 0.01)
@@ -561,9 +561,9 @@ def test_sensitivity_center_preserved_for_low_wacc():
 @pytest.mark.asyncio
 async def test_catalyst_analysis_produces_catalyst_analysis_output(mock_deps):
     """_execute_catalyst_analysis returns StepOutput with CatalystAnalysis."""
-    from finrobot.engine.pipelines.equity_research import _execute_catalyst_analysis
-    from finrobot.engine.models.financial import CatalystAnalysis, StepOutput
-    from finrobot.engine.compute.coordinators.news import NewsItem
+    from alpha_desk.engine.pipelines.equity_research import _execute_catalyst_analysis
+    from alpha_desk.engine.models.financial import CatalystAnalysis, StepOutput
+    from alpha_desk.engine.compute.coordinators.news import NewsItem
 
     _now = datetime.now(tz=timezone.utc)
     news_result = DataResult(
@@ -634,7 +634,7 @@ async def test_catalyst_analysis_produces_catalyst_analysis_output(mock_deps):
 
     mock_agent = MagicMock()
     with patch(
-        "finrobot.engine.pipelines.equity_research.classify_news",
+        "alpha_desk.engine.pipelines.equity_research.classify_news",
         return_value=classified,
     ):
         output = await _execute_catalyst_analysis(mock_agent, mock_deps, "prompt", {}, "AAPL")
@@ -656,8 +656,8 @@ async def test_catalyst_analysis_produces_catalyst_analysis_output(mock_deps):
 @pytest.mark.asyncio
 async def test_catalyst_analysis_empty_news(mock_deps):
     """_execute_catalyst_analysis handles no news gracefully."""
-    from finrobot.engine.pipelines.equity_research import _execute_catalyst_analysis
-    from finrobot.engine.models.financial import CatalystAnalysis, StepOutput
+    from alpha_desk.engine.pipelines.equity_research import _execute_catalyst_analysis
+    from alpha_desk.engine.models.financial import CatalystAnalysis, StepOutput
 
     empty_news_result = DataResult(
         data={"news_items": []},
@@ -670,7 +670,7 @@ async def test_catalyst_analysis_empty_news(mock_deps):
 
     mock_agent = MagicMock()
     with patch(
-        "finrobot.engine.pipelines.equity_research.classify_news",
+        "alpha_desk.engine.pipelines.equity_research.classify_news",
         return_value=[],
     ):
         output = await _execute_catalyst_analysis(mock_agent, mock_deps, "prompt", {}, "AAPL")
@@ -685,8 +685,8 @@ async def test_catalyst_analysis_empty_news(mock_deps):
 @pytest.mark.asyncio
 async def test_catalyst_analysis_net_sentiment_bullish(mock_deps):
     """Net sentiment > 0.5 maps to bullish overall_sentiment."""
-    from finrobot.engine.pipelines.equity_research import _execute_catalyst_analysis
-    from finrobot.engine.compute.coordinators.news import NewsItem
+    from alpha_desk.engine.pipelines.equity_research import _execute_catalyst_analysis
+    from alpha_desk.engine.compute.coordinators.news import NewsItem
 
     _now = datetime.now(tz=timezone.utc)
     classified = [
@@ -712,7 +712,7 @@ async def test_catalyst_analysis_net_sentiment_bullish(mock_deps):
 
     mock_agent = MagicMock()
     with patch(
-        "finrobot.engine.pipelines.equity_research.classify_news",
+        "alpha_desk.engine.pipelines.equity_research.classify_news",
         return_value=classified,
     ):
         output = await _execute_catalyst_analysis(mock_agent, mock_deps, "prompt", {}, "AAPL")
@@ -725,8 +725,8 @@ async def test_catalyst_analysis_net_sentiment_bullish(mock_deps):
 @pytest.mark.asyncio
 async def test_catalyst_analysis_net_sentiment_bearish(mock_deps):
     """Net sentiment < -0.5 maps to bearish overall_sentiment."""
-    from finrobot.engine.pipelines.equity_research import _execute_catalyst_analysis
-    from finrobot.engine.compute.coordinators.news import NewsItem
+    from alpha_desk.engine.pipelines.equity_research import _execute_catalyst_analysis
+    from alpha_desk.engine.compute.coordinators.news import NewsItem
 
     _now = datetime.now(tz=timezone.utc)
     classified = [
@@ -752,7 +752,7 @@ async def test_catalyst_analysis_net_sentiment_bearish(mock_deps):
 
     mock_agent = MagicMock()
     with patch(
-        "finrobot.engine.pipelines.equity_research.classify_news",
+        "alpha_desk.engine.pipelines.equity_research.classify_news",
         return_value=classified,
     ):
         output = await _execute_catalyst_analysis(mock_agent, mock_deps, "prompt", {}, "AAPL")
@@ -765,8 +765,8 @@ async def test_catalyst_analysis_net_sentiment_bearish(mock_deps):
 @pytest.mark.asyncio
 async def test_thesis_includes_catalyst_context(mock_deps):
     """_execute_thesis injects catalyst analysis into prompt when available."""
-    from finrobot.engine.pipelines.equity_research import _execute_thesis
-    from finrobot.engine.models.financial import (
+    from alpha_desk.engine.pipelines.equity_research import _execute_thesis
+    from alpha_desk.engine.models.financial import (
         CatalystAnalysis,
         CatalystEvent,
         ThesisResult,
@@ -819,7 +819,7 @@ async def test_thesis_includes_catalyst_context(mock_deps):
     mock_agent = MagicMock()
 
     with patch(
-        "finrobot.engine.pipelines.equity_research.Agent",
+        "alpha_desk.engine.pipelines.equity_research.Agent",
         return_value=mock_agent_instance,
     ):
         output = await _execute_thesis(
@@ -848,8 +848,8 @@ async def test_thesis_overrides_llm_target_with_valuation_synthesis(mock_deps):
     ``thesis.price_target`` is traceable to a deterministic function call,
     per the CLAUDE.md core contract.
     """
-    from finrobot.engine.pipelines.equity_research import _execute_thesis
-    from finrobot.engine.models.financial import (
+    from alpha_desk.engine.pipelines.equity_research import _execute_thesis
+    from alpha_desk.engine.models.financial import (
         ThesisResult,
         StepOutput,
         ValuationMethod,
@@ -896,7 +896,7 @@ async def test_thesis_overrides_llm_target_with_valuation_synthesis(mock_deps):
     )
 
     with patch(
-        "finrobot.engine.pipelines.equity_research.Agent",
+        "alpha_desk.engine.pipelines.equity_research.Agent",
         return_value=mock_agent_instance,
     ):
         output = await _execute_thesis(
@@ -931,7 +931,7 @@ async def test_thesis_overrides_llm_target_with_valuation_synthesis(mock_deps):
 def _street_thesis_fixtures():
     """A cooperative LLM thesis + a two-method synthesis whose canonical target
     lands at the weighted price (≈38.95) — reused by the street-context tests."""
-    from finrobot.engine.models.financial import (
+    from alpha_desk.engine.models.financial import (
         ThesisResult,
         ValuationMethod,
         ValuationSynthesis,
@@ -965,8 +965,8 @@ async def test_thesis_discloses_street_context_when_target_out_of_band(mock_deps
     A9/B1): canonical target entirely below the sell-side range → the fact line
     PLUS the out-of-consensus clause rides the step's warnings (→ report
     compute-warnings section). Verdict/target untouched — disclosure, not gate."""
-    from finrobot.engine.pipelines.equity_research import _execute_thesis
-    from finrobot.engine.models.financial import StepOutput
+    from alpha_desk.engine.pipelines.equity_research import _execute_thesis
+    from alpha_desk.engine.models.financial import StepOutput
 
     thesis, vs = _street_thesis_fixtures()
     mock_thesis_result = MagicMock()
@@ -979,7 +979,7 @@ async def test_thesis_discloses_street_context_when_target_out_of_band(mock_deps
     mock_deps.data_layer.fetch_price_target = AsyncMock(return_value=street)
 
     with patch(
-        "finrobot.engine.pipelines.equity_research.Agent",
+        "alpha_desk.engine.pipelines.equity_research.Agent",
         return_value=mock_agent_instance,
     ):
         output = await _execute_thesis(
@@ -998,7 +998,7 @@ async def test_thesis_discloses_street_context_when_target_out_of_band(mock_deps
 async def test_thesis_street_context_always_on_in_band_silent_when_unavailable(mock_deps):
     """In-band target still shows the standing fact line (no judgment words, no
     out-of-consensus clause); only a failed street fetch stays silent."""
-    from finrobot.engine.pipelines.equity_research import _execute_thesis
+    from alpha_desk.engine.pipelines.equity_research import _execute_thesis
 
     thesis, vs = _street_thesis_fixtures()
     mock_thesis_result = MagicMock()
@@ -1012,7 +1012,7 @@ async def test_thesis_street_context_always_on_in_band_silent_when_unavailable(m
     street.data = {"low": 20.0, "high": 60.0, "analyst_count": 10, "consensus": 40.0}
     mock_deps.data_layer.fetch_price_target = AsyncMock(return_value=street)
     with patch(
-        "finrobot.engine.pipelines.equity_research.Agent",
+        "alpha_desk.engine.pipelines.equity_research.Agent",
         return_value=mock_agent_instance,
     ):
         output = await _execute_thesis(
@@ -1025,7 +1025,7 @@ async def test_thesis_street_context_always_on_in_band_silent_when_unavailable(m
     # Unavailable (fetch → None, the augmentation route's degrade contract).
     mock_deps.data_layer.fetch_price_target = AsyncMock(return_value=None)
     with patch(
-        "finrobot.engine.pipelines.equity_research.Agent",
+        "alpha_desk.engine.pipelines.equity_research.Agent",
         return_value=mock_agent_instance,
     ):
         output = await _execute_thesis(
@@ -1044,8 +1044,8 @@ async def test_thesis_overrides_llm_recommendation_with_upside_thresholds(mock_d
     pipeline would disagree on the verdict. Thresholds (±15%) match
     sell-side equity-research convention.
     """
-    from finrobot.engine.pipelines.equity_research import _execute_thesis
-    from finrobot.engine.models.financial import (
+    from alpha_desk.engine.pipelines.equity_research import _execute_thesis
+    from alpha_desk.engine.models.financial import (
         ThesisResult,
         StepOutput,
         ValuationMethod,
@@ -1082,7 +1082,7 @@ async def test_thesis_overrides_llm_recommendation_with_upside_thresholds(mock_d
     )
 
     with patch(
-        "finrobot.engine.pipelines.equity_research.Agent",
+        "alpha_desk.engine.pipelines.equity_research.Agent",
         return_value=mock_agent_instance,
     ):
         output = await _execute_thesis(
@@ -1103,8 +1103,8 @@ async def test_thesis_overrides_llm_recommendation_with_upside_thresholds(mock_d
 @pytest.mark.asyncio
 async def test_thesis_recommendation_hold_band(mock_deps):
     """Upside within ±15% must classify as HOLD even if LLM picks BUY/SELL."""
-    from finrobot.engine.pipelines.equity_research import _execute_thesis
-    from finrobot.engine.models.financial import (
+    from alpha_desk.engine.pipelines.equity_research import _execute_thesis
+    from alpha_desk.engine.models.financial import (
         ThesisResult,
         ValuationMethod,
         ValuationSynthesis,
@@ -1140,7 +1140,7 @@ async def test_thesis_recommendation_hold_band(mock_deps):
     )
 
     with patch(
-        "finrobot.engine.pipelines.equity_research.Agent",
+        "alpha_desk.engine.pipelines.equity_research.Agent",
         return_value=mock_agent_instance,
     ):
         output = await _execute_thesis(
@@ -1153,8 +1153,8 @@ async def test_thesis_recommendation_hold_band(mock_deps):
 @pytest.mark.asyncio
 async def test_thesis_works_without_catalyst_context(mock_deps):
     """_execute_thesis works fine when catalyst_analysis is not in structured_context."""
-    from finrobot.engine.pipelines.equity_research import _execute_thesis
-    from finrobot.engine.models.financial import ThesisResult, StepOutput
+    from alpha_desk.engine.pipelines.equity_research import _execute_thesis
+    from alpha_desk.engine.models.financial import ThesisResult, StepOutput
 
     thesis_output = ThesisResult(
         recommendation="Hold",
@@ -1172,7 +1172,7 @@ async def test_thesis_works_without_catalyst_context(mock_deps):
     mock_agent = MagicMock()
 
     with patch(
-        "finrobot.engine.pipelines.equity_research.Agent",
+        "alpha_desk.engine.pipelines.equity_research.Agent",
         return_value=mock_agent_instance,
     ):
         output = await _execute_thesis(mock_agent, mock_deps, "base prompt", {}, "AAPL")
@@ -1192,8 +1192,8 @@ async def test_thesis_works_without_catalyst_context(mock_deps):
 
 def test_validate_catalyst_analysis_passes_valid():
     """validate_catalyst_analysis passes for valid analysis."""
-    from finrobot.engine.pipelines.validators import validate_catalyst_analysis
-    from finrobot.engine.models.financial import CatalystAnalysis, CatalystEvent
+    from alpha_desk.engine.pipelines.validators import validate_catalyst_analysis
+    from alpha_desk.engine.models.financial import CatalystAnalysis, CatalystEvent
 
     analysis = CatalystAnalysis(
         events=[
@@ -1219,8 +1219,8 @@ def test_validate_catalyst_analysis_passes_valid():
 
 def test_validate_catalyst_analysis_fails_empty_events():
     """validate_catalyst_analysis fails when events list is empty."""
-    from finrobot.engine.pipelines.validators import validate_catalyst_analysis
-    from finrobot.engine.models.financial import CatalystAnalysis
+    from alpha_desk.engine.pipelines.validators import validate_catalyst_analysis
+    from alpha_desk.engine.models.financial import CatalystAnalysis
 
     analysis = CatalystAnalysis(
         events=[],
@@ -1245,7 +1245,7 @@ def _low_wacc_financial_data():
     floor while seed_dcf_inputs picks a terminal growth that meets/exceeds it,
     so calculate_dcf raises (Gordon undefined) and financial_modeling degrades.
     """
-    from finrobot.engine.models.financial import (
+    from alpha_desk.engine.models.financial import (
         BalanceSheet,
         FinancialData,
         IncomeStatement,
@@ -1283,13 +1283,13 @@ async def test_technical_analysis_degrades_when_dcf_unavailable(mock_deps):
     must NOT raise — it returns a degraded TechnicalAnalysis carrying the
     DCF-unavailable marker, so the run continues to a relative-valuation report.
     """
-    from finrobot.engine.compute.coordinators.technical_payload import (
+    from alpha_desk.engine.compute.coordinators.technical_payload import (
         TECHNICAL_DCF_UNAVAILABLE_MARKER,
         TechnicalAnalysis,
     )
-    from finrobot.engine.models.financial import StepOutput
-    from finrobot.engine.pipelines.equity_research import _execute_technical_analysis
-    from finrobot.engine.pipelines.validators import validate_technical_analysis
+    from alpha_desk.engine.models.financial import StepOutput
+    from alpha_desk.engine.pipelines.equity_research import _execute_technical_analysis
+    from alpha_desk.engine.pipelines.validators import validate_technical_analysis
 
     # Mirror the degrade path: financial_modeling returned structured=None and
     # never wrote a DCFResult into structured_context.
@@ -1319,12 +1319,12 @@ async def test_low_wacc_run_degrades_to_relative_valuation(mock_deps):
     technical_analysis degrades gracefully rather than crashing the run —
     producing a usable (validator-passing) chapter-09 payload off the SAME ctx.
     """
-    from finrobot.engine.models.financial import HistoricalMetrics, StepOutput
-    from finrobot.engine.pipelines.equity_research import (
+    from alpha_desk.engine.models.financial import HistoricalMetrics, StepOutput
+    from alpha_desk.engine.pipelines.equity_research import (
         _execute_financial_modeling,
         _execute_technical_analysis,
     )
-    from finrobot.engine.pipelines.validators import validate_technical_analysis
+    from alpha_desk.engine.pipelines.validators import validate_technical_analysis
 
     fd = _low_wacc_financial_data()
     hm = HistoricalMetrics(
@@ -1353,7 +1353,7 @@ async def test_low_wacc_run_degrades_to_relative_valuation(mock_deps):
     # Force the Gordon-undefined degrade exactly as a tg≥WACC seed would: the
     # equity_research module calls calculate_dcf, which raises ValueError.
     with patch(
-        "finrobot.engine.pipelines.equity_research.calculate_dcf",
+        "alpha_desk.engine.pipelines.equity_research.calculate_dcf",
         side_effect=ValueError(
             "Terminal growth 0.043 must be less than WACC 0.043 "
             "(Gordon Growth Model perpetuity is undefined when tg >= wacc)"
@@ -1385,7 +1385,7 @@ def _insurer_financial_data():
     deterministic and offline for the test."""
     from datetime import datetime, timezone
 
-    from finrobot.engine.models.financial import (
+    from alpha_desk.engine.models.financial import (
         BalanceSheet,
         FinancialData,
         IncomeStatement,
@@ -1414,7 +1414,7 @@ def _insurer_financial_data():
 
 
 def _insurer_peer_comps():
-    from finrobot.engine.models.financial import CompanyFinancials, PeerComps
+    from alpha_desk.engine.models.financial import CompanyFinancials, PeerComps
 
     target = CompanyFinancials(
         ticker="ALL",
@@ -1449,12 +1449,12 @@ async def test_financial_modeling_withholds_fcff_for_balance_sheet_financial(moc
     football field is still built from the bank/insurer methods (financial_sector flag
     set for the frontend). is_balance_sheet_financial covers insurers too (is_bank does
     not) — the P&C insurer here confirms the wider boundary and needs no DDM/network."""
-    from finrobot.engine.models.financial import (
+    from alpha_desk.engine.models.financial import (
         HistoricalMetrics,
         StepOutput,
         ValuationSynthesis,
     )
-    from finrobot.engine.pipelines.equity_research import _execute_financial_modeling
+    from alpha_desk.engine.pipelines.equity_research import _execute_financial_modeling
 
     fd = _insurer_financial_data()
     hm = HistoricalMetrics(
@@ -1507,9 +1507,9 @@ async def test_technical_analysis_reason_is_category_error_for_financial(mock_de
     ill-defined for a balance-sheet financial), carrying a 'method withheld' reason —
     NOT the generic 'Gordon undefined / re-run' framing a low-WACC non-financial gets.
     Same all-None payload, validator still passes; only the reason differs by issuer."""
-    from finrobot.engine.models.financial import StepOutput
-    from finrobot.engine.pipelines.equity_research import _execute_technical_analysis
-    from finrobot.engine.pipelines.validators import validate_technical_analysis
+    from alpha_desk.engine.models.financial import StepOutput
+    from alpha_desk.engine.pipelines.equity_research import _execute_technical_analysis
+    from alpha_desk.engine.pipelines.validators import validate_technical_analysis
 
     # No DCFResult in ctx (financial_modeling withheld) + an insurer data_collection.
     ctx: dict[str, object] = {"data_collection": _insurer_financial_data()}
@@ -1535,7 +1535,7 @@ def _twd_local_financial_data():
     """
     from datetime import datetime, timezone
 
-    from finrobot.engine.models.financial import (
+    from alpha_desk.engine.models.financial import (
         BalanceSheet,
         FinancialData,
         IncomeStatement,
@@ -1596,13 +1596,13 @@ async def test_foreign_issuer_technical_analysis_consumes_usd_not_native_currenc
     """
     from datetime import date, timedelta
 
-    from finrobot.engine.compute.coordinators.technical_payload import TechnicalAnalysis
-    from finrobot.engine.models.financial import DCFResult, FinancialData, HistoricalMetrics
-    from finrobot.engine.pipelines.equity_research import (
+    from alpha_desk.engine.compute.coordinators.technical_payload import TechnicalAnalysis
+    from alpha_desk.engine.models.financial import DCFResult, FinancialData, HistoricalMetrics
+    from alpha_desk.engine.pipelines.equity_research import (
         _execute_financial_modeling,
         _execute_technical_analysis,
     )
-    from finrobot.engine.primitives.historical_valuation import PricePoint
+    from alpha_desk.engine.primitives.historical_valuation import PricePoint
 
     twd_per_usd = 32.0
 
@@ -1650,15 +1650,15 @@ async def test_foreign_issuer_technical_analysis_consumes_usd_not_native_currenc
 
     with (
         patch(
-            "finrobot.engine.data.providers.fx.fetch_fx_rate_to_usd",
+            "alpha_desk.engine.data.providers.fx.fetch_fx_rate_to_usd",
             side_effect=_fixed_fx,
         ),
         patch(
-            "finrobot.engine.pipelines.equity_research.fetch_fx_rate_to_usd",
+            "alpha_desk.engine.pipelines.equity_research.fetch_fx_rate_to_usd",
             side_effect=_fixed_fx,
         ),
         patch(
-            "finrobot.engine.compute.coordinators.technical_payload.load_price_history",
+            "alpha_desk.engine.compute.coordinators.technical_payload.load_price_history",
             new=AsyncMock(return_value=twd_bars),
         ),
     ):
@@ -1716,8 +1716,8 @@ async def test_standalone_dcf_writes_usd_snapshot_back_to_historical_data(mock_d
     _execute_dcf_calc, FX patched to 32 TWD/USD. After the step, historical_data
     must hold the USD snapshot (current_price ~US$31), not the native NT$1000 —
     so build_dcf_artifact's entry_price agrees with the USD implied_price."""
-    from finrobot.engine.models.financial import DCFResult, FinancialData, HistoricalMetrics
-    from finrobot.engine.pipelines.dcf import _execute_dcf_calc
+    from alpha_desk.engine.models.financial import DCFResult, FinancialData, HistoricalMetrics
+    from alpha_desk.engine.pipelines.dcf import _execute_dcf_calc
 
     twd_per_usd = 32.0
 
@@ -1748,11 +1748,11 @@ async def test_standalone_dcf_writes_usd_snapshot_back_to_historical_data(mock_d
 
     with (
         patch(
-            "finrobot.engine.data.providers.fx.fetch_fx_rate_to_usd",
+            "alpha_desk.engine.data.providers.fx.fetch_fx_rate_to_usd",
             side_effect=_fixed_fx,
         ),
         patch(
-            "finrobot.engine.pipelines.dcf.fetch_historical_metrics",
+            "alpha_desk.engine.pipelines.dcf.fetch_historical_metrics",
             new=AsyncMock(return_value=hm),
         ),
     ):
@@ -1771,7 +1771,7 @@ async def test_standalone_dcf_writes_usd_snapshot_back_to_historical_data(mock_d
 async def test_standalone_dcf_us_issuer_historical_data_unchanged(mock_deps):
     """US issuer (USD == USD): normalize_financials_to_usd is a no-op, so the
     write-back must not perturb the snapshot."""
-    from finrobot.engine.models.financial import (
+    from alpha_desk.engine.models.financial import (
         BalanceSheet,
         FinancialData,
         HistoricalMetrics,
@@ -1779,7 +1779,7 @@ async def test_standalone_dcf_us_issuer_historical_data_unchanged(mock_deps):
         MarketData,
         ValuationMetrics,
     )
-    from finrobot.engine.pipelines.dcf import _execute_dcf_calc
+    from alpha_desk.engine.pipelines.dcf import _execute_dcf_calc
 
     hm = HistoricalMetrics(
         years=[],
@@ -1828,7 +1828,7 @@ async def test_standalone_dcf_us_issuer_historical_data_unchanged(mock_deps):
     ctx: dict[str, object] = {"historical_data": original}
 
     with patch(
-        "finrobot.engine.pipelines.dcf.fetch_historical_metrics",
+        "alpha_desk.engine.pipelines.dcf.fetch_historical_metrics",
         new=AsyncMock(return_value=hm),
     ):
         await _execute_dcf_calc(MagicMock(), mock_deps, "p", ctx, "AAPL")
@@ -1845,9 +1845,9 @@ async def test_standalone_ddm_writes_usd_snapshot_back_to_historical_data(mock_d
     foreign dividend payer to USD but must write the USD snapshot back to
     historical_data, else build_ddm_artifact's entry_price stays native while
     equity_value_per_share is USD."""
-    from finrobot.engine.data.normalize.contracts import NormalizedFinancials, Provenance
-    from finrobot.engine.models.financial import FinancialData
-    from finrobot.engine.pipelines.ddm import _execute_ddm_seed
+    from alpha_desk.engine.data.normalize.contracts import NormalizedFinancials, Provenance
+    from alpha_desk.engine.models.financial import FinancialData
+    from alpha_desk.engine.pipelines.ddm import _execute_ddm_seed
 
     twd_per_usd = 32.0
 
@@ -1877,7 +1877,7 @@ async def test_standalone_ddm_writes_usd_snapshot_back_to_historical_data(mock_d
     ctx: dict[str, object] = {"historical_data": _twd_local_financial_data()}
 
     with patch(
-        "finrobot.engine.pipelines.ddm.fetch_fx_rate_to_usd",
+        "alpha_desk.engine.pipelines.ddm.fetch_fx_rate_to_usd",
         side_effect=_fixed_fx,
     ):
         await _execute_ddm_seed(MagicMock(), mock_deps, "p", ctx, "2330.TW")
@@ -1899,8 +1899,8 @@ async def test_standalone_lbo_normalizes_to_usd_and_writes_back(mock_deps):
     BUG-073 family). ic_memo / equity_research normalize before seeding; the
     standalone LBO must too, and write the USD snapshot back to data_collection
     (build_lbo_artifact's raw_data → entry_price)."""
-    from finrobot.engine.models.financial import FinancialData, HistoricalMetrics, LBOInputs
-    from finrobot.engine.pipelines.lbo import _execute_lbo_params
+    from alpha_desk.engine.models.financial import FinancialData, HistoricalMetrics, LBOInputs
+    from alpha_desk.engine.pipelines.lbo import _execute_lbo_params
 
     twd_per_usd = 32.0
 
@@ -1933,7 +1933,7 @@ async def test_standalone_lbo_normalizes_to_usd_and_writes_back(mock_deps):
     }
 
     with patch(
-        "finrobot.engine.data.providers.fx.fetch_fx_rate_to_usd",
+        "alpha_desk.engine.data.providers.fx.fetch_fx_rate_to_usd",
         side_effect=_fixed_fx,
     ):
         out = await _execute_lbo_params(MagicMock(), mock_deps, "p", ctx, "2330.TW")
@@ -1964,14 +1964,14 @@ async def test_thesis_propagates_agent_run_error(mock_deps):
     AgentRunError (recoverable), NOT re-wrapped into ValueError."""
     from pydantic_ai.exceptions import AgentRunError
 
-    from finrobot.engine.pipelines.equity_research import _execute_thesis
+    from alpha_desk.engine.pipelines.equity_research import _execute_thesis
 
     mock_agent_instance = MagicMock()
     mock_agent_instance.run = AsyncMock(side_effect=AgentRunError("rate limit (429)"))
     mock_agent = MagicMock()
 
     with patch(
-        "finrobot.engine.pipelines.equity_research.Agent",
+        "alpha_desk.engine.pipelines.equity_research.Agent",
         return_value=mock_agent_instance,
     ):
         with pytest.raises(AgentRunError):
@@ -1984,8 +1984,8 @@ async def test_thesis_wraps_validation_error_as_value_error(mock_deps):
     a non-recoverable ValueError — retrying it would only burn budget."""
     from pydantic import ValidationError
 
-    from finrobot.engine.models.financial import ThesisResult
-    from finrobot.engine.pipelines.equity_research import _execute_thesis
+    from alpha_desk.engine.models.financial import ThesisResult
+    from alpha_desk.engine.pipelines.equity_research import _execute_thesis
 
     try:
         ThesisResult(recommendation="Buy")  # missing required fields → ValidationError
@@ -1997,7 +1997,7 @@ async def test_thesis_wraps_validation_error_as_value_error(mock_deps):
     mock_agent = MagicMock()
 
     with patch(
-        "finrobot.engine.pipelines.equity_research.Agent",
+        "alpha_desk.engine.pipelines.equity_research.Agent",
         return_value=mock_agent_instance,
     ):
         with pytest.raises(ValueError, match="failed to produce valid thesis"):
@@ -2011,9 +2011,9 @@ async def test_deterministic_peer_selection_uses_candidate_screen(mock_deps):
     NVDA regression: a same-industry but wrong-value-chain supplier (TSM foundry)
     must be rejected before it can move comps_pe.
     """
-    from finrobot.engine.data.interface import DataResult
-    from finrobot.engine.data.types import DataType
-    from finrobot.engine.pipelines._helpers import _deterministic_select_peers
+    from alpha_desk.engine.data.interface import DataResult
+    from alpha_desk.engine.data.types import DataType
+    from alpha_desk.engine.pipelines._helpers import _deterministic_select_peers
 
     payload = {
         "profile": {
@@ -2081,15 +2081,15 @@ async def test_peer_analysis_excludes_target_and_names_dropped_peers(mock_deps):
     silently swapped."""
     from datetime import datetime, timezone
 
-    from finrobot.engine.data.normalize.financials import normalize_financials
-    from finrobot.engine.models.financial import (
+    from alpha_desk.engine.data.normalize.financials import normalize_financials
+    from alpha_desk.engine.models.financial import (
         BalanceSheet,
         FinancialData,
         IncomeStatement,
         MarketData,
         ValuationMetrics,
     )
-    from finrobot.engine.pipelines._helpers import execute_peer_analysis
+    from alpha_desk.engine.pipelines._helpers import execute_peer_analysis
 
     def _mk_norm(t: str):
         return normalize_financials(
@@ -2115,8 +2115,8 @@ async def test_peer_analysis_excludes_target_and_names_dropped_peers(mock_deps):
         )
 
     async def _canon(_dt, t, **kw):
-        from finrobot.engine.data.interface import ProviderError
-        from finrobot.engine.data.types import DataType as _DT
+        from alpha_desk.engine.data.interface import ProviderError
+        from alpha_desk.engine.data.types import DataType as _DT
 
         if _DT(_dt) != _DT.FINANCIALS:
             # FORWARD_ESTIMATES (638a8164): refuse honestly — the enricher's
@@ -2190,15 +2190,15 @@ async def test_peer_analysis_drops_non_positive_revenue_peer_keeps_rest(mock_dep
     it no longer fails the WHOLE set (C/MER-PK comps crash, 2026-07-02)."""
     from datetime import datetime, timezone
 
-    from finrobot.engine.data.normalize.financials import normalize_financials
-    from finrobot.engine.models.financial import (
+    from alpha_desk.engine.data.normalize.financials import normalize_financials
+    from alpha_desk.engine.models.financial import (
         BalanceSheet,
         FinancialData,
         IncomeStatement,
         MarketData,
         ValuationMetrics,
     )
-    from finrobot.engine.pipelines._helpers import execute_peer_analysis
+    from alpha_desk.engine.pipelines._helpers import execute_peer_analysis
 
     def _mk_norm(t: str, revenue: float):
         return normalize_financials(
@@ -2224,8 +2224,8 @@ async def test_peer_analysis_drops_non_positive_revenue_peer_keeps_rest(mock_dep
         )
 
     async def _canon(_dt, t, **kw):
-        from finrobot.engine.data.interface import ProviderError
-        from finrobot.engine.data.types import DataType as _DT
+        from alpha_desk.engine.data.interface import ProviderError
+        from alpha_desk.engine.data.types import DataType as _DT
 
         if _DT(_dt) != _DT.FINANCIALS:
             raise ProviderError(f"no canonical fake for {_dt}")
@@ -2286,9 +2286,9 @@ def test_override_empty_canonical_withholds_llm_target():
     summary_extractor treats thesis.price_target as authoritative for the
     coverage signal. The override forces the target None and defaults the verdict
     to a neutral HOLD (never the deleted REVIEW)."""
-    from finrobot.engine.compute.operators.valuation_synthesis import CanonicalThesis
-    from finrobot.engine.models.financial import ThesisResult
-    from finrobot.engine.pipelines.equity_research import apply_canonical_override
+    from alpha_desk.engine.compute.operators.valuation_synthesis import CanonicalThesis
+    from alpha_desk.engine.models.financial import ThesisResult
+    from alpha_desk.engine.pipelines.equity_research import apply_canonical_override
 
     rogue = ThesisResult(
         recommendation="Buy",
@@ -2317,13 +2317,13 @@ def test_override_withheld_point_scrubs_smuggled_prose_amount():
     run only on the publish path). With the structured target forced None, an LLM
     that smuggles a fair-value $-amount into prose must have it erased to the
     [target withheld] marker — a per-method mid and the market price stay citable."""
-    from finrobot.engine.compute.operators.valuation_synthesis import CanonicalThesis
-    from finrobot.engine.models.financial import (
+    from alpha_desk.engine.compute.operators.valuation_synthesis import CanonicalThesis
+    from alpha_desk.engine.models.financial import (
         ThesisResult,
         ValuationMethod,
         ValuationSynthesis,
     )
-    from finrobot.engine.pipelines.equity_research import apply_canonical_override
+    from alpha_desk.engine.pipelines.equity_research import apply_canonical_override
 
     rogue = ThesisResult(
         recommendation="Sell",
@@ -2378,8 +2378,8 @@ async def test_thesis_single_method_out_of_band_withholds_point_keeps_direction(
     number would be the market price in costume) while STILL issuing a directional
     verdict: target forced None, recommendation directional (never the deleted
     REVIEW), and the prompt carries the point-withheld instruction."""
-    from finrobot.engine.pipelines.equity_research import _execute_thesis
-    from finrobot.engine.models.financial import (
+    from alpha_desk.engine.pipelines.equity_research import _execute_thesis
+    from alpha_desk.engine.models.financial import (
         ThesisResult,
         StepOutput,
         ValuationMethod,
@@ -2415,7 +2415,7 @@ async def test_thesis_single_method_out_of_band_withholds_point_keeps_direction(
     )
 
     with patch(
-        "finrobot.engine.pipelines.equity_research.Agent",
+        "alpha_desk.engine.pipelines.equity_research.Agent",
         return_value=agent,
     ):
         output = await _execute_thesis(
@@ -2442,8 +2442,8 @@ async def test_thesis_single_method_in_band_publishes_with_caveat(mock_deps):
     whose mid sits INSIDE the calibration band publishes as the canonical target
     — deterministic, with an explicit single-method/no-cross-check caveat — so
     JPM-class names keep coverage instead of degrading to REVIEW."""
-    from finrobot.engine.pipelines.equity_research import _execute_thesis
-    from finrobot.engine.models.financial import (
+    from alpha_desk.engine.pipelines.equity_research import _execute_thesis
+    from alpha_desk.engine.models.financial import (
         ThesisResult,
         ValuationMethod,
         ValuationSynthesis,
@@ -2482,7 +2482,7 @@ async def test_thesis_single_method_in_band_publishes_with_caveat(mock_deps):
     )
 
     with patch(
-        "finrobot.engine.pipelines.equity_research.Agent",
+        "alpha_desk.engine.pipelines.equity_research.Agent",
         return_value=agent,
     ):
         output = await _execute_thesis(
@@ -2509,7 +2509,7 @@ class TestSec8kCatalystMateriality:
     'SEC 8-K filed: Item 2.02, Item 9.01' stubs flooded the catalyst list."""
 
     def test_material_codes_drops_routine_keeps_material(self):
-        from finrobot.engine.pipelines.equity_research import _material_8k_codes
+        from alpha_desk.engine.pipelines.equity_research import _material_8k_codes
 
         # Bare earnings release → all routine → no material codes.
         assert _material_8k_codes(["Item 2.02", "Item 9.01"]) == []
@@ -2523,7 +2523,7 @@ class TestSec8kCatalystMateriality:
         assert _material_8k_codes(["5.02"]) == ["5.02"]
 
     def test_8k_to_catalyst_uses_descriptive_headline(self):
-        from finrobot.engine.pipelines.equity_research import _sec_8k_to_catalyst
+        from alpha_desk.engine.pipelines.equity_research import _sec_8k_to_catalyst
 
         event = {
             "items": ["Item 5.02", "Item 9.01"],
@@ -2536,7 +2536,7 @@ class TestSec8kCatalystMateriality:
         assert cat.category == "management"
 
     def test_material_agreement_categorized_acquisition(self):
-        from finrobot.engine.pipelines.equity_research import _sec_8k_to_catalyst
+        from alpha_desk.engine.pipelines.equity_research import _sec_8k_to_catalyst
 
         cat = _sec_8k_to_catalyst({"items": ["Item 1.01", "Item 9.01"]})
         assert cat.category == "acquisition"

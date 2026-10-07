@@ -12,8 +12,8 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 
-from finrobot.coverage.models import CoverageOverview, CoverageRow
-from finrobot.coverage.prompt import format_coverage_snapshot
+from alpha_desk.coverage.models import CoverageOverview, CoverageRow
+from alpha_desk.coverage.prompt import format_coverage_snapshot
 
 UTC = timezone.utc
 

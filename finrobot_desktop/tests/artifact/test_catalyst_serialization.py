@@ -9,8 +9,8 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from typing import Any, cast
 
-from finrobot.artifact.builders import build_equity_research_artifact
-from finrobot.engine.models.financial import (
+from alpha_desk.artifact.builders import build_equity_research_artifact
+from alpha_desk.engine.models.financial import (
     BalanceSheet,
     CatalystAnalysis,
     CatalystEvent,
@@ -19,7 +19,7 @@ from finrobot.engine.models.financial import (
     MarketData,
     ValuationMetrics,
 )
-from finrobot.engine.pipelines.base import PipelineResult
+from alpha_desk.engine.pipelines.base import PipelineResult
 
 UTC = timezone.utc
 
@@ -93,7 +93,7 @@ def test_ranking_math_survives_the_exclusion() -> None:
     # The weight still drives the math via attribute access — a primary-source 8-K
     # (impact 3 × 1.0) must out-rank an equal-magnitude news item that only ties on
     # raw impact, proving exclude=True did not neuter the in-memory computation.
-    from finrobot.engine.compute.operators.catalyst import compute_expected_impact
+    from alpha_desk.engine.compute.operators.catalyst import compute_expected_impact
 
     news = CatalystEvent(
         category="market",

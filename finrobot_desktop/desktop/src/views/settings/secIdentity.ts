@@ -8,12 +8,12 @@ function extractSecEmail(s: string): RegExpMatchArray | null {
 }
 
 /** SEC requires `Name email@domain` — we also reject the backend's placeholder
- * default `FinRobot admin@example.com` so the user has to set a real one. */
+ * default `Alpha Desk admin@example.com` so the user has to set a real one. */
 export function isValidSecIdentity(s: string | null | undefined): boolean {
   if (!s) return false
   const trimmed = s.trim()
   if (!trimmed.includes('@') || !trimmed.includes(' ')) return false
-  if (trimmed === 'FinRobot admin@example.com') return false
+  if (trimmed === 'Alpha Desk admin@example.com') return false
   return extractSecEmail(trimmed) !== null
 }
 
@@ -32,5 +32,5 @@ export function secHeaderIdentityPreview(s: string | null | undefined): string |
     .split(/\s+/)
     .filter(Boolean)
     .join(' ')
-  return `${asciiName || 'FinRobot'} ${email}`
+  return `${asciiName || 'Alpha Desk'} ${email}`
 }

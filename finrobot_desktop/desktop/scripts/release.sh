@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-# Cut a FinRobot desktop release and publish it to the public MAIN repo.
+# Cut an Alpha Desk desktop release and publish it to the public MAIN repo.
 #
 # Path A (closed source, public binary distribution): the source repo stays
 # private; only the compiled .dmg + the Tauri updater artifacts are published as
 # a Release on the org's public flagship repo (AI4Finance-Foundation/FinRobot),
 # from whose latest Release the app's in-app updater reads latest.json
 # (endpoint configured in src-tauri/tauri.conf.json). Downloads and stars stay
-# unified on one repo (leader's call, 2026-07-07; the separate finrobot-releases
+# unified on one repo (leader's call, 2026-07-07; the separate alpha-desk-releases
 # repo was retired the same day).
 #
 # ⚠️ The updater reads `releases/latest` of this SHARED repo. Desktop releases
@@ -33,7 +33,7 @@
 # Prereqs (one-time):
 #   • RELEASES_REPO below points at your public releases repo (owner/name).
 #   • The updater public key in src-tauri/tauri.conf.json matches the private
-#     key referenced by TAURI_SIGNING_PRIVATE_KEY (default ~/.tauri/finrobot-updater.key).
+#     key referenced by TAURI_SIGNING_PRIVATE_KEY (default ~/.tauri/alpha-desk-updater.key).
 #   • `gh auth login` done, with push access to RELEASES_REPO.
 #   • Sidecar built for this arch (scripts/build runs sidecar/build.sh) — pass
 #     --build-sidecar to (re)freeze it as part of the release.
@@ -45,7 +45,7 @@ set -euo pipefail
 RELEASES_REPO="${RELEASES_REPO:-AI4Finance-Foundation/FinRobot}"
 # Private key that signs the update bundle (Tauri reads the file path or its
 # contents). Generated once via `npm run tauri -- signer generate`.
-: "${TAURI_SIGNING_PRIVATE_KEY:=$HOME/.tauri/finrobot-updater.key}"
+: "${TAURI_SIGNING_PRIVATE_KEY:=$HOME/.tauri/alpha-desk-updater.key}"
 : "${TAURI_SIGNING_PRIVATE_KEY_PASSWORD:=}"   # empty — key was generated with --ci
 
 # ── Paths ────────────────────────────────────────────────────────────────────
@@ -83,7 +83,7 @@ if [[ "$RELEASES_REPO" == __GH_OWNER__/* ]]; then
 fi
 if [[ ! -f "$TAURI_SIGNING_PRIVATE_KEY" && ! "$TAURI_SIGNING_PRIVATE_KEY" == *"untrusted comment"* ]]; then
     echo >&2 "ERROR: signing key not found at $TAURI_SIGNING_PRIVATE_KEY"
-    echo >&2 "       generate it: cd desktop && npm run tauri -- signer generate -w ~/.tauri/finrobot-updater.key"
+    echo >&2 "       generate it: cd desktop && npm run tauri -- signer generate -w ~/.tauri/alpha-desk-updater.key"
     exit 1
 fi
 command -v rustc >/dev/null || { echo >&2 "ERROR: rustc not found"; exit 1; }
@@ -129,8 +129,8 @@ _gate_run() {   # _gate_run "<label>" "<workdir>" <cmd> [args...]
 
 echo "[gate $(_gate_ts)] ===== release quality gate: START (target v$VERSION) ====="
 # Backend (from repo root)
-_gate_run "ruff check finrobot/"                        "$REPO_ROOT" uv run ruff check finrobot/
-_gate_run "mypy finrobot/ --strict"                     "$REPO_ROOT" uv run mypy finrobot/ --strict
+_gate_run "ruff check alpha_desk/"                        "$REPO_ROOT" uv run ruff check alpha_desk/
+_gate_run "mypy alpha_desk/ --strict"                     "$REPO_ROOT" uv run mypy alpha_desk/ --strict
 _gate_run "pytest tests/unit"                           "$REPO_ROOT" uv run pytest tests/unit -q
 _gate_run "pytest routes+audit+artifact+engine+events"  "$REPO_ROOT" uv run pytest tests/routes tests/audit tests/artifact tests/engine tests/test_events.py -q
 # Frontend (from desktop/)
@@ -186,8 +186,8 @@ if [[ "$BUILD_SIDECAR" == 1 ]]; then
     echo "[release] rebuilding sidecar…"
     "$SRC_TAURI/sidecar/build.sh"
 fi
-if [[ ! -x "$SRC_TAURI/sidecar/dist/finrobot-server/finrobot-server" ]]; then
-    echo >&2 "ERROR: sidecar one-dir bundle missing at sidecar/dist/finrobot-server/ — run with --build-sidecar"
+if [[ ! -x "$SRC_TAURI/sidecar/dist/alpha-desk-server/alpha-desk-server" ]]; then
+    echo >&2 "ERROR: sidecar one-dir bundle missing at sidecar/dist/alpha-desk-server/ — run with --build-sidecar"
     exit 1
 fi
 
@@ -264,8 +264,8 @@ echo "[release] creating release $TAG on ${RELEASES_REPO}…"
 gh release create "$TAG" \
     --repo "$RELEASES_REPO" \
     --latest \
-    --title "FinRobot Desktop v$VERSION" \
-    --notes "${NOTES:-FinRobot Desktop v$VERSION}" \
+    --title "Alpha Desk Desktop v$VERSION" \
+    --notes "${NOTES:-Alpha Desk Desktop v$VERSION}" \
     "$DMG" "$APP_TARBALL" "$APP_SIG" "$LATEST_JSON" "$MIN_JSON"
 
 # ── 7. Post-publish guard: is the updater endpoint actually serving us? ───────

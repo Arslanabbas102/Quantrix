@@ -125,4 +125,4 @@ export async function saveTextFile(
 
 // ─── Workspace path (P1 default; Phase 5 T5.6 wires real dialog) ──
 
-export const DEFAULT_WORKSPACE_PATH = '~/finrobot'
+export const DEFAULT_WORKSPACE_PATH = '~/alpha_desk'

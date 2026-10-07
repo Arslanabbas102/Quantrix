@@ -7,7 +7,7 @@
 // with 2 movers shows 2 cards, the same as a 6-name desk with 2 movers.
 //
 // The anomaly caliber is deterministic and defined once in coverageTriage.ts,
-// which mirrors finrobot/coverage/prompt.py — so the band an analyst sees and the
+// which mirrors alpha_desk/coverage/prompt.py — so the band an analyst sees and the
 // snapshot the chat LLM reads flag the exact same names. Clicking a card hands a
 // pre-written, caliber-correct question to the chat input (does not auto-send, so
 // the analyst can edit); the chevron deep-links to the ticker workspace.

@@ -111,7 +111,7 @@ export function ChapterCover({
           marginBottom: 24,
         }}
       >
-        <span>FINROBOT {t('chapter.cover.equityResearch')}</span>
+        <span>ALPHA_DESK {t('chapter.cover.equityResearch')}</span>
         <span>{createdAt ? formatDate(createdAt, locale, 'datetime') : ''}</span>
       </div>
 

@@ -58,8 +58,8 @@ function preflightDescription(reason: PreflightReason, locale: Locale): string {
   switch (reason) {
     case 'offline':
       return zh
-        ? '后端服务未连接。请确认 finrobot serve 正在运行后重试。'
-        : 'Backend is offline. Make sure finrobot serve is running, then retry.'
+        ? '后端服务未连接。请确认 alpha_desk serve 正在运行后重试。'
+        : 'Backend is offline. Make sure alpha_desk serve is running, then retry.'
     case 'needsModel':
       return zh
         ? '还没配置 AI 模型。研报与 AI 分析需要一个模型;价格 / 财务 / 估值数字无需配置即可查看。去设置选一个模型并填好 key。'

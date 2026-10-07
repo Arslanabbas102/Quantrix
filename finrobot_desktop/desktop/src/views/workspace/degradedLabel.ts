@@ -1,5 +1,5 @@
 // Maps a backend degradation marker (NormalizedFinancials.provenance.degraded,
-// defined in finrobot/engine/data/normalize/contracts.py) to a human label.
+// defined in alpha_desk/engine/data/normalize/contracts.py) to a human label.
 //
 // 可溯源 red-line: a fallback/skip/divergence must be VISIBLE and READABLE — never
 // leak the raw developer code (e.g. "circuit_open:fmp") to the analyst. Two of the

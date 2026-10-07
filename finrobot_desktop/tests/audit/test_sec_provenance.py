@@ -2,15 +2,15 @@ from __future__ import annotations
 
 from datetime import date, datetime, timezone
 
-from finrobot.artifact.builders import build_equity_research_artifact
-from finrobot.engine.models.sec import (
+from alpha_desk.artifact.builders import build_equity_research_artifact
+from alpha_desk.engine.models.sec import (
     FilingProvenance,
     InsiderTransaction,
     InstitutionalHolding,
     OwnershipGovernanceAnalysis,
     ProxyCompensation,
 )
-from finrobot.engine.pipelines.base import PipelineResult
+from alpha_desk.engine.pipelines.base import PipelineResult
 
 
 def _prov(form: str) -> FilingProvenance:

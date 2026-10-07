@@ -1,7 +1,7 @@
 // Per-launch capability token — the WebView's half of the local-API auth.
 //
 // The Tauri shell mints a random token at launch (see src-tauri/src/lib.rs),
-// hands it to the Python sidecar via FINROBOT_CAPABILITY_TOKEN, and exposes it
+// hands it to the Python sidecar via ALPHA_DESK_CAPABILITY_TOKEN, and exposes it
 // to this WebView via the `capability_token` command. We attach it to every
 // backend request so a different local process — which can reach loopback but
 // cannot drive this WebView's IPC — cannot read /api/settings or burn quota.

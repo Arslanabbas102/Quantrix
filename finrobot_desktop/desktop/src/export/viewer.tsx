@@ -2,7 +2,7 @@
 //
 // Built by vite.viewer.config.ts into ONE IIFE JS + CSS, which exportReport
 // inlines into the exported .html alongside the report data. At runtime it reads
-// window.__FINROBOT_REPORT__ (artifact + version timeline + a dehydrated
+// window.__ALPHA_DESK_REPORT__ (artifact + version timeline + a dehydrated
 // react-query cache + locale), rehydrates the query cache so the chapters' data
 // hooks resolve from inlined data WITHOUT any network, and renders the exact
 // same body the app uses (ReportExportBody → the 13-chapter ReportChapters for
@@ -54,7 +54,7 @@ function mount(): void {
   const root = document.getElementById('root')
   if (!root) return
 
-  const payload = (window as unknown as { __FINROBOT_REPORT__?: ExportPayload }).__FINROBOT_REPORT__
+  const payload = (window as unknown as { __ALPHA_DESK_REPORT__?: ExportPayload }).__ALPHA_DESK_REPORT__
   if (!payload) {
     root.textContent = 'No report data embedded.'
     return

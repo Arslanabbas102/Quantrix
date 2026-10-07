@@ -22,14 +22,14 @@ from datetime import date, datetime, timezone
 import pytest
 from pydantic import ValidationError
 
-from finrobot.engine.compute.operators.catalyst import extract_catalysts_from_news
-from finrobot.engine.compute.operators.dcf import calculate_dcf
-from finrobot.engine.compute.operators.multiples import calculate_multiples
-from finrobot.engine.compute.operators.ownership import build_proxy_compensation
-from finrobot.engine.compute.operators.sniper import SniperRequest, calculate_sniper_points
-from finrobot.engine.compute.operators.valuation_synthesis import synthesize_valuations
-from finrobot.engine.compute.coordinators.news import NewsItem
-from finrobot.engine.models.financial import (
+from alpha_desk.engine.compute.operators.catalyst import extract_catalysts_from_news
+from alpha_desk.engine.compute.operators.dcf import calculate_dcf
+from alpha_desk.engine.compute.operators.multiples import calculate_multiples
+from alpha_desk.engine.compute.operators.ownership import build_proxy_compensation
+from alpha_desk.engine.compute.operators.sniper import SniperRequest, calculate_sniper_points
+from alpha_desk.engine.compute.operators.valuation_synthesis import synthesize_valuations
+from alpha_desk.engine.compute.coordinators.news import NewsItem
+from alpha_desk.engine.models.financial import (
     CompanyFinancials,
     DCFInputs,
     ValuationMethod,
@@ -71,8 +71,8 @@ def test_chapter_11_fmp_financials_default_path_returns_ttm_not_annual():
     catch this — both 43x and 32x pass the [1, 300] gate but only one is
     the right number for the analyst."""
     from unittest.mock import MagicMock, patch
-    from finrobot.engine.data.providers.fmp_provider import FMPProvider
-    from finrobot.engine.data.types import DataType
+    from alpha_desk.engine.data.providers.fmp_provider import FMPProvider
+    from alpha_desk.engine.data.types import DataType
 
     quarterly = [
         {

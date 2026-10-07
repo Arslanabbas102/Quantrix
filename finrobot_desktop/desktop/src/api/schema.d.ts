@@ -390,7 +390,7 @@ export interface paths {
      *     provider key (``provider_key:<id>``).
      *
      *     After deletion we rebuild runtime settings from scratch (settings.json, then
-     *     re-hydrate the remaining keychain secrets) so the in-memory FinRobotSettings
+     *     re-hydrate the remaining keychain secrets) so the in-memory AlphaDeskSettings
      *     stops carrying the cleared value. If clearing the key leaves the runtime
      *     config invalid (e.g. the active LLM provider lost its key), the startup_error
      *     banner is set so the UI tells the user.
@@ -733,7 +733,7 @@ export interface paths {
      *     suppresses deltas (or disables attribution) when the two versions aren't
      *     like-for-like (different formula / data source / earnings season). All
      *     numbers arrive pre-formatted with backend-owned units — see
-     *     ``finrobot.artifact.semantic_diff`` and ``field_registry``.
+     *     ``alpha_desk.artifact.semantic_diff`` and ``field_registry``.
      *
      *     Args:
      *         a_id: The "before" (base) artifact id.
@@ -1170,7 +1170,7 @@ export interface paths {
      *
      *     The transcript hook intercepts native pydantic_ai stream events to write
      *     user messages, assistant text, tool calls, and tool results to a per-session
-     *     JSONL file at ``~/.finrobot-desktop/sessions/<session_id>.jsonl``.
+     *     JSONL file at ``~/.alpha-desk-desktop/sessions/<session_id>.jsonl``.
      *
      *     Transcript write failures are logged and never surface to the client —
      *     the Vercel AI stream is unaffected by transcript I/O errors.
@@ -1193,7 +1193,7 @@ export interface paths {
      * Health
      * @description Readiness probe for the Tauri shell's sidecar poll.
      *
-     *     Stays auth-exempt (see ``finrobot.auth._EXEMPT_PATHS``) because the shell
+     *     Stays auth-exempt (see ``alpha_desk.auth._EXEMPT_PATHS``) because the shell
      *     polls it before the WebView — and hence the token — exists. It echoes the
      *     per-launch capability token back so the readiness loop can prove the
      *     backend answering on :8321 is *its own* spawned child, not a stale or
@@ -1285,7 +1285,7 @@ export interface components {
     ArtifactComputeVersion: {
       /**
        * Package
-       * @default finrobot
+       * @default alpha_desk
        */
       package: string
       /** Version */
@@ -1454,7 +1454,7 @@ export interface components {
       target_date?: string | null
       /**
        * Signal
-       * @description Lazy-computed realised-vs-target signal (hit / watching / failed) — never persisted. Route handlers call finrobot.engine.compute.operators.signal.compute_signal at list time using a fresh quote. None when any of entry_price / target_price / current_price are unavailable. DO NOT confuse with `verdict` — signal is the post-trade outcome, verdict is the LLM's pre-trade BUY/HOLD/SELL call.
+       * @description Lazy-computed realised-vs-target signal (hit / watching / failed) — never persisted. Route handlers call alpha_desk.engine.compute.operators.signal.compute_signal at list time using a fresh quote. None when any of entry_price / target_price / current_price are unavailable. DO NOT confuse with `verdict` — signal is the post-trade outcome, verdict is the LLM's pre-trade BUY/HOLD/SELL call.
        */
       signal?: ('hit' | 'watching' | 'failed') | null
       /**
@@ -3090,7 +3090,7 @@ export interface components {
      *     financial-data fetch contract). Two different axes; don't conflate them.
      *
      *     The provider's API key is NEVER stored here — it lives in the OS keychain
-     *     under ``provider_key:<id>`` and is hydrated into ``FinRobotSettings``'s
+     *     under ``provider_key:<id>`` and is hydrated into ``AlphaDeskSettings``'s
      *     private ``_provider_keys`` map at boot. ``models`` is a list of *suggested*
      *     model ids for the UI dropdown; the user may run any model id the provider
      *     accepts (validation checks the provider exists + has a key, not that the

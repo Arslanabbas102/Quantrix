@@ -33,10 +33,10 @@ import asyncio
 import math
 import sys
 
-from finrobot.config import get_settings
-from finrobot.engine.compute.coordinators.extractor import extract_financial_data
-from finrobot.engine.compute.coordinators.historical_extractor import fetch_historical_metrics
-from finrobot.engine.compute.operators.dcf_seed import (
+from alpha_desk.config import get_settings
+from alpha_desk.engine.compute.coordinators.extractor import extract_financial_data
+from alpha_desk.engine.compute.coordinators.historical_extractor import fetch_historical_metrics
+from alpha_desk.engine.compute.operators.dcf_seed import (
     _BETA_BAND_CEILING,
     _BETA_BAND_FLOOR,
     _BETA_IMPLAUSIBLY_LOW_REASON,
@@ -47,18 +47,18 @@ from finrobot.engine.compute.operators.dcf_seed import (
     _pick_with_provenance,
     seed_dcf_inputs,
 )
-from finrobot.engine.compute.operators.ddm import calculate_ddm
-from finrobot.engine.compute.operators.ddm_seed import _BETA_CAP, _BETA_FLOOR, seed_ddm_inputs
-from finrobot.engine.compute.operators.wacc import adjust_beta_blume
-from finrobot.engine.data.factory import build_data_layer
-from finrobot.engine.data.industry_defaults import get_industry_default
-from finrobot.engine.data.types import DataType
-from finrobot.engine.models.financial import DDMInputs
-from finrobot.engine.primitives.industry import is_bank
-from finrobot.paths import SETTINGS_JSON
-from finrobot.routes.settings import load_non_secret_settings
-from finrobot.secret_store import create_secret_store
-from finrobot.server import hydrate_settings_from_secrets
+from alpha_desk.engine.compute.operators.ddm import calculate_ddm
+from alpha_desk.engine.compute.operators.ddm_seed import _BETA_CAP, _BETA_FLOOR, seed_ddm_inputs
+from alpha_desk.engine.compute.operators.wacc import adjust_beta_blume
+from alpha_desk.engine.data.factory import build_data_layer
+from alpha_desk.engine.data.industry_defaults import get_industry_default
+from alpha_desk.engine.data.types import DataType
+from alpha_desk.engine.models.financial import DDMInputs
+from alpha_desk.engine.primitives.industry import is_bank
+from alpha_desk.paths import SETTINGS_JSON
+from alpha_desk.routes.settings import load_non_secret_settings
+from alpha_desk.secret_store import create_secret_store
+from alpha_desk.server import hydrate_settings_from_secrets
 
 # Deliberate cross-sector dividend basket — LIVE beta decides who is β>1 vs β≤1,
 # we do NOT pre-classify (stale-memory weight = 0 on live quants). Financials /
@@ -264,7 +264,7 @@ async def main() -> int:
     finally:
         # Non-server entrypoint: join the aiosqlite workers + checkpoint WAL so the
         # process exits cleanly instead of hanging on "Event loop is closed" (2026-06-24).
-        from finrobot.engine.data.factory import shutdown_data_layer
+        from alpha_desk.engine.data.factory import shutdown_data_layer
 
         await shutdown_data_layer(dl)
 

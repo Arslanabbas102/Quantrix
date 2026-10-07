@@ -79,7 +79,7 @@ describe('ToolCard — result display', () => {
   })
 
   it('a long summary (a full report body) stays collapsed; expanding reveals a scroll box', () => {
-    const longReport = `# FinRobot Analysis Report\n\n${'Apple Inc. equity research. '.repeat(40)}`
+    const longReport = `# Alpha Desk Analysis Report\n\n${'Apple Inc. equity research. '.repeat(40)}`
     expect(longReport.length).toBeGreaterThan(360)
     renderCard({ state: 'complete', result: { summary: longReport } })
 

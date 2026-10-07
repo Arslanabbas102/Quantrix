@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import pytest
 
-from finrobot.engine.models.numeric_claim import Finding, NumericClaim, rollup_status
+from alpha_desk.engine.models.numeric_claim import Finding, NumericClaim, rollup_status
 
 
 def _f(severity: str, check: str = "c") -> Finding:

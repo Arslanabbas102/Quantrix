@@ -8,11 +8,11 @@ import pytest
 
 from datetime import datetime, timezone
 
-from finrobot.engine.compute.operators.fx_normalize import (
+from alpha_desk.engine.compute.operators.fx_normalize import (
     normalize_company_to_usd,
     normalize_financialdata_to_usd,
 )
-from finrobot.engine.models.financial import (
+from alpha_desk.engine.models.financial import (
     BalanceSheet,
     CompanyFinancials,
     FinancialData,

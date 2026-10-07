@@ -1,4 +1,4 @@
-from finrobot.engine.pipelines.validators import (
+from alpha_desk.engine.pipelines.validators import (
     validate_has_fields,
     validate_is_non_empty,
     validate_has_peers,
@@ -114,7 +114,7 @@ class TestValidateReportFormat:
         # Regression: a real Chinese report has CJK headers and no English
         # section keywords, and str.split() under-counts CJK ~10x. The old
         # validator false-failed every such report; the structural validator
-        # must pass it. (See finrobot.log: "found 0 section keywords" loops.)
+        # must pass it. (See alpha_desk.log: "found 0 section keywords" loops.)
         report = (
             "## 执行摘要\n\n我们给予 AAPL 买入评级,目标价 250 美元。"
             "DCF、同业可比与 DDM 三种方法交叉验证后给出该结论。"

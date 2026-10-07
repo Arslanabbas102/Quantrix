@@ -32,9 +32,9 @@ from __future__ import annotations
 
 import pytest
 
-from finrobot.engine.compute.operators.dcf import calculate_dcf
-from finrobot.engine.compute.operators.fx_normalize import normalize_company_to_usd
-from finrobot.engine.compute.operators.multiples import (
+from alpha_desk.engine.compute.operators.dcf import calculate_dcf
+from alpha_desk.engine.compute.operators.fx_normalize import normalize_company_to_usd
+from alpha_desk.engine.compute.operators.multiples import (
     PEER_EV_EBITDA_SANITY_MAX,
     PEER_EV_EBITDA_SANITY_MIN,
     PEER_EV_REVENUE_SANITY_MAX,
@@ -44,23 +44,23 @@ from finrobot.engine.compute.operators.multiples import (
     _sanity,
     calculate_multiples,
 )
-from finrobot.engine.compute.operators.valuation_synthesis import (
+from alpha_desk.engine.compute.operators.valuation_synthesis import (
     _DIAL_CORROBORATE_SPAN,
     _DIAL_MILD_SPAN,
     resolve_canonical_thesis,
     synthesize_valuations,
 )
-from finrobot.engine.models.financial import (
+from alpha_desk.engine.models.financial import (
     CompanyFinancials,
     DCFInputs,
     ThesisResult,
     ValuationMethod,
 )
-from finrobot.engine.models.valuation_thresholds import (
+from alpha_desk.engine.models.valuation_thresholds import (
     MARKET_DIVERGENCE_RATIO_K,
     SINGLE_METHOD_DIVERGENCE_RATIO_K,
 )
-from finrobot.engine.pipelines.equity_research import _reconcile_narrative_targets
+from alpha_desk.engine.pipelines.equity_research import _reconcile_narrative_targets
 
 # A relative ε large enough to clear float noise at the band magnitudes used
 # here (ratios O(1)–O(100)), small enough that K±ε never crosses a *neighbouring*

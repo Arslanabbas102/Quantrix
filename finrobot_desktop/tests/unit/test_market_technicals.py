@@ -10,9 +10,9 @@ from datetime import datetime, timezone
 
 import pytest
 
-from finrobot.engine.compute.coordinators.market import get_technicals, technical_payload
-from finrobot.engine.data.interface import ProviderError
-from finrobot.engine.data.normalize.contracts import NormalizedPrice, PriceBar, Provenance
+from alpha_desk.engine.compute.coordinators.market import get_technicals, technical_payload
+from alpha_desk.engine.data.interface import ProviderError
+from alpha_desk.engine.data.normalize.contracts import NormalizedPrice, PriceBar, Provenance
 
 UTC = timezone.utc
 NOW = datetime(2026, 5, 30, tzinfo=UTC)

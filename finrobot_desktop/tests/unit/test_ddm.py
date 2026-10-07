@@ -8,8 +8,8 @@ Cost of Equity = Risk-Free Rate + Beta * Equity Risk Premium  (CAPM)
 
 import pytest
 
-from finrobot.engine.compute.operators.ddm import calculate_ddm, calculate_ddm_sensitivity
-from finrobot.engine.models.financial import DDMInputs
+from alpha_desk.engine.compute.operators.ddm import calculate_ddm, calculate_ddm_sensitivity
+from alpha_desk.engine.models.financial import DDMInputs
 
 
 def _make_inputs(**overrides: object) -> DDMInputs:
@@ -385,7 +385,7 @@ class TestNonLifeInsurerDegradation:
     def _insurer_fd(self, industry: str):
         from datetime import datetime, timezone
 
-        from finrobot.engine.models.financial import (
+        from alpha_desk.engine.models.financial import (
             BalanceSheet,
             FinancialData,
             IncomeStatement,
@@ -412,7 +412,7 @@ class TestNonLifeInsurerDegradation:
     async def test_ddm_seed_degrades_for_non_life_insurer(self) -> None:
         from unittest.mock import MagicMock
 
-        from finrobot.engine.pipelines.ddm import _execute_ddm_calc, _execute_ddm_seed
+        from alpha_desk.engine.pipelines.ddm import _execute_ddm_calc, _execute_ddm_seed
 
         fd = self._insurer_fd("Insurance - Property & Casualty")
         ctx: dict[str, object] = {"historical_data": fd}

@@ -114,7 +114,7 @@ export interface DcfShape {
 // so the tool detail page renders them through DdmBody / LboBody (chapters/) using
 // the SAME shared primitives (MetricModule / SubChapter / tableStyle) the report
 // chapters use — one visual language, no raw K-V dump. Mirror
-// finrobot.engine.models.financial.{DDMResult,DDMInputs,LBOResult,LBOYear,LBOInputs};
+// alpha_desk.engine.models.financial.{DDMResult,DDMInputs,LBOResult,LBOYear,LBOInputs};
 // keep in sync when those models change.
 // ---------------------------------------------------------------------------
 
@@ -344,7 +344,7 @@ export interface TechnicalAnalysisShape {
 
 // ---------------------------------------------------------------------------
 // SEC ownership & governance — Chapter 12 read model
-// Mirrors finrobot.engine.models.sec.* with read-only field subsets. Keep in
+// Mirrors alpha_desk.engine.models.sec.* with read-only field subsets. Keep in
 // sync when models change. Provenance is required on every datum (matches
 // CLAUDE.md "数字溯源" contract).
 // ---------------------------------------------------------------------------
@@ -358,7 +358,7 @@ export interface FilingProvenanceShape {
 }
 
 /** Canonical insider transaction types (matches Form 4 transaction codes in
- * finrobot/engine/models/sec.py — keep these two in lockstep). Anything
+ * alpha_desk/engine/models/sec.py — keep these two in lockstep). Anything
  * outside this union signals a backend mapping miss and surfaces as the raw
  * value in the UI (the `transactionLabel` fallback). */
 export type InsiderTransactionType =
@@ -519,7 +519,7 @@ export interface CurrencyTagsShape {
 }
 
 // ---------------------------------------------------------------------------
-// Numeric-audit gate (backend ArtifactAudit, finrobot/engine/models/numeric_claim.py).
+// Numeric-audit gate (backend ArtifactAudit, alpha_desk/engine/models/numeric_claim.py).
 // One Finding = one audit verdict on one number. The artifact builder runs the
 // definitional verifiers over the finalized snapshot and ships the rollup here.
 // `withhold_valuation` nulls the POINT price_target + sets valuation_withheld;
@@ -558,7 +558,7 @@ export interface NumericAuditShape {
 // ---------------------------------------------------------------------------
 // Frozen valuation synthesis — the football-field data, computed at generation
 // against the SNAPSHOT price and persisted into the artifact (builders.py).
-// Mirrors finrobot.engine.models.financial.ValuationSynthesis. The report MUST
+// Mirrors alpha_desk.engine.models.financial.ValuationSynthesis. The report MUST
 // render the football field from THIS (not a live /api/valuation/aggregate
 // refetch) so every price in the report is the one snapshot the narrative and
 // the cover target were written against — reproducible + internally consistent.

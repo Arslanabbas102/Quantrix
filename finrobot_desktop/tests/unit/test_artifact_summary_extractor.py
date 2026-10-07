@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from datetime import datetime, timedelta, timezone
 
-from finrobot.artifact.models import (
+from alpha_desk.artifact.models import (
     Artifact,
     ArtifactAssumptions,
     ArtifactComputeVersion,
@@ -12,8 +12,8 @@ from finrobot.artifact.models import (
     ArtifactMeta,
     ArtifactOutputs,
 )
-from finrobot.artifact.store import _summary_from_artifact
-from finrobot.artifact.summary_extractor import (
+from alpha_desk.artifact.store import _summary_from_artifact
+from alpha_desk.artifact.summary_extractor import (
     extract_entry_price,
     extract_fairly_valued,
     extract_tagline,
@@ -155,18 +155,18 @@ def test_summary_from_legacy_artifact_keeps_v5_fields_none() -> None:
 
 def test_summary_from_artifact_headline_skips_markdown_facade() -> None:
     """summary_from_artifact projects a PROSE headline preview, not the leaked
-    "# FinRobot Analysis Report / --- / ## Data Collection" markdown scaffolding
+    "# Alpha Desk Analysis Report / --- / ## Data Collection" markdown scaffolding
     that format_summary() opens a multi-method report with — the raw string the
     exported-HTML timeline JSON embeds for external readers."""
     art = _artifact()
     art.outputs.summary_text = (
-        "# FinRobot Analysis Report\n\n---\n\n## Data Collection\n\n"
+        "# Alpha Desk Analysis Report\n\n---\n\n## Data Collection\n\n"
         "NVIDIA reported data-center revenue of $47.5B, up 154% YoY."
     )
     s = _summary_from_artifact(art)
     assert s.headline.startswith("NVIDIA reported data-center revenue of $47.5B")
     assert "#" not in s.headline
-    assert "FinRobot Analysis Report" not in s.headline
+    assert "Alpha Desk Analysis Report" not in s.headline
 
 
 # ── verdict ──────────────────────────────────────────────────────────────────

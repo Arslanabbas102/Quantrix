@@ -15,13 +15,13 @@ from __future__ import annotations
 
 import asyncio
 
-from finrobot.config import get_settings
-from finrobot.engine.data.factory import build_data_layer
-from finrobot.engine.data.types import DataType
-from finrobot.paths import SETTINGS_JSON
-from finrobot.routes.settings import load_non_secret_settings
-from finrobot.secret_store import create_secret_store
-from finrobot.server import hydrate_settings_from_secrets
+from alpha_desk.config import get_settings
+from alpha_desk.engine.data.factory import build_data_layer
+from alpha_desk.engine.data.types import DataType
+from alpha_desk.paths import SETTINGS_JSON
+from alpha_desk.routes.settings import load_non_secret_settings
+from alpha_desk.secret_store import create_secret_store
+from alpha_desk.server import hydrate_settings_from_secrets
 
 STORAGE_CANDIDATES = ["MU", "WDC", "SNDK", "STX"]
 
@@ -106,7 +106,7 @@ async def main() -> int:
     finally:
         # Non-server entrypoint: join the aiosqlite workers + checkpoint WAL so the
         # process exits cleanly instead of hanging on "Event loop is closed" (2026-06-24).
-        from finrobot.engine.data.factory import shutdown_data_layer
+        from alpha_desk.engine.data.factory import shutdown_data_layer
 
         await shutdown_data_layer(dl)
 

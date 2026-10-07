@@ -46,7 +46,7 @@ msgstr "展开对话"
 
 #. js-lingui-explicit-id
 msgid "chat.input.placeholder"
-msgstr "给 FinRobot 留言…（Enter 发送，Shift+Enter 换行）"
+msgstr "给 Alpha Desk 留言…（Enter 发送，Shift+Enter 换行）"
 
 #. js-lingui-explicit-id
 msgid "chat.newSession"
@@ -1470,7 +1470,7 @@ msgstr "无法加载设置"
 
 #. js-lingui-explicit-id
 msgid "settings.loadError.body"
-msgstr "后端不可用或返回错误,设置无法显示或保存。请确认 FinRobot 后端正在运行后重试——连接恢复前,这里输入的任何内容都不会被保存。"
+msgstr "后端不可用或返回错误,设置无法显示或保存。请确认 Alpha Desk 后端正在运行后重试——连接恢复前,这里输入的任何内容都不会被保存。"
 
 #. js-lingui-explicit-id
 msgid "settings.saving"
@@ -1702,7 +1702,7 @@ msgstr "✓ 已保存"
 
 #. js-lingui-explicit-id
 msgid "shell.about.aria"
-msgstr "关于 FinRobot"
+msgstr "关于 Alpha Desk"
 
 #. js-lingui-explicit-id
 msgid "shell.about.charity"
@@ -2354,7 +2354,7 @@ msgstr "术语：{term}"
 
 #. js-lingui-explicit-id
 msgid "term.askMore"
-msgstr "让 FinRobot 详细讲讲 →"
+msgstr "让 Alpha Desk 详细讲讲 →"
 
 #. js-lingui-explicit-id
 msgid "sourced.title"
@@ -2746,7 +2746,7 @@ msgstr "先配置一个 AI 模型密钥"
 
 #. js-lingui-explicit-id
 msgid "settings.onboarding.body"
-msgstr "FinRobot 用大模型生成研报叙事——选一个服务商、填入它的 API 密钥即可开始。下方数据源密钥（FMP 等）可选，用于更高质量的财务数据。"
+msgstr "Alpha Desk 用大模型生成研报叙事——选一个服务商、填入它的 API 密钥即可开始。下方数据源密钥（FMP 等）可选，用于更高质量的财务数据。"
 
 #. js-lingui-explicit-id
 msgid "settings.key.show"
@@ -2990,7 +2990,7 @@ msgstr "需要更新才能继续"
 
 #. js-lingui-explicit-id
 msgid "update.gate.body"
-msgstr "当前版本已停止支持，请更新到 {version} 后继续使用 FinRobot。"
+msgstr "当前版本已停止支持，请更新到 {version} 后继续使用 Alpha Desk。"
 
 #. js-lingui-explicit-id
 msgid "update.gate.button"
@@ -3006,7 +3006,7 @@ msgstr "更新"
 
 #. js-lingui-explicit-id
 msgid "settings.updates.intro"
-msgstr "检查并安装 FinRobot 的新版本。"
+msgstr "检查并安装 Alpha Desk 的新版本。"
 
 #. js-lingui-explicit-id
 msgid "settings.updates.currentVersion"

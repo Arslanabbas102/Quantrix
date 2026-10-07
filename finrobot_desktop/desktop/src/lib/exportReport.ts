@@ -48,7 +48,7 @@ export function assembleInteractiveHtml(parts: {
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta name="generator" content="FinRobot" />
+<meta name="generator" content="Alpha Desk" />
 <title>${escapeHtml(title)}</title>
 <style>
 ${css}
@@ -56,7 +56,7 @@ ${css}
 </head>
 <body>
 <div id="root"></div>
-<script>window.__FINROBOT_REPORT__ = ${hardenJson(payloadJson)};</script>
+<script>window.__ALPHA_DESK_REPORT__ = ${hardenJson(payloadJson)};</script>
 <script>${hardenScript(js)}</script>
 </body>
 </html>`

@@ -1,12 +1,12 @@
-# FinRobot Desktop — V2
+# Alpha Desk Desktop — V2
 
-> **The production FinRobot.** Investment-bank-grade equity research in a desktop app: deterministic finance numbers plus LLM narrative, with every figure traceable back to a function call.
+> **The production Alpha Desk.** Investment-bank-grade equity research in a desktop app: deterministic finance numbers plus LLM narrative, with every figure traceable back to a function call.
 
-FinRobot Desktop is an open-source equity research workstation for analysts, quantitative researchers, and active investors. A single `research` run produces a 13-chapter artifact — Cover, Investment Thesis, Company Overview, Financial Analysis, Valuation, Recent News, Sensitivity, Catalysts, Technical & Advanced, Competitive Landscape, Financial Data, Ownership & Governance, Disclaimer.
+Alpha Desk Desktop is an open-source equity research workstation for analysts, quantitative researchers, and active investors. A single `research` run produces a 13-chapter artifact — Cover, Investment Thesis, Company Overview, Financial Analysis, Valuation, Recent News, Sensitivity, Catalysts, Technical & Advanced, Competitive Landscape, Financial Data, Ownership & Governance, Disclaimer.
 
-**The core bet: numbers are computed by code, judgment is supplied by the LLM.** The model never emits a figure that cannot be traced back to a call in `finrobot/engine/compute/`.
+**The core bet: numbers are computed by code, judgment is supplied by the LLM.** The model never emits a figure that cannot be traced back to a call in `alpha_desk/engine/compute/`.
 
-This is V2 in the [FinRobot version lineage](../README.md), and it is the generation meant for real work. What makes it the production system rather than a larger demo:
+This is V2 in the [Alpha Desk version lineage](../README.md), and it is the generation meant for real work. What makes it the production system rather than a larger demo:
 
 - **32 deterministic operators** compute every financial figure in pure Python — the LLM narrates them, it does not produce them.
 - **6 audit operators** check the narrative back against the numbers and flag drift before a report ships.
@@ -37,8 +37,8 @@ The other two generations serve different purposes: [`finrobot_equity/`](../finr
 
 The app ships as a single `.app` containing two binaries that talk over local HTTP:
 
-- **`finrobot-desktop`** — the Tauri shell: native window, menu bar, and the React UI.
-- **`finrobot-server`** — a self-contained Python backend (FastAPI + PydanticAI + the deterministic compute engine), launched automatically in the background on `127.0.0.1:8321`.
+- **`alpha-desk-desktop`** — the Tauri shell: native window, menu bar, and the React UI.
+- **`alpha-desk-server`** — a self-contained Python backend (FastAPI + PydanticAI + the deterministic compute engine), launched automatically in the background on `127.0.0.1:8321`.
 
 You never start anything by hand. Opening the app boots the backend; quitting it shuts the backend down. No Python, no `uv`, and no source tree are required on the user's machine.
 
@@ -59,7 +59,7 @@ You never start anything by hand. Opening the app boots the backend; quitting it
 
 ### Agents
 
-Nine agents, each defined by a markdown instruction file in `finrobot/engine/agents/instructions/`:
+Nine agents, each defined by a markdown instruction file in `alpha_desk/engine/agents/instructions/`:
 
 | Group | Agents | Role |
 |:---|:---|:---|
@@ -71,19 +71,19 @@ Because instructions are plain markdown, changing an agent's behavior does not r
 
 ### Pipelines
 
-Seven workflows in `finrobot/engine/pipelines/`, each a sequence of typed steps with validators and retry:
+Seven workflows in `alpha_desk/engine/pipelines/`, each a sequence of typed steps with validators and retry:
 
 | Pipeline | CLI | Output |
 |:---|:---|:---|
-| `equity_research.py` | `finrobot research` | Full 13-chapter research artifact |
-| `dcf.py` | `finrobot dcf` | Discounted cash flow valuation |
-| `ddm.py` | `finrobot ddm` | Dividend discount model |
-| `lbo.py` | `finrobot lbo` | Leveraged buyout model |
-| `comps.py` | `finrobot comps` | Comparable-company analysis |
-| `earnings_analysis.py` | `finrobot earnings` | Earnings review |
-| `ic_memo.py` | `finrobot ic-memo` | Investment-committee memo |
+| `equity_research.py` | `alpha_desk research` | Full 13-chapter research artifact |
+| `dcf.py` | `alpha_desk dcf` | Discounted cash flow valuation |
+| `ddm.py` | `alpha_desk ddm` | Dividend discount model |
+| `lbo.py` | `alpha_desk lbo` | Leveraged buyout model |
+| `comps.py` | `alpha_desk comps` | Comparable-company analysis |
+| `earnings_analysis.py` | `alpha_desk earnings` | Earnings review |
+| `ic_memo.py` | `alpha_desk ic-memo` | Investment-committee memo |
 
-`finrobot dcf` automatically falls back to DDM for companies where a dividend model is the more defensible approach; pass `--force-dcf` to override.
+`alpha_desk dcf` automatically falls back to DDM for companies where a dividend model is the more defensible approach; pass `--force-dcf` to override.
 
 <div align="center">
 <img src="../figs/desktop-financials.png" width="92%" alt="Financial analysis chapter: profit cascade from revenue through EBITDA to net income"/>
@@ -93,7 +93,7 @@ Seven workflows in `finrobot/engine/pipelines/`, each a sequence of typed steps 
 
 ### Deterministic compute
 
-`finrobot/engine/compute/` is the part the LLM is not allowed to improvise around:
+`alpha_desk/engine/compute/` is the part the LLM is not allowed to improvise around:
 
 - **26 operators** — `dcf`, `ddm`, `lbo`, `multiples`, `monte_carlo`, `sotp`, `residual_income`, `peer_screen`, `forward_estimates`, `fx_normalize`, `ownership`, `catalyst`, `signal`, and their seed variants.
 - **6 audit operators** — `currency_caliber`, `ev_bridge`, `narrative_divergence`, `narrative_numeric_grounding`, `sector_sign`, `ttm_period`. These check the *narrative* against the numbers and flag drift.
@@ -113,7 +113,7 @@ Everything here is pure Python with no model in the loop, which is what makes th
 
 ### Data layer
 
-Seven providers in `finrobot/engine/data/providers/`, behind a common interface with health tracking and automatic failover:
+Seven providers in `alpha_desk/engine/data/providers/`, behind a common interface with health tracking and automatic failover:
 
 `yfinance` · `edgar` (SEC) · `fmp` · `finnhub` · `adanos` (retail sentiment) · `news_aggregator` · `fx`
 
@@ -136,19 +136,19 @@ Supporting pieces: response caching, a symbol index, quote batching, SEC holding
 | `partner-lseg` | 8 | `wealth-management` | 6 |
 | `partner-spglobal` | 3 | | |
 
-Browse them from the CLI with `finrobot skill list` and `finrobot skill search <query>`. Attribution for third-party material is in `skills/ATTRIBUTION.md`.
+Browse them from the CLI with `alpha_desk skill list` and `alpha_desk skill search <query>`. Attribution for third-party material is in `skills/ATTRIBUTION.md`.
 
 ---
 
 ## Install (macOS, Apple Silicon)
 
-1. Download `FinRobot_<version>_aarch64.dmg` from the [Releases](../../releases) page (or build it yourself — see below).
-2. Open the `.dmg` and drag **FinRobot** into `Applications`.
+1. Download `AlphaDesk_<version>_aarch64.dmg` from the [Releases](../../releases) page (or build it yourself — see below).
+2. Open the `.dmg` and drag **Alpha Desk** into `Applications`.
 3. **First open** — the app is not yet code-signed, so Gatekeeper will block a plain double-click. Either right-click the app → **Open** → **Open**, or clear the quarantine flag once:
    ```bash
-   xattr -dr com.apple.quarantine /Applications/FinRobot.app
+   xattr -dr com.apple.quarantine /Applications/Alpha Desk.app
    ```
-4. **First run** — open **Settings** and paste your own LLM API key (DeepSeek / OpenAI / Anthropic). FinRobot orchestrates *your* LLM account; it does not ship a key. Until a key is set, the app opens fine but analysis requests return a "configure your API key" notice instead of running.
+4. **First run** — open **Settings** and paste your own LLM API key (DeepSeek / OpenAI / Anthropic). Alpha Desk orchestrates *your* LLM account; it does not ship a key. Until a key is set, the app opens fine but analysis requests return a "configure your API key" notice instead of running.
 
 Running an analysis needs internet access (market data from yfinance / SEC EDGAR / optional FMP, plus your LLM provider). Launching the app and browsing existing reports does not.
 
@@ -156,17 +156,17 @@ Intel Macs, Windows, and Linux are not covered by the current release; on those 
 
 ## Use from the command line
 
-Installing the Python package gives you a `finrobot` CLI independent of the desktop shell:
+Installing the Python package gives you a `alpha_desk` CLI independent of the desktop shell:
 
 ```bash
 uv sync                          # or: pip install -e .
-finrobot research AAPL           # full research artifact
-finrobot dcf MSFT                # DCF (auto-switches to DDM where appropriate)
-finrobot comps NVDA --peers AMD,INTC
-finrobot ic-memo TSLA
-finrobot ask AAPL "How exposed is the gross margin to tariffs?"
-finrobot backtest ...            # needs the `backtest` extra
-finrobot serve                   # run the backend on its own
+alpha_desk research AAPL           # full research artifact
+alpha_desk dcf MSFT                # DCF (auto-switches to DDM where appropriate)
+alpha_desk comps NVDA --peers AMD,INTC
+alpha_desk ic-memo TSLA
+alpha_desk ask AAPL "How exposed is the gross margin to tariffs?"
+alpha_desk backtest ...            # needs the `backtest` extra
+alpha_desk serve                   # run the backend on its own
 ```
 
 Most commands accept `--model` to pick the LLM (e.g. `anthropic:claude-sonnet-4-6`) and `--lang en|zh` to set the output language.
@@ -199,19 +199,19 @@ uv sync --extra dev            # keeps pytest / ruff / mypy installed
   Vite dev server  :5173   ← you open this in the browser
         │  proxies /api, /chat, /health, /openapi.json
         ▼
-  finrobot serve   :8321   ← FastAPI backend, run from source
+  alpha_desk serve   :8321   ← FastAPI backend, run from source
 ```
 
-It waits for the backend's `/openapi.json` to answer before starting the frontend, and prints the backend log path (`/tmp/finrobot-backend.log`) if startup fails. `Ctrl+C` stops both. Backend edits need a restart of the script; frontend edits hot-reload.
+It waits for the backend's `/openapi.json` to answer before starting the frontend, and prints the backend log path (`/tmp/alpha_desk-backend.log`) if startup fails. `Ctrl+C` stops both. Backend edits need a restart of the script; frontend edits hot-reload.
 
 Configure your LLM API key from the **Settings** page in the browser UI, exactly as in the desktop app — keys are stored in the OS keychain, not in a `.env` file.
 
 Two things to know before you run it:
 
-- **`dev.sh` first kills whatever is listening on :8321 and :5173.** If FinRobot.app is open, that includes its bundled backend. Quit the app first.
-- **In browser mode the local API is unauthenticated.** The desktop shell mints a per-launch capability token and the backend enforces it; a plain browser has no Tauri IPC to read that token from, so the backend starts with the auth middleware as a no-op (see `finrobot/auth.py`). It still binds loopback only, but any other process on the machine can reach `:8321` while it runs — including `/api/settings`, which holds your keys. Prefer the desktop app on a shared machine.
+- **`dev.sh` first kills whatever is listening on :8321 and :5173.** If Alpha Desk.app is open, that includes its bundled backend. Quit the app first.
+- **In browser mode the local API is unauthenticated.** The desktop shell mints a per-launch capability token and the backend enforces it; a plain browser has no Tauri IPC to read that token from, so the backend starts with the auth middleware as a no-op (see `alpha_desk/auth.py`). It still binds loopback only, but any other process on the machine can reach `:8321` while it runs — including `/api/settings`, which holds your keys. Prefer the desktop app on a shared machine.
 
-`finrobot serve` on its own exposes only the JSON API — it does not serve the UI, so the Vite server is what makes the browser version work. There is currently no static production build for browser use either: `npm run build` emits assets for the desktop bundle, and `npm run preview` has no proxy configured, so its `/api` calls would not reach the backend.
+`alpha_desk serve` on its own exposes only the JSON API — it does not serve the UI, so the Vite server is what makes the browser version work. There is currently no static production build for browser use either: `npm run build` emits assets for the desktop bundle, and `npm run preview` has no proxy configured, so its `/api` calls would not reach the backend.
 
 ## Build from source
 
@@ -220,11 +220,11 @@ Prerequisites: [`uv`](https://docs.astral.sh/uv/), Node 20+, a Rust toolchain, a
 ```bash
 uv sync --extra package            # backend deps + pyinstaller (for the sidecar)
 bash desktop/src-tauri/sidecar/build.sh
-                                   # freeze finrobot-server into desktop/src-tauri/binaries/
+                                   # freeze alpha-desk-server into desktop/src-tauri/binaries/
 
 cd desktop
 cargo tauri dev                    # run the desktop app (debug)
-cargo tauri build                  # produce FinRobot.app + .dmg under desktop/src-tauri/target/release/bundle/
+cargo tauri build                  # produce Alpha Desk.app + .dmg under desktop/src-tauri/target/release/bundle/
 ```
 
 `build.sh` freezes the backend into a PyInstaller sidecar, so a plain `cd desktop && cargo tauri dev` runs against that **frozen** binary — backend edits won't show up until you re-run `build.sh`. For a live edit loop (backend source + frontend HMR, no re-freezing) use `dev.sh`:
@@ -234,22 +234,22 @@ cargo tauri build                  # produce FinRobot.app + .dmg under desktop/s
 ./dev.sh --app      # desktop shell  → Tauri native window, live backend
 ```
 
-`--app` sets `FINROBOT_DEV_LIVE_BACKEND=1` so the Tauri shell skips spawning the bundled sidecar; the WebView then talks through the Vite proxy to the source-tree backend `dev.sh` started. Or run just the backend with hot reload: `finrobot serve --reload`.
+`--app` sets `ALPHA_DESK_DEV_LIVE_BACKEND=1` so the Tauri shell skips spawning the bundled sidecar; the WebView then talks through the Vite proxy to the source-tree backend `dev.sh` started. Or run just the backend with hot reload: `alpha_desk serve --reload`.
 
 ## Development
 
 ```bash
 uv sync --extra dev
 pytest tests/                                          # 237 test files; live-network tests are skipped by default
-pytest tests/ --cov=finrobot --cov-report=term-missing
-ruff check . && mypy finrobot                          # also wired into .pre-commit-config.yaml
+pytest tests/ --cov=alpha_desk --cov-report=term-missing
+ruff check . && mypy alpha_desk                          # also wired into .pre-commit-config.yaml
 ```
 
 Layout:
 
 ```
 finrobot_desktop/
-├── finrobot/              # Python backend
+├── alpha_desk/              # Python backend
 │   ├── engine/            #   agents, pipelines, compute, data, skills
 │   ├── routes/            #   FastAPI endpoints (runs, artifacts, valuation, …)
 │   ├── artifact/          #   report storage, contracts, semantic diff (SQLite)
@@ -265,7 +265,7 @@ finrobot_desktop/
 
 CI (`.github/workflows/desktop-ci.yml`) runs the backend on Python 3.11 / 3.12 and the frontend on Node 22 / 24.
 
-For deeper reference: `finrobot/engine/instructions.md` describes the engine's contracts, `finrobot/engine/agents/instructions/*.md` holds each agent's brief, and `finrobot/sdk.py` is the programmatic entry point.
+For deeper reference: `alpha_desk/engine/instructions.md` describes the engine's contracts, `alpha_desk/engine/agents/instructions/*.md` holds each agent's brief, and `alpha_desk/sdk.py` is the programmatic entry point.
 
 ## License
 

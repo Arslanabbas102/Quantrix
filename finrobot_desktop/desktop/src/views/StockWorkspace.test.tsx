@@ -24,7 +24,7 @@ vi.mock('../lib/tauri', () => ({
   pickDirectory: vi.fn().mockResolvedValue(null),
   isTauri: vi.fn().mockReturnValue(false),
   openExternal: vi.fn().mockResolvedValue(undefined),
-  DEFAULT_WORKSPACE_PATH: '~/finrobot',
+  DEFAULT_WORKSPACE_PATH: '~/alpha_desk',
 }))
 
 // Mock runStreamStore so we can drive states without a live SSE source.

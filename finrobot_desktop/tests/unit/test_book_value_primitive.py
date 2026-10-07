@@ -16,7 +16,7 @@ Yahoo), never re-derived with the primitive's own formula:
 
 import math
 
-from finrobot.engine.primitives.book_value import (
+from alpha_desk.engine.primitives.book_value import (
     SHARES_PRICE_CONSISTENCY_TOL,
     reconcile_book_value_to_price_basis,
 )

@@ -23,8 +23,8 @@ import math
 
 import pytest
 
-from finrobot.engine.compute.operators.sotp import compute_sotp_breakdown, value_segment
-from finrobot.engine.data.providers.edgar_provider import (
+from alpha_desk.engine.compute.operators.sotp import compute_sotp_breakdown, value_segment
+from alpha_desk.engine.data.providers.edgar_provider import (
     EdgarToolsProvider,
     _normalize_segment_member,
     extract_segment_facts,
@@ -291,7 +291,7 @@ def test_boundary_5_market_exceeds_success_ceiling() -> None:
 # --- Guard: SEC segment route stays OFF capabilities() (never primary) --------
 def test_segment_route_not_in_capabilities(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(
-        "finrobot.engine.data.providers.edgar_provider.set_identity", lambda *_: None
+        "alpha_desk.engine.data.providers.edgar_provider.set_identity", lambda *_: None
     )
     prov = EdgarToolsProvider("Tester tester@example.com")
     caps = [str(c) for c in prov.capabilities()]

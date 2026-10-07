@@ -21,16 +21,16 @@ import sqlite3
 import sys
 from pathlib import Path
 
-from finrobot.config import get_settings
-from finrobot.engine.compute.coordinators.technical_payload import build_technical_analysis
-from finrobot.engine.data.factory import build_data_layer
-from finrobot.engine.models.financial import DCFInputs
-from finrobot.paths import SETTINGS_JSON
-from finrobot.routes.settings import load_non_secret_settings
-from finrobot.secret_store import create_secret_store
-from finrobot.server import hydrate_settings_from_secrets
+from alpha_desk.config import get_settings
+from alpha_desk.engine.compute.coordinators.technical_payload import build_technical_analysis
+from alpha_desk.engine.data.factory import build_data_layer
+from alpha_desk.engine.models.financial import DCFInputs
+from alpha_desk.paths import SETTINGS_JSON
+from alpha_desk.routes.settings import load_non_secret_settings
+from alpha_desk.secret_store import create_secret_store
+from alpha_desk.server import hydrate_settings_from_secrets
 
-ARTIFACTS_DB = Path.home() / ".finrobot" / "artifacts.db"
+ARTIFACTS_DB = Path.home() / ".alpha_desk" / "artifacts.db"
 TICKER = sys.argv[1] if len(sys.argv) > 1 else "AAPL"
 
 
@@ -118,7 +118,7 @@ async def main() -> int:
     finally:
         # Non-server entrypoint: join the aiosqlite workers + checkpoint WAL so the
         # process exits cleanly instead of hanging on "Event loop is closed" (2026-06-24).
-        from finrobot.engine.data.factory import shutdown_data_layer
+        from alpha_desk.engine.data.factory import shutdown_data_layer
 
         await shutdown_data_layer(data_layer)
 

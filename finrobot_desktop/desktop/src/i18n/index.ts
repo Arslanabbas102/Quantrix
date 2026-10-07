@@ -1,4 +1,4 @@
-// FinRobot i18n module — Lingui-backed, zustand-persisted.
+// Alpha Desk i18n module — Lingui-backed, zustand-persisted.
 //
 // Public surface (kept stable so existing call sites don't change):
 //   useI18n()         → { locale, setLocale, t(key, params?) }
@@ -52,7 +52,7 @@ export const useUiPrefs = create<UiPrefsState>()(
       },
     }),
     {
-      name: 'finrobot-ui-prefs',
+      name: 'alpha_desk-ui-prefs',
       storage: createJSONStorage(() => localStorage),
       onRehydrateStorage: () => (state) => {
         // After zustand rehydrates from localStorage, activate Lingui with the persisted locale.

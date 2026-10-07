@@ -16,7 +16,7 @@ from pathlib import Path
 import pytest
 from httpx import ASGITransport, AsyncClient
 
-from finrobot.server import _extract_user_text
+from alpha_desk.server import _extract_user_text
 
 
 @pytest.fixture()
@@ -24,7 +24,7 @@ def _reset_transcript_dir(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Pa
     """Redirect TranscriptWriter to a temp directory for isolation."""
     sess_dir = tmp_path / "sessions"
     monkeypatch.setattr(
-        "finrobot.audit.transcript._DEFAULT_DIR",
+        "alpha_desk.audit.transcript._DEFAULT_DIR",
         sess_dir,
     )
     return sess_dir
@@ -45,15 +45,15 @@ def _read_user_msg(sess_dir: Path, session_id: str) -> dict[str, object]:
 
 async def _post_chat(payload: dict[str, object]) -> None:
     """POST /chat without caring about the streaming response (which needs an LLM)."""
-    from finrobot.config import get_settings
-    from finrobot.engine.deps import FinRobotDeps
-    from finrobot.engine.orchestrator import create_lead_agent
-    from finrobot.server import app
+    from alpha_desk.config import get_settings
+    from alpha_desk.engine.deps import AlphaDeskDeps
+    from alpha_desk.engine.orchestrator import create_lead_agent
+    from alpha_desk.server import app
 
     settings = get_settings(model_name="test")
     agent = create_lead_agent(settings)
     app.state.agent = agent
-    app.state.deps = FinRobotDeps(data_layer=None, settings=settings)  # type: ignore[arg-type]
+    app.state.deps = AlphaDeskDeps(data_layer=None, settings=settings)  # type: ignore[arg-type]
     app.state.transcript_writers = {}
     app.state.artifact_store = None
 
@@ -323,7 +323,7 @@ async def test_chat_records_context_bundle_event(_reset_transcript_dir: Path) ->
 
 def test_build_runtime_instructions_locale_and_context() -> None:
     """Locale + bundle compose into one instruction block; empty inputs → None."""
-    from finrobot.server import _build_runtime_instructions
+    from alpha_desk.server import _build_runtime_instructions
 
     assert _build_runtime_instructions(None, None) is None
 
@@ -349,7 +349,7 @@ def test_build_runtime_instructions_locale_and_context() -> None:
 
 def test_build_runtime_instructions_locale_only() -> None:
     """Locale without a bundle still yields a language directive."""
-    from finrobot.server import _build_runtime_instructions
+    from alpha_desk.server import _build_runtime_instructions
 
     out = _build_runtime_instructions("en", None)
     assert out is not None

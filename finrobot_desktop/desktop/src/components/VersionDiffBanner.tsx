@@ -24,7 +24,7 @@ import { formatCurrency, formatDate } from '../utils/format'
 import { FetchHttpError } from '../utils/errorMessage'
 import type { ArtifactSummaryV5 } from '../types/v5'
 
-// ── SemanticDelta mirror (finrobot/artifact/semantic_diff.py) ───────────────
+// ── SemanticDelta mirror (alpha_desk/artifact/semantic_diff.py) ───────────────
 
 type Direction = 'up' | 'down' | 'flat' | 'added' | 'removed'
 type Sentiment = 'positive' | 'negative' | 'neutral'

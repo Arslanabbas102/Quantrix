@@ -1,4 +1,4 @@
-// Canonical AI4Finance Foundation / FinRobot external links + brand strings.
+// Canonical AI4Finance Foundation / Alpha Desk external links + brand strings.
 // Single source so the global footer (AppFooter) and the brand About popover
 // (BrandAbout) can never drift apart.
 
@@ -10,7 +10,7 @@ export const FOUNDATION_NAME = 'AI4Finance Foundation'
 export const EXTERNAL_LINKS = {
   /** Foundation homepage. */
   site: 'https://ai4finance.org',
-  /** Public FinRobot repository — the "Star on GitHub" target. Points at the
+  /** Public Alpha Desk repository — the "Star on GitHub" target. Points at the
    *  foundation's flagship open-source repo to drive its star count; repoint
    *  here if the rewrite ships its own public repository. */
   github: 'https://github.com/AI4Finance-Foundation/FinRobot',

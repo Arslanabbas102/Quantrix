@@ -6,7 +6,7 @@ from datetime import datetime, timedelta, timezone
 
 import pytest
 
-from finrobot.engine.aggregations.hit_rate_overview import (
+from alpha_desk.engine.aggregations.hit_rate_overview import (
     ArtifactSignalInput,
     compute_hit_rate_overview,
 )

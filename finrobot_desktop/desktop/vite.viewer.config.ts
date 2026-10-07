@@ -22,7 +22,7 @@ export default defineConfig({
     lib: {
       entry: 'src/export/viewer.tsx',
       formats: ['iife'],
-      name: 'FinRobotReportViewer',
+      name: 'AlphaDeskReportViewer',
       fileName: () => 'viewer.js',
     },
     rollupOptions: {

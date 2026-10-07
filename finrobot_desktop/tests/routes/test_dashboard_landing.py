@@ -17,7 +17,7 @@ import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from finrobot.artifact.models import (
+from alpha_desk.artifact.models import (
     Artifact,
     ArtifactAssumptions,
     ArtifactComputeVersion,
@@ -25,14 +25,14 @@ from finrobot.artifact.models import (
     ArtifactMeta,
     ArtifactOutputs,
 )
-from finrobot.artifact.store import ArtifactStore
-from finrobot.engine.data.interface import DataResult, ProviderError
-from finrobot.engine.data.types import DataType
-from finrobot.routes.dashboard import router as dashboard_router
+from alpha_desk.artifact.store import ArtifactStore
+from alpha_desk.engine.data.interface import DataResult, ProviderError
+from alpha_desk.engine.data.types import DataType
+from alpha_desk.routes.dashboard import router as dashboard_router
 
 # Clear module-level caches between tests; otherwise the first run's 60s
 # TTL bleeds into subsequent runs and they see stale data.
-from finrobot.routes import dashboard as dashboard_mod
+from alpha_desk.routes import dashboard as dashboard_mod
 
 UTC = timezone.utc
 NOW = datetime(2026, 5, 22, 12, 0, 0, tzinfo=UTC)
@@ -70,7 +70,7 @@ def _warm_quote_cache(
     import sqlite3
     import time
 
-    from finrobot.engine.data.quote_cache import _CREATE_TABLE, _QUOTES_TABLE
+    from alpha_desk.engine.data.quote_cache import _CREATE_TABLE, _QUOTES_TABLE
 
     ccy = {k.upper(): v.upper() for k, v in (currencies or {}).items()}
     db_path.parent.mkdir(parents=True, exist_ok=True)
@@ -224,8 +224,8 @@ def _clear_caches(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     _FX_RAISES.clear()
     # Isolate the QuoteCache L1/L2 per-test so the singleton does not bleed
     # quotes from previous tests' fixtures into the next assertion.
-    from finrobot import paths
-    from finrobot.engine.data import quote_batch
+    from alpha_desk import paths
+    from alpha_desk.engine.data import quote_batch
 
     monkeypatch.setattr(paths, "QUOTES_DB", tmp_path / "quotes.db")
     quote_batch.reset_quote_cache_singleton()
@@ -995,7 +995,7 @@ def test_hit_rate_does_not_500_when_quote_fetch_explodes(
 
     # The route imports fetch_quotes_batch_cached *inside* the handler, so
     # the only patch that lands is on the source module.
-    monkeypatch.setattr("finrobot.engine.data.quote_batch.fetch_quotes_batch_cached", explode)
+    monkeypatch.setattr("alpha_desk.engine.data.quote_batch.fetch_quotes_batch_cached", explode)
 
     resp = client.get("/api/dashboard/hit-rate")
     # Key guarantee: no 500. Without live prices the aggregator can't
@@ -1035,7 +1035,7 @@ def test_recent_research_does_not_500_when_quote_read_explodes(
 
     # The route imports fetch_quotes_cache_only *inside* the handler, so the
     # patch must land on the source module.
-    monkeypatch.setattr("finrobot.engine.data.quote_batch.fetch_quotes_cache_only", explode)
+    monkeypatch.setattr("alpha_desk.engine.data.quote_batch.fetch_quotes_cache_only", explode)
 
     resp = client.get("/api/dashboard/recent-research?limit=5")
     assert resp.status_code == 200, resp.text
@@ -1243,7 +1243,7 @@ def lifecycle_app(tmp_path: Path) -> FastAPI:
     store so a mutation through the artifacts route is visible to the dashboard
     endpoints (mirrors the real server wiring).
     """
-    from finrobot.routes.artifacts import router as artifacts_router
+    from alpha_desk.routes.artifacts import router as artifacts_router
 
     app = FastAPI()
     app.include_router(dashboard_router)

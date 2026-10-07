@@ -2,13 +2,13 @@ from datetime import datetime, timedelta, timezone
 
 import pytest
 
-from finrobot.engine.data.cache import (
+from alpha_desk.engine.data.cache import (
     CANONICAL_CONTRACT_VERSION,
     DataCache,
     canonical_key,
     raw_slot_key,
 )
-from finrobot.engine.data.interface import DataResult
+from alpha_desk.engine.data.interface import DataResult
 
 
 def _result(ticker: str = "AAPL", data_type: str = "financials") -> DataResult:
@@ -68,7 +68,7 @@ class TestStaleness:
         # Manually backdate the cached_at
         import aiosqlite
 
-        from finrobot.engine.data.cache import raw_slot_key
+        from alpha_desk.engine.data.cache import raw_slot_key
 
         old_time = (datetime.now(tz=timezone.utc) - timedelta(hours=25)).isoformat()
         async with aiosqlite.connect(cache._db_path) as conn:
@@ -220,7 +220,7 @@ class TestEvictExpired:
         import aiosqlite
 
         old = (datetime.now(tz=timezone.utc) - timedelta(days=days)).isoformat()
-        from finrobot.engine.data.cache import raw_slot_key
+        from alpha_desk.engine.data.cache import raw_slot_key
 
         async with aiosqlite.connect(cache._db_path) as conn:
             await conn.execute(
@@ -368,8 +368,8 @@ class TestRawSlotVersion:
     """Versioned raw slots auto-invalidate stale-format payloads on upgrade."""
 
     def test_shape_changed_raw_slots_are_versioned_others_bare(self):
-        from finrobot.engine.data.cache import raw_slot_key
-        from finrobot.engine.data.types import DataType
+        from alpha_desk.engine.data.cache import raw_slot_key
+        from alpha_desk.engine.data.types import DataType
 
         assert raw_slot_key(DataType.PROXY_STATEMENT) == "proxy_statement:v2"
         # PEER_CANDIDATES bumped to v3 (2026-07-07): the payload now carries a top-level

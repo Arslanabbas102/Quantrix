@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import pytest
 
-from finrobot.artifact.field_registry import (
+from alpha_desk.artifact.field_registry import (
     REGISTRY,
     FieldCaliber,
     format_caliber_value,

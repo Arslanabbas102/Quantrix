@@ -15,10 +15,10 @@ from typing import Any
 
 import pytest
 
-from finrobot.engine.data import quote_batch
-from finrobot.engine.data.interface import DataResult, ProviderError
-from finrobot.engine.data.quote_cache import Quote
-from finrobot.engine.data.types import DataType
+from alpha_desk.engine.data import quote_batch
+from alpha_desk.engine.data.interface import DataResult, ProviderError
+from alpha_desk.engine.data.quote_cache import Quote
+from alpha_desk.engine.data.types import DataType
 
 
 class _FakeDataLayer:
@@ -75,7 +75,7 @@ async def _fresh_singleton(tmp_path: Any, monkeypatch: pytest.MonkeyPatch) -> As
     inside the still-live loop so the worker thread exits cleanly. It also nulls
     the reference, so the per-test QUOTES_DB monkeypatch is picked up on the
     next ``_get_singleton`` build."""
-    import finrobot.paths as _paths
+    import alpha_desk.paths as _paths
 
     monkeypatch.setattr(_paths, "QUOTES_DB", tmp_path / "quotes_cache.db")
     await quote_batch.close_quote_cache_singleton()
@@ -223,10 +223,10 @@ async def test_all_providers_circuit_open_preserves_stale_price(tmp_path: Any) -
 
     Uses a REAL DataLayer (not _FakeDataLayer) so the test pins the actual
     fetch_quote gated-exhaustion path end to end."""
-    from finrobot.engine.data.cache import DataCache
-    from finrobot.engine.data.interface import DataProvider
-    from finrobot.engine.data.layer import DataLayer
-    from finrobot.engine.data.provider_health import ProviderHealth
+    from alpha_desk.engine.data.cache import DataCache
+    from alpha_desk.engine.data.interface import DataProvider
+    from alpha_desk.engine.data.layer import DataLayer
+    from alpha_desk.engine.data.provider_health import ProviderHealth
 
     # 1. Warm the cache with a real price.
     warm_layer = _FakeDataLayer({"AAPL": 200.0})

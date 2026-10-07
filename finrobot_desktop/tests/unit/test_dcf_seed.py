@@ -20,8 +20,8 @@ from datetime import datetime, timezone
 
 import pytest
 
-from finrobot.engine.compute.operators.dcf import calculate_dcf, solve_for_implied_growth
-from finrobot.engine.compute.operators.dcf_seed import (
+from alpha_desk.engine.compute.operators.dcf import calculate_dcf, solve_for_implied_growth
+from alpha_desk.engine.compute.operators.dcf_seed import (
     COST_OF_DEBT_CAP,
     COST_OF_DEBT_FLOOR,
     DCF_TAX_RATE_CAP,
@@ -39,8 +39,8 @@ from finrobot.engine.compute.operators.dcf_seed import (
     _weighted_ratio,
     seed_dcf_inputs,
 )
-from finrobot.engine.compute.operators.monte_carlo import run_monte_carlo
-from finrobot.engine.models.financial import (
+from alpha_desk.engine.compute.operators.monte_carlo import run_monte_carlo
+from alpha_desk.engine.models.financial import (
     BalanceSheet,
     FinancialData,
     HistoricalMetrics,
@@ -933,7 +933,7 @@ class TestInputsFetchedAtProvenance:
     def test_direct_construction_defaults_to_none(self) -> None:
         """User-supplied inputs (REST /dcf body) have no fetch time — the field
         must stay honestly None, never a fabricated now()."""
-        from finrobot.engine.models.financial import DCFInputs
+        from alpha_desk.engine.models.financial import DCFInputs
 
         inputs = DCFInputs(
             revenue_base=391e9,

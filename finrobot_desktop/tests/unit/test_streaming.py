@@ -6,8 +6,8 @@ and that progress=None keeps the original behavior (backwards compatibility).
 
 from unittest.mock import MagicMock
 
-from finrobot.engine.pipelines.base import Pipeline, PipelineStep, TextValidator
-from finrobot.engine.pipelines.validators import ValidationResult, validate_is_non_empty
+from alpha_desk.engine.pipelines.base import Pipeline, PipelineStep, TextValidator
+from alpha_desk.engine.pipelines.validators import ValidationResult, validate_is_non_empty
 
 
 class FakeProgress:

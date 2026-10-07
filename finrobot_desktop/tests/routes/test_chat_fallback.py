@@ -37,8 +37,8 @@ from pydantic_ai.ui.vercel_ai.response_types import (
     TextStartChunk,
 )
 
-from finrobot.audit.transcript import TranscriptWriter
-from finrobot.server import _stream_with_fallback
+from alpha_desk.audit.transcript import TranscriptWriter
+from alpha_desk.server import _stream_with_fallback
 
 
 # --------------------------------------------------------------------------- #
@@ -100,7 +100,7 @@ def _types(frames: list[str]) -> list[str]:
 
 @pytest.fixture()
 def writer(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> TranscriptWriter:
-    monkeypatch.setattr("finrobot.audit.transcript._DEFAULT_DIR", tmp_path / "sessions")
+    monkeypatch.setattr("alpha_desk.audit.transcript._DEFAULT_DIR", tmp_path / "sessions")
     return TranscriptWriter("fallback-test")
 
 

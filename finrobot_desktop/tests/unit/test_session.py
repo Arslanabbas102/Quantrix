@@ -10,7 +10,7 @@ from __future__ import annotations
 
 from datetime import date, datetime, timezone
 
-from finrobot.engine.data.normalize.session import (
+from alpha_desk.engine.data.normalize.session import (
     _coerce_quote_dt,
     compute_session_state,
     derive_price_as_of,

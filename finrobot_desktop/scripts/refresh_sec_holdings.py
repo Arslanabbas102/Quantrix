@@ -1,12 +1,12 @@
 """13F holdings reverse-index refresh job.
 
 Downloads every 13F-HR filed in a quarter, normalises each filer's
-holdings DataFrame, writes rows into ``~/.finrobot/sec_holdings_cache.db``
+holdings DataFrame, writes rows into ``~/.alpha_desk/sec_holdings_cache.db``
 keyed by (cusip, holder_cik, period_end, title_of_class).
 
 Run cadence:
   13F-HR are due 45 days after quarter end. The lifespan background task
-  (``finrobot.server.py`` ``_refresh_sec_holdings_background``) calls this
+  (``alpha_desk.server.py`` ``_refresh_sec_holdings_background``) calls this
   for the most recent completed quarter, and a quarterly cron / manual run
   refreshes when needed.
 
@@ -173,7 +173,7 @@ async def _refresh_quarter(period_end: date, *, max_filings: int | None = None) 
     bootstrap or rate-limit-sensitive dev runs). None = process all.
     """
     from edgar import get_filings  # local import: scripts shouldn't fail to load
-    from finrobot.engine.data.sec_holdings_cache import (
+    from alpha_desk.engine.data.sec_holdings_cache import (
         bulk_upsert_holdings,
         cache_status,
         mark_period_complete,

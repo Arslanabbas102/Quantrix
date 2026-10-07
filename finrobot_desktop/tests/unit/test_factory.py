@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-from finrobot.engine.data import factory
+from alpha_desk.engine.data import factory
 
 
 @pytest.mark.asyncio
@@ -23,8 +23,8 @@ async def test_shutdown_data_layer_closes_process_singletons(
     async def _fake_sec() -> None:
         calls.append("sec")
 
-    monkeypatch.setattr("finrobot.engine.data.quote_batch.close_quote_cache_singleton", _fake_quote)
-    monkeypatch.setattr("finrobot.engine.data.sec_holdings_cache.close_singleton", _fake_sec)
+    monkeypatch.setattr("alpha_desk.engine.data.quote_batch.close_quote_cache_singleton", _fake_quote)
+    monkeypatch.setattr("alpha_desk.engine.data.sec_holdings_cache.close_singleton", _fake_sec)
 
     await factory.shutdown_data_layer(None)
     assert calls == ["quote", "sec"]
@@ -44,8 +44,8 @@ async def test_shutdown_data_layer_closes_layer_before_singletons(
     async def _noop() -> None:
         order.append("singleton")
 
-    monkeypatch.setattr("finrobot.engine.data.quote_batch.close_quote_cache_singleton", _noop)
-    monkeypatch.setattr("finrobot.engine.data.sec_holdings_cache.close_singleton", _noop)
+    monkeypatch.setattr("alpha_desk.engine.data.quote_batch.close_quote_cache_singleton", _noop)
+    monkeypatch.setattr("alpha_desk.engine.data.sec_holdings_cache.close_singleton", _noop)
 
     await factory.shutdown_data_layer(_StubLayer())  # type: ignore[arg-type]
     assert order[0] == "layer"  # layer closed before the singletons

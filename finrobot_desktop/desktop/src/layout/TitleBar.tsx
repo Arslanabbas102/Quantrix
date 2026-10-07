@@ -1,7 +1,7 @@
-// TitleBar — cosmic cockpit shell (FinRobot.html §5.1).
+// TitleBar — cosmic cockpit shell (Alpha Desk.html §5.1).
 //
 // Reserves 72px on the left for Tauri's native macOS traffic lights (overlay
-// titleBarStyle). Layout left→right: traffic lights · FINROBOT brandmark ·
+// titleBarStyle). Layout left→right: traffic lights · ALPHA_DESK brandmark ·
 // a centered "HUD instrument cluster" of three icon doors (Research / Coverage
 // / Settings) · spacer · UpdatePill (conditional) · AI panel toggle when enabled.
 //
@@ -131,7 +131,7 @@ export function TitleBar(): React.ReactElement {
           gets a native frame with top-right controls instead, so skip it. */}
       {!isWindows() && <div className="tb-traffic-reserve" aria-hidden />}
 
-      {/* Brandmark — FinRobot wordmark, now the affordance for the About
+      {/* Brandmark — Alpha Desk wordmark, now the affordance for the About
           popover (version · license · foundation links · copyright). */}
       <BrandAbout />
 

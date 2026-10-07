@@ -1,7 +1,7 @@
 """Build the external-truth ANCHOR for the verification harness.
 
 Pulls a handful of anchor fields per ticker DIRECTLY from external authorities —
-NOT from FinRobot's own compute path — so the resulting file is an independent
+NOT from Alpha Desk's own compute path — so the resulting file is an independent
 baseline the harness (``scripts/verify_report_field_basket.py``) checks our system
 against. Authorities, by field:
 
@@ -38,13 +38,13 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from finrobot.config import get_settings
-from finrobot.engine.data.factory import build_data_layer
-from finrobot.engine.data.types import DataType
-from finrobot.paths import SETTINGS_JSON, ensure_home
-from finrobot.routes.settings import load_non_secret_settings
-from finrobot.secret_store import create_secret_store
-from finrobot.server import hydrate_settings_from_secrets
+from alpha_desk.config import get_settings
+from alpha_desk.engine.data.factory import build_data_layer
+from alpha_desk.engine.data.types import DataType
+from alpha_desk.paths import SETTINGS_JSON, ensure_home
+from alpha_desk.routes.settings import load_non_secret_settings
+from alpha_desk.secret_store import create_secret_store
+from alpha_desk.server import hydrate_settings_from_secrets
 
 ANCHOR_PATH = Path(__file__).resolve().parent.parent / "specs" / "外部真值锚-报告字段验证.json"
 
@@ -60,7 +60,7 @@ BASKET: tuple[tuple[str, str], ...] = (
     ("SAP", "foreign ADR (EUR reporting, cross-currency)"),
 )
 
-_SEC_UA = "FinRobot 17696026747lrz@gmail.com"
+_SEC_UA = "Alpha Desk 17696026747lrz@gmail.com"
 _SSL = ssl.create_default_context()
 
 # A baseline fact whose period_end is older than this is an ABANDONED concept the

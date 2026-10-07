@@ -20,8 +20,8 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from typing import Any, cast
 
-from finrobot.artifact.builders import build_equity_research_artifact
-from finrobot.engine.models.financial import (
+from alpha_desk.artifact.builders import build_equity_research_artifact
+from alpha_desk.engine.models.financial import (
     BalanceSheet,
     FinancialData,
     HistoricalMetrics,
@@ -29,7 +29,7 @@ from finrobot.engine.models.financial import (
     MarketData,
     ValuationMetrics,
 )
-from finrobot.engine.pipelines.base import PipelineResult
+from alpha_desk.engine.pipelines.base import PipelineResult
 
 UTC = timezone.utc
 

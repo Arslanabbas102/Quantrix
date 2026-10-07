@@ -21,14 +21,14 @@ import pytest
 from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
 
-from finrobot.artifact.models import ArtifactSummary
-from finrobot.coverage.sqlite_store import CoverageStore
-from finrobot.engine.data.interface import DataResult
-from finrobot.engine.data.normalize.financials import normalize_financials
-from finrobot.engine.data.normalize.price import normalize_price
-from finrobot.engine.data.types import DataType
-from finrobot.routes.coverage import _OVERVIEW_CACHE, router
-from finrobot.run_store import RunRecord, RunStore
+from alpha_desk.artifact.models import ArtifactSummary
+from alpha_desk.coverage.sqlite_store import CoverageStore
+from alpha_desk.engine.data.interface import DataResult
+from alpha_desk.engine.data.normalize.financials import normalize_financials
+from alpha_desk.engine.data.normalize.price import normalize_price
+from alpha_desk.engine.data.types import DataType
+from alpha_desk.routes.coverage import _OVERVIEW_CACHE, router
+from alpha_desk.run_store import RunRecord, RunStore
 
 UTC = timezone.utc
 NOW = datetime(2026, 5, 1, tzinfo=UTC)
@@ -248,7 +248,7 @@ async def test_batch_run_spawns_per_ticker(client: AsyncClient, monkeypatch) -> 
             created_at=NOW.isoformat(),
         )
 
-    monkeypatch.setattr("finrobot.routes.runs.spawn_run", fake_spawn)
+    monkeypatch.setattr("alpha_desk.routes.runs.spawn_run", fake_spawn)
 
     r = await client.post(
         f"/api/coverage/groups/{gid}/runs",
@@ -273,7 +273,7 @@ async def test_batch_run_default_pipeline_is_valid_registry_key(
     """Coverage's core button posts no pipeline_type; the default must be a real
     pipeline-registry key, not the artifact type 'equity_research' (BUG-049):
     the old default made every ticker skip with a 200/zero-runs response."""
-    from finrobot.engine.pipelines.registry import get_pipeline_factories
+    from alpha_desk.engine.pipelines.registry import get_pipeline_factories
 
     gid = await _seed_studied_group(client, "AAPL")
 
@@ -289,7 +289,7 @@ async def test_batch_run_default_pipeline_is_valid_registry_key(
             created_at=NOW.isoformat(),
         )
 
-    monkeypatch.setattr("finrobot.routes.runs.spawn_run", fake_spawn)
+    monkeypatch.setattr("alpha_desk.routes.runs.spawn_run", fake_spawn)
 
     # No pipeline_type → exercises the request-model default.
     r = await client.post(f"/api/coverage/groups/{gid}/runs", json={"tickers": ["AAPL"]})

@@ -13,15 +13,15 @@ from __future__ import annotations
 
 import asyncio
 
-from finrobot.config import get_settings
-from finrobot.engine.data.providers.fmp_provider import (
+from alpha_desk.config import get_settings
+from alpha_desk.engine.data.providers.fmp_provider import (
     _STABLE_BASE,
     FMPProvider,
 )
-from finrobot.paths import SETTINGS_JSON
-from finrobot.routes.settings import load_non_secret_settings
-from finrobot.secret_store import create_secret_store
-from finrobot.server import hydrate_settings_from_secrets
+from alpha_desk.paths import SETTINGS_JSON
+from alpha_desk.routes.settings import load_non_secret_settings
+from alpha_desk.secret_store import create_secret_store
+from alpha_desk.server import hydrate_settings_from_secrets
 
 TICKERS = ["MU", "WDC", "SNDK", "STX"]
 HIST_TICKERS = ["MU", "WDC", "STX"]

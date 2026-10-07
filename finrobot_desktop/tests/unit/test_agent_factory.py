@@ -4,10 +4,10 @@ from unittest.mock import AsyncMock, MagicMock
 import pytest
 from pydantic_ai import Agent, ModelRetry
 
-from finrobot.config import get_settings
-from finrobot.engine.agents.factory import create_sub_agents
-from finrobot.engine.data.types import DataType
-from finrobot.engine.orchestrator import create_lead_agent
+from alpha_desk.config import get_settings
+from alpha_desk.engine.agents.factory import create_sub_agents
+from alpha_desk.engine.data.types import DataType
+from alpha_desk.engine.orchestrator import create_lead_agent
 
 
 def _settings():
@@ -171,7 +171,7 @@ class TestInstructionEncoding:
         Reading without encoding under LANG=C would raise UnicodeDecodeError;
         passing encoding='utf-8' (the fix) decodes the Chinese content cleanly.
         """
-        base = Path(__file__).parent.parent.parent / "finrobot" / "engine"
+        base = Path(__file__).parent.parent.parent / "alpha_desk" / "engine"
         targets = [
             base / "instructions.md",
             base / "agents" / "instructions" / "modeling_agent.md",

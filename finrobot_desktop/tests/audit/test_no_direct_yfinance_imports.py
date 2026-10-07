@@ -1,4 +1,4 @@
-"""Audit: no direct yfinance access in finrobot/engine/ outside sanctioned gateways (门一).
+"""Audit: no direct yfinance access in alpha_desk/engine/ outside sanctioned gateways (门一).
 
 All per-stock data must flow through DataLayer so the provider chain
 (FMP → yfinance) and the future circuit-breaker (批3) cover every path. A direct
@@ -26,11 +26,11 @@ import ast
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-ENGINE = ROOT / "finrobot" / "engine"
+ENGINE = ROOT / "alpha_desk" / "engine"
 
 _WHITELIST = {
-    "finrobot/engine/data/providers/yfinance_provider.py",
-    "finrobot/engine/data/providers/fx.py",
+    "alpha_desk/engine/data/providers/yfinance_provider.py",
+    "alpha_desk/engine/data/providers/fx.py",
 }
 # yfinance entry points that hit the network directly.
 _YF_CALL_ATTRS = {"Ticker", "Tickers", "download"}
@@ -81,7 +81,7 @@ class TestNoDirectYfinanceInEngine:
                     f"provider chain + 批3 circuit-breaker."
                 )
         assert not violations, (
-            "Direct yfinance access found in finrobot/engine/ outside the "
+            "Direct yfinance access found in alpha_desk/engine/ outside the "
             "sanctioned single-point gateways (门一):\n" + "\n".join(violations)
         )
 

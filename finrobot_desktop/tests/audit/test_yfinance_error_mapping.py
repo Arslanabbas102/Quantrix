@@ -11,7 +11,7 @@ from __future__ import annotations
 import pytest
 from yfinance.exceptions import YFException
 
-from finrobot.engine.services.market_data import (
+from alpha_desk.engine.services.market_data import (
     _YFINANCE_SERVICE_DOWN_KEYWORDS,
     _is_yfinance_service_down,
 )

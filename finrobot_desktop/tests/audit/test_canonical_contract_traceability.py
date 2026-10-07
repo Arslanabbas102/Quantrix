@@ -11,13 +11,13 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 
-from finrobot.engine.data.interface import DataResult
-from finrobot.engine.data.normalize import (
+from alpha_desk.engine.data.interface import DataResult
+from alpha_desk.engine.data.normalize import (
     NormalizedFinancials,
     normalize_financials,
     normalize_price,
 )
-from finrobot.engine.data.normalize.contracts import (
+from alpha_desk.engine.data.normalize.contracts import (
     DEGRADED_CLOSE_ONLY,
 )
 

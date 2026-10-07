@@ -489,7 +489,7 @@ function shareClassLabel(titleOfClass: string | undefined, t: Translator): strin
   if (m) return t('chapter.ownership.shareClass', { letter: m[1].toUpperCase() })
   // Some filers report a generic label ("COMMON" / "CMN") even when the CUSIP
   // is class-specific — that ambiguity is in the SEC filing itself, not
-  // something FinRobot can resolve without guessing; show it verbatim (still
+  // something Alpha Desk can resolve without guessing; show it verbatim (still
   // sourced, never fabricated) rather than inventing a class letter.
   return trimmed
 }

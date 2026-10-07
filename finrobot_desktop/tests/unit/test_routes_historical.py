@@ -14,7 +14,7 @@ import pytest
 from httpx import AsyncClient, ASGITransport
 from unittest.mock import patch, AsyncMock
 
-from finrobot.engine.models.financial import HistoricalMetrics
+from alpha_desk.engine.models.financial import HistoricalMetrics
 
 
 @pytest.mark.asyncio
@@ -47,7 +47,7 @@ async def test_historical_endpoint_returns_metrics(app_with_deps):
     )
 
     with patch(
-        "finrobot.routes.data.fetch_historical_metrics",
+        "alpha_desk.routes.data.fetch_historical_metrics",
         new=AsyncMock(return_value=mock_metrics),
     ) as mock_fn:
         transport = ASGITransport(app=app)
@@ -69,7 +69,7 @@ async def test_historical_endpoint_invalid_ticker_returns_422(app_with_deps):
     app = app_with_deps
 
     with patch(
-        "finrobot.routes.data.fetch_historical_metrics",
+        "alpha_desk.routes.data.fetch_historical_metrics",
         new=AsyncMock(side_effect=ValueError("unknown ticker 'INVALID'")),
     ):
         transport = ASGITransport(app=app)
@@ -83,12 +83,12 @@ async def test_historical_endpoint_invalid_ticker_returns_422(app_with_deps):
 @pytest.mark.asyncio
 async def test_historical_endpoint_provider_error_returns_502(app_with_deps):
     """fetch_historical_metrics raises ProviderError → /historical returns 502 (not 500)."""
-    from finrobot.engine.data.interface import ProviderError
+    from alpha_desk.engine.data.interface import ProviderError
 
     app = app_with_deps
 
     with patch(
-        "finrobot.routes.data.fetch_historical_metrics",
+        "alpha_desk.routes.data.fetch_historical_metrics",
         new=AsyncMock(side_effect=ProviderError("yfinance service down: 429")),
     ):
         transport = ASGITransport(app=app)

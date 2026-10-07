@@ -12,9 +12,9 @@ from pathlib import Path
 
 import pytest
 
-from finrobot.artifact.models import ArtifactSummary
-from finrobot.coverage.models import CoverageGroupDetail, CoverageMember, CoverageRow
-from finrobot.coverage.service import (
+from alpha_desk.artifact.models import ArtifactSummary
+from alpha_desk.coverage.models import CoverageGroupDetail, CoverageMember, CoverageRow
+from alpha_desk.coverage.service import (
     _caveat,
     _field_caveats,
     _join_caveats,
@@ -25,12 +25,12 @@ from finrobot.coverage.service import (
     ensure_studied_membership,
     ensure_system_group,
 )
-from finrobot.engine.data.normalize.contracts import DEGRADED_CLOSE_ONLY, DEGRADED_TTM_LAG
-from finrobot.coverage.sqlite_store import CoverageStore
-from finrobot.engine.data.interface import DataResult, ProviderError
-from finrobot.engine.data.normalize.financials import normalize_financials
-from finrobot.engine.data.normalize.price import normalize_price
-from finrobot.engine.data.types import DataType
+from alpha_desk.engine.data.normalize.contracts import DEGRADED_CLOSE_ONLY, DEGRADED_TTM_LAG
+from alpha_desk.coverage.sqlite_store import CoverageStore
+from alpha_desk.engine.data.interface import DataResult, ProviderError
+from alpha_desk.engine.data.normalize.financials import normalize_financials
+from alpha_desk.engine.data.normalize.price import normalize_price
+from alpha_desk.engine.data.types import DataType
 
 UTC = timezone.utc
 ENTRY = datetime(2026, 4, 1, tzinfo=UTC)
@@ -295,8 +295,8 @@ async def test_overview_populates_market_implied_nature_from_latest_dcf() -> Non
     + provenance. A live price far above any plausible growth → option_value."""
     from types import SimpleNamespace
 
-    from finrobot.engine.compute.operators.dcf import calculate_dcf
-    from finrobot.engine.models.financial import DCFInputs
+    from alpha_desk.engine.compute.operators.dcf import calculate_dcf
+    from alpha_desk.engine.models.financial import DCFInputs
 
     inputs = DCFInputs(
         revenue_base=100_000_000_000,
@@ -345,9 +345,9 @@ async def test_market_implied_reverse_solves_on_usd_price_for_foreign_listing(
     (2330.TW, quote=TWD) feeding its raw TWD price would reverse-solve garbage."""
     from types import SimpleNamespace
 
-    import finrobot.coverage.service as svc
-    from finrobot.engine.compute.operators.dcf import calculate_dcf
-    from finrobot.engine.models.financial import DCFInputs
+    import alpha_desk.coverage.service as svc
+    from alpha_desk.engine.compute.operators.dcf import calculate_dcf
+    from alpha_desk.engine.models.financial import DCFInputs
 
     inputs = DCFInputs(
         revenue_base=100_000_000_000,
@@ -782,7 +782,7 @@ class _StubRunStore:
 
 
 async def test_overview_surfaces_failed_run_status() -> None:
-    from finrobot.run_store import RunRecord
+    from alpha_desk.run_store import RunRecord
 
     rec = RunRecord(
         run_id="run_x",

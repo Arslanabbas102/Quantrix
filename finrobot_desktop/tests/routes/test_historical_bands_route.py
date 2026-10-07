@@ -10,11 +10,11 @@ from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
 from pydantic import BaseModel, ConfigDict
 
-from finrobot.engine.data.cache import DataCache
-from finrobot.engine.data.interface import DataResult
-from finrobot.engine.data.normalize.contracts import NormalizedPrice, PriceBar, Provenance
-from finrobot.engine.data.types import DataType
-from finrobot.routes.valuation import router
+from alpha_desk.engine.data.cache import DataCache
+from alpha_desk.engine.data.interface import DataResult
+from alpha_desk.engine.data.normalize.contracts import NormalizedPrice, PriceBar, Provenance
+from alpha_desk.engine.data.types import DataType
+from alpha_desk.routes.valuation import router
 
 UTC = timezone.utc
 NOW = datetime(2026, 5, 21, tzinfo=UTC)
@@ -202,7 +202,7 @@ class _FinancialsStubDataLayer(_StubDataLayer):
 
     async def fetch_canonical(self, data_type: DataType | str, ticker: str, **kw: object) -> object:
         if DataType(data_type) == DataType.FINANCIALS:
-            from finrobot.engine.data.normalize.financials import normalize_financials
+            from alpha_desk.engine.data.normalize.financials import normalize_financials
 
             # fetch_canonical(FINANCIALS) returns a raw-provider-shaped
             # NormalizedFinancials (NOT a pre-extracted FinancialData) — the route
@@ -262,7 +262,7 @@ class _BankFinancialsStubDataLayer(_StubDataLayer):
 
     async def fetch_canonical(self, data_type: DataType | str, ticker: str, **kw: object) -> object:
         if DataType(data_type) == DataType.FINANCIALS:
-            from finrobot.engine.data.normalize.financials import normalize_financials
+            from alpha_desk.engine.data.normalize.financials import normalize_financials
 
             raw = DataResult(
                 data={

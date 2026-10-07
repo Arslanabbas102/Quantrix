@@ -17,7 +17,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from finrobot.engine.analysis.prompts import (
+from alpha_desk.engine.analysis.prompts import (
     ANALYSIS_TYPES,
     build_analysis_prompt,
     _build_financials_table,
@@ -26,8 +26,8 @@ from finrobot.engine.analysis.prompts import (
     _fmt_num,
     _fmt_pct,
 )
-from finrobot.engine.data.interface import DataResult
-from finrobot.engine.data.normalize.financials import normalize_financials
+from alpha_desk.engine.data.interface import DataResult
+from alpha_desk.engine.data.normalize.financials import normalize_financials
 
 
 # ------------------------------------------------------------------ #
@@ -212,7 +212,7 @@ class TestPeerTableFxNormalization:
         async def _fake_fx(ccy: str, *, fmp_api_key: object = None) -> float:
             return 1.0 / 32.0  # TWD → USD
 
-        with patch("finrobot.engine.data.providers.fx.fetch_fx_rate_to_usd", _fake_fx):
+        with patch("alpha_desk.engine.data.providers.fx.fetch_fx_rate_to_usd", _fake_fx):
             table = await _fetch_peer_table(_FakeDataLayer(), settings, "AAPL")
 
         # net_income 1000B TWD × (1/32) = 31.25B USD; market_cap 900B USD →
@@ -245,7 +245,7 @@ class TestPeerTableDeterministicSelection:
 
         junk_screen = SimpleNamespace(tickers=["苹果", "AAPL;DROP", "MSFT"], rationale="fake")
         with patch(
-            "finrobot.engine.analysis.prompts.screen_peers_with_cyclical",
+            "alpha_desk.engine.analysis.prompts.screen_peers_with_cyclical",
             MagicMock(return_value=junk_screen),
         ):
             table = await _fetch_peer_table(_FakeDataLayer(), settings, "AAPL")

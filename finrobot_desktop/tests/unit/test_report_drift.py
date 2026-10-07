@@ -10,11 +10,11 @@ revenue into a price target; a false-positive WARNING costs one triage glance).
 
 from __future__ import annotations
 
-from finrobot.engine.compute.operators.report_drift import (
+from alpha_desk.engine.compute.operators.report_drift import (
     collect_numeric_leaves,
     detect_report_drift,
 )
-from finrobot.engine.models.reconcile_tolerances import NARRATIVE_DRIFT_TOLERANCE
+from alpha_desk.engine.models.reconcile_tolerances import NARRATIVE_DRIFT_TOLERANCE
 
 
 class TestCollectNumericLeaves:

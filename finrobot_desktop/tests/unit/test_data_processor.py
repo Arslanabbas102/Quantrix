@@ -1,4 +1,4 @@
-"""Tests for finrobot.engine.compute.operators.data_processor.
+"""Tests for alpha_desk.engine.compute.operators.data_processor.
 
 Hand-calculated verification for all deterministic financial computations.
 """
@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import pytest
 
-from finrobot.engine.compute.operators.data_processor import calculate_cagr
+from alpha_desk.engine.compute.operators.data_processor import calculate_cagr
 
 
 # ---------------------------------------------------------------------------

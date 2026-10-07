@@ -15,7 +15,7 @@ from types import SimpleNamespace
 import pytest
 from httpx import AsyncClient, ASGITransport
 
-from finrobot.engine.data.types import DataType
+from alpha_desk.engine.data.types import DataType
 
 
 class _FakeProvider:

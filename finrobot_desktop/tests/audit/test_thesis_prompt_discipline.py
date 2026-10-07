@@ -17,7 +17,7 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from finrobot.engine.models.financial import (
+from alpha_desk.engine.models.financial import (
     CatalystAnalysis,
     CatalystEvent,
     CompanyFinancials,
@@ -106,7 +106,7 @@ _PEER_COMPS = PeerComps(
 _VALUATION_SYNTHESIS = ValuationSynthesis(
     methods=[
         ValuationMethod(
-            name="DCF", low=160.0, mid=174.23, high=195.0, confidence=0.55, source="finrobot"
+            name="DCF", low=160.0, mid=174.23, high=195.0, confidence=0.55, source="alpha_desk"
         ),
         ValuationMethod(
             name="EV/EBITDA Comps",
@@ -114,7 +114,7 @@ _VALUATION_SYNTHESIS = ValuationSynthesis(
             mid=181.0,
             high=198.0,
             confidence=0.45,
-            source="finrobot",
+            source="alpha_desk",
         ),
     ],
     weighted_price=177.12,
@@ -142,7 +142,7 @@ def _make_structured_context(**overrides: Any) -> dict[str, object]:
 
 async def _capture_thesis_prompt(structured_context: dict[str, object]) -> str:
     """Run _execute_thesis up to the Agent.run call and capture the full prompt."""
-    from finrobot.engine.pipelines.equity_research import _execute_thesis
+    from alpha_desk.engine.pipelines.equity_research import _execute_thesis
 
     captured_prompt: list[str] = []
 
@@ -155,7 +155,7 @@ async def _capture_thesis_prompt(structured_context: dict[str, object]) -> str:
         async def run(self, prompt: str, **kwargs: Any) -> Any:
             captured_prompt.append(prompt)
             # Return a minimal ThesisResult to avoid validation errors.
-            from finrobot.engine.models.financial import ThesisResult
+            from alpha_desk.engine.models.financial import ThesisResult
 
             thesis = ThesisResult(
                 recommendation="BUY",
@@ -187,7 +187,7 @@ async def _capture_thesis_prompt(structured_context: dict[str, object]) -> str:
     fake_skill.return_value = None
     fake_deps.skill_runtime = None
 
-    import finrobot.engine.pipelines.equity_research as _mod
+    import alpha_desk.engine.pipelines.equity_research as _mod
 
     original_agent = _mod.Agent
 
@@ -405,7 +405,7 @@ async def test_point_withheld_drops_weighted_price_from_whitelist() -> None:
     gated = ValuationSynthesis(
         methods=[
             ValuationMethod(
-                name="DCF", low=4.0, mid=5.88, high=7.0, confidence=0.85, source="finrobot"
+                name="DCF", low=4.0, mid=5.88, high=7.0, confidence=0.85, source="alpha_desk"
             ),
             ValuationMethod(
                 name="EV/EBITDA Comps",
@@ -413,7 +413,7 @@ async def test_point_withheld_drops_weighted_price_from_whitelist() -> None:
                 mid=19.54,
                 high=22.0,
                 confidence=0.72,
-                source="finrobot",
+                source="alpha_desk",
             ),
         ],
         weighted_price=12.71,
@@ -495,9 +495,9 @@ async def test_thesis_prompt_and_instructions_are_language_neutral() -> None:
     """
     from unittest.mock import MagicMock
 
-    import finrobot.engine.pipelines.equity_research as _mod
-    from finrobot.engine.models.financial import ThesisResult
-    from finrobot.engine.pipelines.equity_research import _execute_thesis
+    import alpha_desk.engine.pipelines.equity_research as _mod
+    from alpha_desk.engine.models.financial import ThesisResult
+    from alpha_desk.engine.pipelines.equity_research import _execute_thesis
 
     captured: dict[str, str] = {}
 

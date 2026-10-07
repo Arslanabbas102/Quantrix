@@ -10,8 +10,8 @@ aggregate_valuation 的 warnings。
 
 from __future__ import annotations
 
-from finrobot.engine.compute.operators.valuation_aggregator import _comps_pe_method
-from finrobot.engine.models.financial import CompanyFinancials, PeerComps
+from alpha_desk.engine.compute.operators.valuation_aggregator import _comps_pe_method
+from alpha_desk.engine.models.financial import CompanyFinancials, PeerComps
 
 
 def _comps(

@@ -1,4 +1,4 @@
-from finrobot.engine.compute.operators.wacc import adjust_beta_blume, calculate_wacc
+from alpha_desk.engine.compute.operators.wacc import adjust_beta_blume, calculate_wacc
 
 
 def test_wacc_hand_calculated():

@@ -1,6 +1,6 @@
 // transcriptReplay tests — the transcript → UIMessage mapping is the contract
 // that lets a past session resume. Event shapes mirror
-// finrobot/audit/transcript.py (do NOT drift from it).
+// alpha_desk/audit/transcript.py (do NOT drift from it).
 
 import { describe, it, expect } from 'vitest'
 import {

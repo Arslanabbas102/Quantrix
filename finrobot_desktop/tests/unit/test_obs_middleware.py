@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from finrobot.obs.context import current_trace
-from finrobot.obs.middleware import RequestTraceMiddleware
+from alpha_desk.obs.context import current_trace
+from alpha_desk.obs.middleware import RequestTraceMiddleware
 
 
 def _app() -> FastAPI:

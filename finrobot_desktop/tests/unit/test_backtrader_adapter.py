@@ -10,16 +10,16 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from finrobot.engine.backtest.backtrader_adapter import (
+from alpha_desk.engine.backtest.backtrader_adapter import (
     BackTraderAdapter,
     _check_backtrader,
     _get_sma_crossover,
 )
-from finrobot.engine.backtest.engine import BacktestConfig
+from alpha_desk.engine.backtest.engine import BacktestConfig
 
 # backtrader is the optional ``[backtest]`` extra. This module exercises the
 # adapter that wraps it; when the extra is absent (a dev venv that did not
-# ``pip install 'finrobot[backtest]'``) skip the whole module cleanly instead of
+# ``pip install 'alpha_desk[backtest]'``) skip the whole module cleanly instead of
 # hard-failing all of its tests. CI with the extra installed still runs them all.
 pytest.importorskip("backtrader")
 
@@ -63,7 +63,7 @@ class TestCheckBacktrader:
             return real_import(name, *args, **kwargs)
 
         monkeypatch.setattr(builtins, "__import__", mock_import)
-        with pytest.raises(ImportError, match="finrobot\\[backtest\\]"):
+        with pytest.raises(ImportError, match="alpha_desk\\[backtest\\]"):
             _check_backtrader()
 
 
@@ -107,7 +107,7 @@ class TestResolveStrategy:
         non-whitelisted path importlib.import_module is never called, so a
         module's top-level side effects cannot be triggered from a strategy
         string (e.g. ``os:getcwd``)."""
-        import finrobot.engine.backtest.backtrader_adapter as adapter_mod
+        import alpha_desk.engine.backtest.backtrader_adapter as adapter_mod
 
         def _spy_import(name: str, *args: object, **kwargs: object) -> object:
             raise AssertionError(f"import_module must not run for {name!r}")
@@ -121,14 +121,14 @@ class TestResolveStrategy:
         self, monkeypatch: pytest.MonkeyPatch
     ) -> None:
         """BUG-063: a custom Strategy IS loadable once its import-path prefix is
-        whitelisted via FINROBOT_BACKTEST_STRATEGY_MODULE_PREFIXES."""
+        whitelisted via ALPHA_DESK_BACKTEST_STRATEGY_MODULE_PREFIXES."""
         if FullyInvestedStrategy is None:  # pragma: no cover - backtrader installed
             pytest.skip("backtrader not installed")
         import backtrader as bt
 
         module_path = FullyInvestedStrategy.__module__  # this test module's path
         prefix = module_path.split(".", 1)[0]
-        monkeypatch.setenv("FINROBOT_BACKTEST_STRATEGY_MODULE_PREFIXES", prefix)
+        monkeypatch.setenv("ALPHA_DESK_BACKTEST_STRATEGY_MODULE_PREFIXES", prefix)
 
         adapter = BackTraderAdapter(MagicMock())
         cls = adapter._resolve_strategy(f"{module_path}:FullyInvestedStrategy")
@@ -141,7 +141,7 @@ class TestResolveStrategy:
         ValueError ('Unknown strategy'), not a bare AttributeError."""
         module_path = TestResolveStrategy.__module__
         prefix = module_path.split(".", 1)[0]
-        monkeypatch.setenv("FINROBOT_BACKTEST_STRATEGY_MODULE_PREFIXES", prefix)
+        monkeypatch.setenv("ALPHA_DESK_BACKTEST_STRATEGY_MODULE_PREFIXES", prefix)
         adapter = BackTraderAdapter(MagicMock())
         with pytest.raises(ValueError, match="Unknown strategy: 'NoSuchClass'"):
             adapter._resolve_strategy(f"{module_path}:NoSuchClass")
@@ -151,7 +151,7 @@ class TestResolveStrategy:
         module whose attribute is not a Strategy is rejected."""
         module_path = TestResolveStrategy.__module__
         prefix = module_path.split(".", 1)[0]
-        monkeypatch.setenv("FINROBOT_BACKTEST_STRATEGY_MODULE_PREFIXES", prefix)
+        monkeypatch.setenv("ALPHA_DESK_BACKTEST_STRATEGY_MODULE_PREFIXES", prefix)
         adapter = BackTraderAdapter(MagicMock())
         # ``MagicMock`` is an attribute of this module (imported) but not a Strategy.
         with pytest.raises(ValueError, match="not a bt.Strategy subclass"):
@@ -301,7 +301,7 @@ class TestLoadData:
             adapter._load_data(config)
 
     def test_provider_error_becomes_no_price_data(self) -> None:
-        from finrobot.engine.data.interface import ProviderError
+        from alpha_desk.engine.data.interface import ProviderError
 
         data_layer = MagicMock()
         data_layer.fetch_price_range = AsyncMock(side_effect=ProviderError("all down"))
@@ -313,7 +313,7 @@ class TestLoadData:
     def test_builds_feed_from_typed_bars(self) -> None:
         from datetime import date
 
-        from finrobot.engine.data.normalize import PriceBar
+        from alpha_desk.engine.data.normalize import PriceBar
 
         bars = [
             PriceBar(
@@ -355,7 +355,7 @@ def _one_year_daily_bars(seed: int, mu: float = 0.0004, sigma: float = 0.012) ->
     import random
     from datetime import date, timedelta
 
-    from finrobot.engine.data.normalize import PriceBar
+    from alpha_desk.engine.data.normalize import PriceBar
 
     rng = random.Random(seed)
     bars = []
@@ -397,7 +397,7 @@ class TestSharpeOnDailyBars:
         # BUG-063: dynamic ``module:ClassName`` loading is off by default; this
         # regression fixture lives in the test module, so whitelist its prefix.
         monkeypatch.setenv(
-            "FINROBOT_BACKTEST_STRATEGY_MODULE_PREFIXES",
+            "ALPHA_DESK_BACKTEST_STRATEGY_MODULE_PREFIXES",
             __name__.split(".", 1)[0],
         )
 

@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
-Start the FinRobot Equity Research Web Application
+Start the Alpha Desk Equity Research Web Application
 
 This script starts the FastAPI web application for equity research analysis.
 
 Usage:
     python finrobot_equity/run_web_app.py
 
-    Or from the FinRobot root directory:
+    Or from the Alpha Desk root directory:
     python -m finrobot_equity.run_web_app
 """
 
@@ -29,7 +29,7 @@ def run_web_app(host: str = "127.0.0.1", port: int = 8001, reload: bool = True):
         reload: Whether to enable auto-reload on code changes
     """
     print("=" * 60)
-    print("FinRobot Equity Research Web Application")
+    print("Alpha Desk Equity Research Web Application")
     print("=" * 60)
     print(f"\nStarting web application...")
     print(f"Host: {host}")
@@ -51,7 +51,7 @@ def run_web_app(host: str = "127.0.0.1", port: int = 8001, reload: bool = True):
         print(f"\nError: Could not import web application")
         print(f"Details: {e}")
         print("\nMake sure you have installed the required dependencies:")
-        print("  pip install finrobot[equity]")
+        print("  pip install alpha_desk[equity]")
         sys.exit(1)
     except Exception as e:
         print(f"\nError starting web application: {e}")
@@ -61,7 +61,7 @@ if __name__ == "__main__":
     import argparse
     
     parser = argparse.ArgumentParser(
-        description="Start the FinRobot Equity Research Web Application"
+        description="Start the Alpha Desk Equity Research Web Application"
     )
     parser.add_argument(
         "--host",

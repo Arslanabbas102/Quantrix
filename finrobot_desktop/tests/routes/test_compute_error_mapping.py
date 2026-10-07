@@ -15,11 +15,11 @@ from unittest.mock import AsyncMock, MagicMock, patch
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from finrobot.engine.compute.operators.monte_carlo import MonteCarloRequest
-from finrobot.engine.compute.operators.sniper import SniperRequest
-from finrobot.engine.data.interface import ProviderError
-from finrobot.engine.models.financial import DCFInputs
-from finrobot.routes.compute import _compute_http_error, router as compute_router
+from alpha_desk.engine.compute.operators.monte_carlo import MonteCarloRequest
+from alpha_desk.engine.compute.operators.sniper import SniperRequest
+from alpha_desk.engine.data.interface import ProviderError
+from alpha_desk.engine.models.financial import DCFInputs
+from alpha_desk.routes.compute import _compute_http_error, router as compute_router
 
 
 def _client(*, with_deps: bool = False) -> TestClient:
@@ -93,7 +93,7 @@ def test_compute_http_error_strips_raw_provider_url() -> None:
 
 # ── pure-operator routes: operator ValueError → 422 (not 500) ───────────
 def test_wacc_operator_value_error_maps_to_422() -> None:
-    with patch("finrobot.routes.compute.calculate_wacc", side_effect=ValueError("bad")):
+    with patch("alpha_desk.routes.compute.calculate_wacc", side_effect=ValueError("bad")):
         resp = _client().post("/api/compute/wacc", json=_WACC_BODY)
     assert resp.status_code == 422, resp.text
 
@@ -106,7 +106,7 @@ def test_sniper_operator_value_error_maps_to_422() -> None:
         historical_prices=[150.0 + i for i in range(60)],
     ).model_dump(mode="json")
     with patch(
-        "finrobot.routes.compute.calculate_sniper_points",
+        "alpha_desk.routes.compute.calculate_sniper_points",
         side_effect=ValueError("degenerate levels"),
     ):
         resp = _client().post("/api/compute/sniper", json=body)
@@ -118,7 +118,7 @@ def test_monte_carlo_operator_value_error_maps_to_422() -> None:
         inputs=_dcf_inputs(), current_price=160.0, n_simulations=100
     ).model_dump(mode="json")
     with patch(
-        "finrobot.routes.compute.run_monte_carlo",
+        "alpha_desk.routes.compute.run_monte_carlo",
         side_effect=ValueError("bad distribution"),
     ):
         resp = _client().post("/api/compute/monte-carlo", json=body)
@@ -126,7 +126,7 @@ def test_monte_carlo_operator_value_error_maps_to_422() -> None:
 
 
 def test_lbo_operator_value_error_maps_to_422() -> None:
-    from finrobot.engine.models.financial import LBOInputs
+    from alpha_desk.engine.models.financial import LBOInputs
 
     body = LBOInputs(
         ticker="AAPL",
@@ -142,7 +142,7 @@ def test_lbo_operator_value_error_maps_to_422() -> None:
         tax_rate=0.21,
         interest_rate=0.06,
     ).model_dump(mode="json")
-    with patch("finrobot.routes.compute.calculate_lbo", side_effect=ValueError("neg equity")):
+    with patch("alpha_desk.routes.compute.calculate_lbo", side_effect=ValueError("neg equity")):
         resp = _client().post("/api/compute/lbo", json=body)
     assert resp.status_code == 422, resp.text
 
@@ -150,7 +150,7 @@ def test_lbo_operator_value_error_maps_to_422() -> None:
 # ── fetch (seed) routes: ProviderError → 502, ValueError → 422 ──────────
 def test_dcf_seed_provider_error_maps_to_502() -> None:
     with patch(
-        "finrobot.routes.compute._seed_dcf_inputs_for_ticker",
+        "alpha_desk.routes.compute._seed_dcf_inputs_for_ticker",
         new=AsyncMock(side_effect=ProviderError("yfinance service down")),
     ):
         resp = _client(with_deps=True).post("/api/compute/dcf-seed", json={"ticker": "AAPL"})
@@ -160,7 +160,7 @@ def test_dcf_seed_provider_error_maps_to_502() -> None:
 
 def test_dcf_seed_value_error_maps_to_422() -> None:
     with patch(
-        "finrobot.routes.compute._seed_dcf_inputs_for_ticker",
+        "alpha_desk.routes.compute._seed_dcf_inputs_for_ticker",
         new=AsyncMock(side_effect=ValueError("unknown ticker")),
     ):
         resp = _client(with_deps=True).post("/api/compute/dcf-seed", json={"ticker": "ZZZZ"})
@@ -169,7 +169,7 @@ def test_dcf_seed_value_error_maps_to_422() -> None:
 
 def test_dcf_equivalence_line_provider_error_maps_to_502() -> None:
     with patch(
-        "finrobot.routes.compute._seed_dcf_inputs_for_ticker",
+        "alpha_desk.routes.compute._seed_dcf_inputs_for_ticker",
         new=AsyncMock(side_effect=ProviderError("yfinance down")),
     ):
         resp = _client(with_deps=True).post(

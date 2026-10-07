@@ -16,8 +16,8 @@ from pathlib import Path
 
 import pytest
 
-from finrobot.events import RunCancelled
-from finrobot.run_store import RunStore
+from alpha_desk.events import RunCancelled
+from alpha_desk.run_store import RunStore
 
 # The exact CREATE shipped before the cancel feature — old CHECK, and without
 # the language/source_artifact_id columns (they arrived via column migrations),

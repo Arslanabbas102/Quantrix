@@ -7,9 +7,9 @@ from typing import cast
 import httpx
 import pytest
 
-from finrobot.engine.data.interface import ProviderError
-from finrobot.engine.data.providers import fx as fx_module
-from finrobot.engine.data.providers.fx import _fx_ticker, fetch_fx_rate_to_usd
+from alpha_desk.engine.data.interface import ProviderError
+from alpha_desk.engine.data.providers import fx as fx_module
+from alpha_desk.engine.data.providers.fx import _fx_ticker, fetch_fx_rate_to_usd
 
 
 class TestTickerConstruction:

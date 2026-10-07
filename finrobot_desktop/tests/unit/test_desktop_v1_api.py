@@ -5,11 +5,11 @@ from unittest.mock import MagicMock, patch
 import httpx
 import pytest
 
-from finrobot.config import get_settings
-from finrobot.engine.deps import FinRobotDeps
-from finrobot.run_store import RunStore
-from finrobot.secret_store import FileSecretStore
-from finrobot.server import app
+from alpha_desk.config import get_settings
+from alpha_desk.engine.deps import AlphaDeskDeps
+from alpha_desk.run_store import RunStore
+from alpha_desk.secret_store import FileSecretStore
+from alpha_desk.server import app
 
 
 def _dcf_payload() -> dict[str, object]:
@@ -89,7 +89,7 @@ class TestSettingsRoutes:
         await secret_store.set("fmp_api_key", "secret-fmp-key")
         app.state.secret_store = secret_store
         app.state.settings_path = tmp_path / "settings.json"
-        app.state.deps = FinRobotDeps(
+        app.state.deps = AlphaDeskDeps(
             data_layer=FakeDataLayer(),  # type: ignore[arg-type]
             settings=settings,
         )
@@ -178,7 +178,7 @@ class TestRunsRoutes:
                 return result
 
         settings = get_settings(model_name="test")
-        app.state.deps = FinRobotDeps(
+        app.state.deps = AlphaDeskDeps(
             data_layer=FakeDataLayer(),  # type: ignore[arg-type]
             settings=settings,
         )
@@ -187,13 +187,13 @@ class TestRunsRoutes:
         app.state.run_tasks = {}
 
         # Patch the binding inside routes.runs, not the source module.
-        # `from finrobot.engine.pipelines.registry import get_pipeline_factories`
+        # `from alpha_desk.engine.pipelines.registry import get_pipeline_factories`
         # at runs.py:19 copied the reference; patching the source module leaves
         # the local name pointing at the real registry, the real `dcf` pipeline
         # ran with empty sub_agents/data_layer, never reached completed/failed,
         # and the SSE stream's poll loop never broke out → test hung forever.
         with patch(
-            "finrobot.routes.runs.get_pipeline_factories",
+            "alpha_desk.routes.runs.get_pipeline_factories",
             return_value={"dcf": lambda sub_agents: FakePipeline()},
         ):
             async with httpx.AsyncClient(

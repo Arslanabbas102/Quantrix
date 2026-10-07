@@ -21,14 +21,14 @@ from datetime import datetime, timezone
 
 import pytest
 
-from finrobot.engine.data.cache import DataCache
-from finrobot.engine.data.interface import DataProvider, DataResult, ProviderError
-from finrobot.engine.data.layer import DataLayer
-from finrobot.engine.data.normalize import (
+from alpha_desk.engine.data.cache import DataCache
+from alpha_desk.engine.data.interface import DataProvider, DataResult, ProviderError
+from alpha_desk.engine.data.layer import DataLayer
+from alpha_desk.engine.data.normalize import (
     NormalizedForwardEstimates,
     normalize_forward_estimates,
 )
-from finrobot.engine.data.types import DataType
+from alpha_desk.engine.data.types import DataType
 
 NOW = datetime(2026, 6, 10, 12, 0, tzinfo=timezone.utc)
 

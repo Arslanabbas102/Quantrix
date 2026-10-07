@@ -9,8 +9,8 @@ from datetime import date, datetime, timezone
 
 import pytest
 
-from finrobot.engine.data.interface import DataResult
-from finrobot.engine.data.normalize.contracts import (
+from alpha_desk.engine.data.interface import DataResult
+from alpha_desk.engine.data.normalize.contracts import (
     DEGRADED_CLOSE_ONLY,
     DEGRADED_PERIOD_BASIS_UNKNOWN,
     DEGRADED_PRICE_FALLBACK_CLOSE,
@@ -18,8 +18,8 @@ from finrobot.engine.data.normalize.contracts import (
     DEGRADED_QUOTE_TS_MISSING,
     DEGRADED_TTM_LAG,
 )
-from finrobot.engine.data.normalize.financials import normalize_financials
-from finrobot.engine.data.normalize.price import normalize_price
+from alpha_desk.engine.data.normalize.financials import normalize_financials
+from alpha_desk.engine.data.normalize.price import normalize_price
 
 FETCH = datetime(2026, 5, 28, 3, 21, tzinfo=timezone.utc)
 
@@ -371,7 +371,7 @@ def test_pricebar_construction_invariant_rejects_non_finite_close():
     the contract instead of shipping close:null to the chart."""
     import pytest as _pytest
 
-    from finrobot.engine.data.normalize.contracts import PriceBar
+    from alpha_desk.engine.data.normalize.contracts import PriceBar
 
     with _pytest.raises(ValueError, match="finite"):
         PriceBar(date=date(2026, 6, 10), close=float("nan"))

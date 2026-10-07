@@ -21,7 +21,7 @@ from pathlib import Path
 import pytest
 import pytest_asyncio
 
-from finrobot.artifact.sqlite_store import (
+from alpha_desk.artifact.sqlite_store import (
     SUMMARY_PROJECTION_VERSION,
     SqliteArtifactStore,
     _headline_from_summary,
@@ -757,7 +757,7 @@ async def test_get_unreadable_payload_self_archives_and_exists(
 # which opens with the generic markdown scaffolding a blind [:120] slice used to
 # leak into the headline column / exported-HTML timeline JSON.
 _POLLUTED_SUMMARY = (
-    "# FinRobot Analysis Report\n\n\n---\n\n## Data Collection\n\n"
+    "# Alpha Desk Analysis Report\n\n\n---\n\n## Data Collection\n\n"
     "### Microsoft Corporation (MSFT) Financial and Price Data Summary\n\n"
     "Microsoft reported revenue of $245.1B (TTM) with a 44% operating margin, "
     "driven by Azure and Microsoft 365 Copilot adoption."
@@ -765,13 +765,13 @@ _POLLUTED_SUMMARY = (
 
 
 def test_headline_from_summary_skips_markdown_facade() -> None:
-    """The bug: a blind summary_text[:120] leaked "# FinRobot Analysis Report /
+    """The bug: a blind summary_text[:120] leaked "# Alpha Desk Analysis Report /
     --- / ## Data Collection" scaffolding. The cleaned headline is the first
     PROSE line — no heading hash, no rule, no scaffolding text."""
     headline = _headline_from_summary(_POLLUTED_SUMMARY)
     assert headline.startswith("Microsoft reported revenue of $245.1B")
     assert "#" not in headline
-    assert "FinRobot Analysis Report" not in headline
+    assert "Alpha Desk Analysis Report" not in headline
     assert "Data Collection" not in headline
     assert len(headline) <= 120
 
@@ -797,7 +797,7 @@ def test_headline_from_summary_truncates_long_prose_to_120() -> None:
 def test_headline_from_summary_all_scaffolding_falls_back_to_slice() -> None:
     """Every line is heading/rule/blank → fall back to the raw [:120] so the
     result is never emptier than the old behaviour (caller adds `or id`)."""
-    only_scaffold = "# FinRobot Analysis Report\n\n---\n\n## Data Collection"
+    only_scaffold = "# Alpha Desk Analysis Report\n\n---\n\n## Data Collection"
     assert _headline_from_summary(only_scaffold) == only_scaffold[:120]
 
 
@@ -811,7 +811,7 @@ async def test_save_projects_clean_headline_not_markdown_facade(
     store: SqliteArtifactStore,
 ) -> None:
     """save() (_artifact_to_row) must store a prose headline preview, not the
-    leaked "# FinRobot Analysis Report / --- / ## Data Collection" scaffolding
+    leaked "# Alpha Desk Analysis Report / --- / ## Data Collection" scaffolding
     the exported-HTML timeline JSON surfaces to external readers."""
     art = _make_artifact(id="art_polluted", type="equity_research")
     art.outputs.summary_text = _POLLUTED_SUMMARY
@@ -822,7 +822,7 @@ async def test_save_projects_clean_headline_not_markdown_facade(
             "SELECT headline FROM artifacts WHERE id = ?", ("art_polluted",)
         ).fetchone()
     assert headline.startswith("Microsoft reported revenue of $245.1B")
-    assert "# FinRobot Analysis Report" not in headline
+    assert "# Alpha Desk Analysis Report" not in headline
     assert not headline.lstrip().startswith("#")
 
 
@@ -851,7 +851,7 @@ async def test_headline_backfills_via_startup_version_gate(
         (stale,) = conn.execute(
             "SELECT headline FROM artifacts WHERE id = ?", ("art_backfill",)
         ).fetchone()
-    assert stale.startswith("# FinRobot Analysis Report")  # pre-condition: polluted
+    assert stale.startswith("# Alpha Desk Analysis Report")  # pre-condition: polluted
 
     assert SUMMARY_PROJECTION_VERSION >= 5  # this fix bumped past the v4 baseline
     updated = await store.rebuild_summaries_if_outdated()
@@ -859,7 +859,7 @@ async def test_headline_backfills_via_startup_version_gate(
 
     summaries = await store.list_by_ticker(ticker="AAPL")
     assert summaries[0].headline.startswith("Microsoft reported revenue of $245.1B")
-    assert "# FinRobot Analysis Report" not in summaries[0].headline
+    assert "# Alpha Desk Analysis Report" not in summaries[0].headline
 
     with sqlite3.connect(store._db_path) as conn:
         (applied,) = conn.execute("PRAGMA user_version").fetchone()

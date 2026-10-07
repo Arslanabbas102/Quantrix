@@ -17,8 +17,8 @@ from pathlib import Path
 
 import pytest
 
-from finrobot.engine.data import industry_defaults
-from finrobot.engine.data.industry_defaults import (
+from alpha_desk.engine.data import industry_defaults
+from alpha_desk.engine.data.industry_defaults import (
     IndustryDefault,
     get_industry_default,
     list_known_industries,

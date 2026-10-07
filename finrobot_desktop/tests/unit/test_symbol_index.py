@@ -13,13 +13,13 @@ import pytest
 import asyncio
 import time
 
-from finrobot.engine.data import symbol_index as si
-from finrobot.engine.data.symbol_index import (
+from alpha_desk.engine.data import symbol_index as si
+from alpha_desk.engine.data.symbol_index import (
     SymbolEntry,
     SymbolIndex,
     build_index_from_payload,
 )
-from finrobot.engine.data.ticker import validate_ticker
+from alpha_desk.engine.data.ticker import validate_ticker
 
 # SEC company_tickers.json shape: dict keyed by stringified rank "0".."N",
 # insertion order = market-cap descending (the file's natural order). One junk

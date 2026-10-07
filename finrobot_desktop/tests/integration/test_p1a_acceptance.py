@@ -1,8 +1,8 @@
 import pytest
 from pathlib import Path
 
-from finrobot.config import get_settings
-from finrobot.engine.skills.registry import SkillRegistry
+from alpha_desk.config import get_settings
+from alpha_desk.engine.skills.registry import SkillRegistry
 
 # Skills dir resolved from settings, same as runtime code
 SKILLS_DIR = Path(get_settings().skills_dir)
@@ -58,12 +58,12 @@ class TestP1aAcceptance:
         output containing domain-specific methodology terms that would NOT
         appear without skill injection.
         """
-        from finrobot.engine.agents.factory import create_sub_agents
-        from finrobot.engine.deps import FinRobotDeps
-        from finrobot.engine.data.layer import DataLayer
-        from finrobot.engine.data.cache import DataCache
-        from finrobot.engine.data.providers.yfinance_provider import YFinanceProvider
-        from finrobot.engine.pipelines.equity_research import create_equity_research_pipeline
+        from alpha_desk.engine.agents.factory import create_sub_agents
+        from alpha_desk.engine.deps import AlphaDeskDeps
+        from alpha_desk.engine.data.layer import DataLayer
+        from alpha_desk.engine.data.cache import DataCache
+        from alpha_desk.engine.data.providers.yfinance_provider import YFinanceProvider
+        from alpha_desk.engine.pipelines.equity_research import create_equity_research_pipeline
 
         settings = get_settings()
         registry = SkillRegistry(SKILLS_DIR)
@@ -71,7 +71,7 @@ class TestP1aAcceptance:
         sub_agents = create_sub_agents(settings, skill_registry=registry)
         cache = DataCache(":memory:")
         data_layer = DataLayer(providers=[YFinanceProvider()], cache=cache)
-        deps = FinRobotDeps(data_layer=data_layer, settings=settings, skill_runtime=registry)
+        deps = AlphaDeskDeps(data_layer=data_layer, settings=settings, skill_runtime=registry)
 
         # Direct pipeline invocation (deterministic)
         pipeline = create_equity_research_pipeline(sub_agents)

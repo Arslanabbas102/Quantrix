@@ -4,7 +4,7 @@ import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from finrobot.routes.compute import (
+from alpha_desk.routes.compute import (
     DcfEquivalenceLineRequest,
     DcfSeedRequest,
     LboSeedRequest,

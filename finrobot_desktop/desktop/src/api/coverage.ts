@@ -9,7 +9,7 @@ import { FetchHttpError } from '../utils/errorMessage'
 import { extractErrorDetail } from './errors'
 import type { NumberSource } from '../components/SourcedNumber'
 
-// ── Types (mirror finrobot/coverage/models.py) ───────────────────────────────
+// ── Types (mirror alpha_desk/coverage/models.py) ───────────────────────────────
 
 export interface CoverageMember {
   ticker: string
@@ -45,7 +45,7 @@ export type SignalStatus = 'hit' | 'watching' | 'failed'
 export type RunStatus = 'created' | 'running' | 'completed' | 'failed'
 
 // What the LIVE price implies, re-solved from the ticker's latest stored DCF
-// (mirrors MarketImpliedNature in finrobot/engine/models/financial.py). A
+// (mirrors MarketImpliedNature in alpha_desk/engine/models/financial.py). A
 // per-name classification, NOT a cross-name implied-growth ranking — the reverse
 // solver fits a flat constant while the forward DCF decays, so a cross-name gap
 // would rank growth-curve steepness, not expectation stretch.
@@ -63,7 +63,7 @@ export interface MarketImpliedNature {
 }
 
 // Per-cell provenance for the numeric columns (mirrors CoverageRowSources in
-// finrobot/coverage/models.py). Each slot feeds a <SourcedNumber> popover; a
+// alpha_desk/coverage/models.py). Each slot feeds a <SourcedNumber> popover; a
 // null slot (degraded fetch) renders the bare value.
 export interface CoverageRowSources {
   price: NumberSource | null

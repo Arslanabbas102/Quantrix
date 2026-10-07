@@ -20,7 +20,7 @@ import re
 from datetime import date
 from pathlib import Path
 
-from finrobot.engine.compute.operators.forward_estimates import (
+from alpha_desk.engine.compute.operators.forward_estimates import (
     ForwardFinancials,
     get_forward_financials,
 )
@@ -29,8 +29,8 @@ from finrobot.engine.compute.operators.forward_estimates import (
 AS_OF = date(2026, 6, 1)
 
 ROOT = Path(__file__).resolve().parents[2]
-LEAF_SRC = ROOT / "finrobot" / "engine" / "compute" / "operators" / "forward_estimates.py"
-FINROBOT = ROOT / "finrobot"
+LEAF_SRC = ROOT / "alpha_desk" / "engine" / "compute" / "operators" / "forward_estimates.py"
+ALPHA_DESK = ROOT / "alpha_desk"
 
 
 # ---------------------------------------------------------------------------
@@ -42,11 +42,11 @@ class TestLeafIsolation:
     def test_no_forbidden_imports(self) -> None:
         src = LEAF_SRC.read_text()
         forbidden = (
-            "from finrobot.engine.pipelines",
-            "from finrobot.engine.agents",
-            "from finrobot.engine.orchestrator",
-            "from finrobot.engine.data",
-            "from finrobot.artifact",
+            "from alpha_desk.engine.pipelines",
+            "from alpha_desk.engine.agents",
+            "from alpha_desk.engine.orchestrator",
+            "from alpha_desk.engine.data",
+            "from alpha_desk.artifact",
             "import pydantic_ai",
             "from pydantic_ai",
             "import openai",
@@ -76,27 +76,27 @@ class TestSingleEntryPoint:
 
     _ALLOWED_FILES = {
         # The leaf itself + its tests
-        Path("finrobot/engine/compute/operators/forward_estimates.py"),
+        Path("alpha_desk/engine/compute/operators/forward_estimates.py"),
         Path("tests/audit/test_forward_estimates_red_lines.py"),
         Path("tests/unit/test_forward_estimates.py"),
         # Aggregator consumes the leaf's output by parameter, so a string
         # mention of `forward_eps=` etc. there is the contract surface — not
         # a violation. Listing it keeps the audit explicit instead of magic.
-        Path("finrobot/engine/compute/operators/valuation_aggregator.py"),
+        Path("alpha_desk/engine/compute/operators/valuation_aggregator.py"),
         Path("tests/audit/test_valuation_aggregator.py"),
         Path("tests/routes/test_valuation_routes.py"),
         # routes/valuation.py wires the route handler to the aggregator —
         # passes forward_* by kwarg name, never invents the numbers.
-        Path("finrobot/routes/valuation.py"),
+        Path("alpha_desk/routes/valuation.py"),
         # _helpers.py is the pipeline-side mirror of routes/valuation.py: it
         # wires build_valuation_synthesis → aggregate_valuation, passing the
         # leaf's already-minted forward EBITDA straight through by kwarg name
         # (gated single-currency). Like the route, it never derives the number.
-        Path("finrobot/engine/pipelines/_helpers.py"),
+        Path("alpha_desk/engine/pipelines/_helpers.py"),
         # yfinance provider is allowed to surface "forward_eps" through its
         # raw dict (the leaf reads from there) — but it must not derive
         # forward EBITDA / FCF.
-        Path("finrobot/engine/data/providers/yfinance_provider.py"),
+        Path("alpha_desk/engine/data/providers/yfinance_provider.py"),
     }
 
     def test_no_other_file_writes_forward_revenue_or_forward_ebitda(self) -> None:
@@ -109,7 +109,7 @@ class TestSingleEntryPoint:
             re.compile(r"\bforward_revenue\s*="),
         )
         violations: list[str] = []
-        for py in FINROBOT.rglob("*.py"):
+        for py in ALPHA_DESK.rglob("*.py"):
             rel = py.relative_to(ROOT)
             if rel in self._ALLOWED_FILES:
                 continue

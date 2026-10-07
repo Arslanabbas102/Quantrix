@@ -11,8 +11,8 @@ the live reverse-derivation (PNC ~$275, CFG ~$47, JPM ~$310).
 from __future__ import annotations
 
 import pytest
-from finrobot.engine.compute.operators.residual_income import calculate_residual_income
-from finrobot.engine.models.financial import DDMInputs
+from alpha_desk.engine.compute.operators.residual_income import calculate_residual_income
+from alpha_desk.engine.models.financial import DDMInputs
 
 # CoE = rf + beta×ERP with the seed's macro defaults (rf 4.3%, ERP 4.2%): beta 1.0 → 8.5%.
 _RF = 0.043

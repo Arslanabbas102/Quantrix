@@ -9,10 +9,10 @@ with ``normalize_financials`` / ``normalize_price`` (the same path a
 import pytest
 from datetime import date, datetime, timezone
 
-from finrobot.engine.data.interface import DataResult
-from finrobot.engine.data.normalize.financials import normalize_financials
-from finrobot.engine.data.normalize.price import normalize_price
-from finrobot.engine.compute.coordinators.extractor import (
+from alpha_desk.engine.data.interface import DataResult
+from alpha_desk.engine.data.normalize.financials import normalize_financials
+from alpha_desk.engine.data.normalize.price import normalize_price
+from alpha_desk.engine.compute.coordinators.extractor import (
     extract_financial_data,
     extract_company_financials,
     extract_price_history,
@@ -434,7 +434,7 @@ def test_extract_company_financials_debt_cash_none_when_missing():
     """D2: a peer whose provider omits total_debt/total_cash must carry None
     (not 0) so calculate_multiples withholds EV instead of fabricating
     EV=market_cap and poisoning the peer median."""
-    from finrobot.engine.compute.operators.multiples import calculate_multiples
+    from alpha_desk.engine.compute.operators.multiples import calculate_multiples
 
     cf = extract_company_financials(_make_fin(total_debt=None, total_cash=None))
     assert cf.total_debt is None

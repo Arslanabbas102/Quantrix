@@ -17,10 +17,10 @@ import pytest_asyncio
 from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
 
-from finrobot.engine.data.cache import DataCache
-from finrobot.engine.data.interface import DataProvider, DataResult
-from finrobot.engine.data.layer import DataLayer
-from finrobot.engine.data.types import DataType
+from alpha_desk.engine.data.cache import DataCache
+from alpha_desk.engine.data.interface import DataProvider, DataResult
+from alpha_desk.engine.data.layer import DataLayer
+from alpha_desk.engine.data.types import DataType
 
 
 class _NamedProvider(DataProvider):
@@ -41,7 +41,7 @@ class _NamedProvider(DataProvider):
 
 @pytest_asyncio.fixture
 async def client_and_layer(tmp_path) -> AsyncIterator[tuple[AsyncClient, DataLayer]]:
-    from finrobot.routes.settings import router
+    from alpha_desk.routes.settings import router
 
     cache = DataCache(db_path=str(tmp_path / "ph.db"))
     layer = DataLayer(

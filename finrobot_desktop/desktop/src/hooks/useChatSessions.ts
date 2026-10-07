@@ -23,8 +23,8 @@ import { reconstructMessages, type TranscriptEvent } from '../lib/transcriptRepl
 import type { UIMessage } from 'ai'
 
 // localStorage key for the active session id. Mirrors the project's
-// `finrobot-*` localStorage naming (finrobot-ui-shell / finrobot-ui-prefs).
-const ACTIVE_SESSION_KEY = 'finrobot-active-session'
+// `alpha_desk-*` localStorage naming (alpha_desk-ui-shell / alpha_desk-ui-prefs).
+const ACTIVE_SESSION_KEY = 'alpha_desk-active-session'
 
 /** Session summary as returned by GET /api/chat/sessions. */
 export interface ChatSessionSummary {

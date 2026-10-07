@@ -2,7 +2,7 @@
  * Centralised HTTP error parsing for fetch-based hooks.
  *
  * The backend returns user-facing detail strings on errors (see
- * finrobot/routes/data.py _data_http_error). Every HTTPException across the
+ * alpha_desk/routes/data.py _data_http_error). Every HTTPException across the
  * backend uses a string detail, so this helper pulls that string out of the
  * FastAPI error envelope `{detail: string}` and falls back to a caller-supplied
  * default if the body is empty or unparseable.

@@ -1,6 +1,6 @@
 // AppShell — cosmic cockpit shell: TitleBar (with top nav) + main content area
 // + RightChatPanel. The left 64px icon Sidebar was retired when its nav moved
-// up into the TitleBar (FinRobot.html cockpit shell); Explorer, EditorTabs,
+// up into the TitleBar (Alpha Desk.html cockpit shell); Explorer, EditorTabs,
 // Breadcrumb, and tab management were removed earlier in Desktop V1 cleanup.
 
 import { useEffect } from 'react'
@@ -19,7 +19,7 @@ import { useUpdaterStore } from '../stores/updaterStore'
 import { pickDirectory, isTauri, DEFAULT_WORKSPACE_PATH } from '../lib/tauri'
 import { AI_CHAT_ENABLED } from '../config/features'
 
-const WELCOME_SHOWN_KEY = 'finrobot-welcome-shown'
+const WELCOME_SHOWN_KEY = 'alpha_desk-welcome-shown'
 
 export function AppShell(): React.ReactElement {
   const workspacePath = useUiStore((s) => s.workspacePath)

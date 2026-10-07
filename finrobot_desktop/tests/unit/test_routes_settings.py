@@ -27,8 +27,8 @@ import pytest
 from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
 
-from finrobot.config import FinRobotSettings, get_settings
-from finrobot.routes.settings import (
+from alpha_desk.config import AlphaDeskSettings, get_settings
+from alpha_desk.routes.settings import (
     _DATA_PROBES,
     _merge_non_secret_settings,
     load_non_secret_settings,
@@ -46,7 +46,7 @@ class _FakeSkillRuntime:
     """Stub passed to create_lead_agent / create_sub_agents — not used here."""
 
 
-def _settings(**overrides: Any) -> FinRobotSettings:
+def _settings(**overrides: Any) -> AlphaDeskSettings:
     """Default settings for the app: openai model with its provider key set."""
     provider_keys = overrides.pop("provider_keys", {"openai": "dev-key"})
     overrides.setdefault("model_name", "openai:gpt-4o")
@@ -56,7 +56,7 @@ def _settings(**overrides: Any) -> FinRobotSettings:
 def _make_app(
     tmp_path: Path,
     *,
-    settings: FinRobotSettings | None = None,
+    settings: AlphaDeskSettings | None = None,
     secret_store: AsyncMock | None = None,
     startup_error: str | None = None,
 ) -> FastAPI:
@@ -341,7 +341,7 @@ async def test_sec_identity_active_true_for_valid_identity(tmp_path: Path) -> No
 @pytest.mark.asyncio
 async def test_sec_identity_active_false_for_placeholder(tmp_path: Path) -> None:
     """The config.py placeholder default is NOT a real identity → active=False."""
-    settings = _settings(sec_user_agent="FinRobot admin@example.com")
+    settings = _settings(sec_user_agent="Alpha Desk admin@example.com")
     app = _make_app(tmp_path, settings=settings)
     async with _client(app) as c:
         resp = await c.get("/api/settings")
@@ -382,7 +382,7 @@ async def test_put_settings_does_not_pin_unchanged_fields(tmp_path: Path, monkey
     """Submitting only model_name must not also write sec_user_agent etc."""
     settings = _settings(sec_user_agent="MyCo me@example.com")
     app = _make_app(tmp_path, settings=settings)
-    monkeypatch.setattr("finrobot.routes.settings._replace_runtime_settings", AsyncMock())
+    monkeypatch.setattr("alpha_desk.routes.settings._replace_runtime_settings", AsyncMock())
 
     async with _client(app) as c:
         resp = await c.put(
@@ -412,7 +412,7 @@ async def test_put_data_key_succeeds_without_llm_key(tmp_path: Path, monkeypatch
     secret_store.set = AsyncMock()
     secret_store.delete = AsyncMock()
     app = _make_app(tmp_path, settings=settings, secret_store=secret_store)
-    monkeypatch.setattr("finrobot.routes.settings._replace_runtime_settings", AsyncMock())
+    monkeypatch.setattr("alpha_desk.routes.settings._replace_runtime_settings", AsyncMock())
 
     async with _client(app) as c:
         resp = await c.put("/api/settings", json={"fmp_api_key": "fmp-key-123"})
@@ -431,7 +431,7 @@ async def test_put_persists_only_changed_keys(tmp_path: Path, monkeypatch: Any) 
     """Successful PUT writes ONLY the field the user changed."""
     settings = _settings(sec_user_agent="MyCo me@example.com")
     app = _make_app(tmp_path, settings=settings)
-    monkeypatch.setattr("finrobot.routes.settings._replace_runtime_settings", AsyncMock())
+    monkeypatch.setattr("alpha_desk.routes.settings._replace_runtime_settings", AsyncMock())
 
     async with _client(app) as c:
         resp = await c.put("/api/settings", json={"log_level": "DEBUG"})
@@ -448,7 +448,7 @@ async def test_put_adds_custom_provider(tmp_path: Path, monkeypatch: Any) -> Non
     """A custom OpenAI-compatible provider round-trips through PUT into settings.json."""
     settings = _settings()
     app = _make_app(tmp_path, settings=settings)
-    monkeypatch.setattr("finrobot.routes.settings._replace_runtime_settings", AsyncMock())
+    monkeypatch.setattr("alpha_desk.routes.settings._replace_runtime_settings", AsyncMock())
 
     custom = [
         {
@@ -476,7 +476,7 @@ async def test_put_strips_custom_provider_id_before_persisting(
     async def _fake_replace(request: Any, candidate: Any) -> None:
         request.app.state.deps.settings = candidate
 
-    monkeypatch.setattr("finrobot.routes.settings._replace_runtime_settings", _fake_replace)
+    monkeypatch.setattr("alpha_desk.routes.settings._replace_runtime_settings", _fake_replace)
 
     custom = [
         {
@@ -506,7 +506,7 @@ async def test_put_lowercases_custom_provider_id_before_persisting(
     async def _fake_replace(request: Any, candidate: Any) -> None:
         request.app.state.deps.settings = candidate
 
-    monkeypatch.setattr("finrobot.routes.settings._replace_runtime_settings", _fake_replace)
+    monkeypatch.setattr("alpha_desk.routes.settings._replace_runtime_settings", _fake_replace)
 
     custom = [
         {
@@ -547,7 +547,7 @@ async def test_put_normalizes_model_name_provider_prefix_with_custom_provider(
     async def _fake_replace(request: Any, candidate: Any) -> None:
         request.app.state.deps.settings = candidate
 
-    monkeypatch.setattr("finrobot.routes.settings._replace_runtime_settings", _fake_replace)
+    monkeypatch.setattr("alpha_desk.routes.settings._replace_runtime_settings", _fake_replace)
 
     custom = [
         {
@@ -588,7 +588,7 @@ async def test_put_strips_custom_provider_label_before_persisting(
     async def _fake_replace(request: Any, candidate: Any) -> None:
         request.app.state.deps.settings = candidate
 
-    monkeypatch.setattr("finrobot.routes.settings._replace_runtime_settings", _fake_replace)
+    monkeypatch.setattr("alpha_desk.routes.settings._replace_runtime_settings", _fake_replace)
 
     custom = [
         {
@@ -611,7 +611,7 @@ async def test_put_strips_custom_provider_label_before_persisting(
 @pytest.mark.asyncio
 async def test_put_rejects_blank_custom_provider_label(tmp_path: Path, monkeypatch: Any) -> None:
     app = _make_app(tmp_path)
-    monkeypatch.setattr("finrobot.routes.settings._replace_runtime_settings", AsyncMock())
+    monkeypatch.setattr("alpha_desk.routes.settings._replace_runtime_settings", AsyncMock())
     bad = [
         {
             "id": "myhost",
@@ -633,7 +633,7 @@ async def test_put_rejects_custom_provider_shadowing_builtin(
 ) -> None:
     """A custom provider id may not collide with a built-in (openai)."""
     app = _make_app(tmp_path)
-    monkeypatch.setattr("finrobot.routes.settings._replace_runtime_settings", AsyncMock())
+    monkeypatch.setattr("alpha_desk.routes.settings._replace_runtime_settings", AsyncMock())
     bad = [{"id": "openai", "label": "x", "kind": "openai-compatible", "base_url": "https://h/v1"}]
     async with _client(app) as c:
         resp = await c.put("/api/settings", json={"custom_providers": bad})
@@ -646,7 +646,7 @@ async def test_put_rejects_custom_provider_shadowing_builtin_case_insensitive(
     tmp_path: Path, monkeypatch: Any
 ) -> None:
     app = _make_app(tmp_path)
-    monkeypatch.setattr("finrobot.routes.settings._replace_runtime_settings", AsyncMock())
+    monkeypatch.setattr("alpha_desk.routes.settings._replace_runtime_settings", AsyncMock())
     bad = [{"id": "OpenAI", "label": "x", "kind": "openai-compatible", "base_url": "https://h/v1"}]
     async with _client(app) as c:
         resp = await c.put("/api/settings", json={"custom_providers": bad})
@@ -660,7 +660,7 @@ async def test_put_rejects_openai_compatible_without_base_url(
 ) -> None:
     """An openai-compatible custom provider must declare a base_url."""
     app = _make_app(tmp_path)
-    monkeypatch.setattr("finrobot.routes.settings._replace_runtime_settings", AsyncMock())
+    monkeypatch.setattr("alpha_desk.routes.settings._replace_runtime_settings", AsyncMock())
     bad = [{"id": "myhost", "label": "x", "kind": "openai-compatible", "base_url": None}]
     async with _client(app) as c:
         resp = await c.put("/api/settings", json={"custom_providers": bad})
@@ -677,7 +677,7 @@ async def test_put_writes_provider_key_to_keychain(tmp_path: Path, monkeypatch: 
     secret_store.set = AsyncMock()
     secret_store.delete = AsyncMock()
     app = _make_app(tmp_path, secret_store=secret_store)
-    monkeypatch.setattr("finrobot.routes.settings._replace_runtime_settings", AsyncMock())
+    monkeypatch.setattr("alpha_desk.routes.settings._replace_runtime_settings", AsyncMock())
 
     async with _client(app) as c:
         resp = await c.put("/api/settings", json={"provider_keys": {"anthropic": "sk-new"}})
@@ -696,7 +696,7 @@ async def test_put_writes_provider_key_under_normalized_id(
     secret_store.set = AsyncMock()
     secret_store.delete = AsyncMock()
     app = _make_app(tmp_path, secret_store=secret_store)
-    monkeypatch.setattr("finrobot.routes.settings._replace_runtime_settings", AsyncMock())
+    monkeypatch.setattr("alpha_desk.routes.settings._replace_runtime_settings", AsyncMock())
 
     async with _client(app) as c:
         resp = await c.put("/api/settings", json={"provider_keys": {" Anthropic ": "sk-new"}})
@@ -714,7 +714,7 @@ async def test_put_rejects_unknown_provider_key(tmp_path: Path, monkeypatch: Any
     secret_store.set = AsyncMock()
     secret_store.delete = AsyncMock()
     app = _make_app(tmp_path, secret_store=secret_store)
-    monkeypatch.setattr("finrobot.routes.settings._replace_runtime_settings", AsyncMock())
+    monkeypatch.setattr("alpha_desk.routes.settings._replace_runtime_settings", AsyncMock())
 
     async with _client(app) as c:
         resp = await c.put("/api/settings", json={"provider_keys": {"ghost": "sk-ghost"}})
@@ -748,7 +748,7 @@ async def test_get_settings_returns_sec_identity_dismissed_at_null(
 async def test_put_persists_sec_identity_dismissed_at(tmp_path: Path, monkeypatch: Any) -> None:
     """PUT writes the timestamp to settings.json (ISO string, json-serializable)."""
     app = _make_app(tmp_path)
-    monkeypatch.setattr("finrobot.routes.settings._replace_runtime_settings", AsyncMock())
+    monkeypatch.setattr("alpha_desk.routes.settings._replace_runtime_settings", AsyncMock())
 
     iso = "2026-05-27T15:30:00+00:00"
     async with _client(app) as c:
@@ -767,8 +767,8 @@ async def test_put_persists_sec_identity_dismissed_at(tmp_path: Path, monkeypatc
 async def test_load_non_secret_settings_coerces_dismissed_at(
     tmp_path: Path,
 ) -> None:
-    """Reboot path: ISO string in settings.json → datetime on FinRobotSettings."""
-    from finrobot.routes.settings import load_non_secret_settings
+    """Reboot path: ISO string in settings.json → datetime on AlphaDeskSettings."""
+    from alpha_desk.routes.settings import load_non_secret_settings
 
     iso_str = "2026-05-27T15:30:00+00:00"
     (tmp_path / "settings.json").write_text(json.dumps({"sec_identity_dismissed_at": iso_str}))
@@ -781,7 +781,7 @@ async def test_load_non_secret_settings_coerces_dismissed_at(
 
 
 def test_load_non_secret_settings_keeps_peer_sticky_window(tmp_path: Path) -> None:
-    from finrobot.routes.settings import load_non_secret_settings
+    from alpha_desk.routes.settings import load_non_secret_settings
 
     (tmp_path / "settings.json").write_text(json.dumps({"peer_sticky_max_age_days": 3}))
     raw = load_non_secret_settings(tmp_path / "settings.json")
@@ -792,7 +792,7 @@ def test_load_non_secret_settings_keeps_peer_sticky_window(tmp_path: Path) -> No
 @pytest.mark.asyncio
 async def test_put_persists_sec_holdings_auto_refresh(tmp_path: Path, monkeypatch: Any) -> None:
     app = _make_app(tmp_path)
-    monkeypatch.setattr("finrobot.routes.settings._replace_runtime_settings", AsyncMock())
+    monkeypatch.setattr("alpha_desk.routes.settings._replace_runtime_settings", AsyncMock())
 
     async with _client(app) as c:
         resp = await c.put("/api/settings", json={"sec_holdings_auto_refresh": False})
@@ -867,7 +867,7 @@ async def test_settings_update_logging_fields(tmp_path: Path, monkeypatch: Any) 
     async def _fake_replace(request: Any, candidate: Any) -> None:
         request.app.state.deps.settings = candidate
 
-    monkeypatch.setattr("finrobot.routes.settings._replace_runtime_settings", _fake_replace)
+    monkeypatch.setattr("alpha_desk.routes.settings._replace_runtime_settings", _fake_replace)
     async with _client(app) as c:
         resp = await c.put("/api/settings", json={"log_retention_days": 14, "log_to_file": False})
     assert resp.status_code == 200, resp.text
@@ -896,13 +896,13 @@ async def test_settings_update_logging_fields_reapplies_logging(
     async def _fake_replace(request: Any, candidate: Any) -> None:
         request.app.state.deps.settings = candidate
 
-    monkeypatch.setattr("finrobot.routes.settings._replace_runtime_settings", _fake_replace)
+    monkeypatch.setattr("alpha_desk.routes.settings._replace_runtime_settings", _fake_replace)
     calls: list[Any] = []
 
     def _fake_setup_logging(candidate: Any, *, force: bool = False) -> None:
         calls.append((candidate.log_level, force))
 
-    monkeypatch.setattr("finrobot.obs.setup_logging", _fake_setup_logging)
+    monkeypatch.setattr("alpha_desk.obs.setup_logging", _fake_setup_logging)
 
     async with _client(app) as c:
         resp = await c.put("/api/settings", json={"log_level": "DEBUG"})
@@ -917,10 +917,10 @@ async def test_settings_update_normalizes_log_level(tmp_path: Path, monkeypatch:
     async def _fake_replace(request: Any, candidate: Any) -> None:
         request.app.state.deps.settings = candidate
 
-    monkeypatch.setattr("finrobot.routes.settings._replace_runtime_settings", _fake_replace)
+    monkeypatch.setattr("alpha_desk.routes.settings._replace_runtime_settings", _fake_replace)
     calls: list[Any] = []
     monkeypatch.setattr(
-        "finrobot.obs.setup_logging",
+        "alpha_desk.obs.setup_logging",
         lambda candidate, *, force=False: calls.append((candidate.log_level, force)),
     )
 
@@ -963,7 +963,7 @@ async def test_put_empty_provider_key_does_not_delete_keychain(
     secret_store.delete = AsyncMock()
 
     app = _make_app(tmp_path, secret_store=secret_store)
-    monkeypatch.setattr("finrobot.routes.settings._replace_runtime_settings", AsyncMock())
+    monkeypatch.setattr("alpha_desk.routes.settings._replace_runtime_settings", AsyncMock())
 
     async with _client(app) as c:
         resp = await c.put("/api/settings", json={"provider_keys": {"anthropic": ""}})
@@ -982,7 +982,7 @@ async def test_put_nonempty_provider_key_still_writes(tmp_path: Path, monkeypatc
     secret_store.delete = AsyncMock()
 
     app = _make_app(tmp_path, secret_store=secret_store)
-    monkeypatch.setattr("finrobot.routes.settings._replace_runtime_settings", AsyncMock())
+    monkeypatch.setattr("alpha_desk.routes.settings._replace_runtime_settings", AsyncMock())
 
     async with _client(app) as c:
         resp = await c.put("/api/settings", json={"provider_keys": {"anthropic": "new-key"}})
@@ -1000,9 +1000,9 @@ async def test_clear_secret_deletes_data_key(tmp_path: Path, monkeypatch: Any) -
     secret_store.delete = AsyncMock()
 
     app = _make_app(tmp_path, secret_store=secret_store)
-    monkeypatch.setattr("finrobot.routes.settings._replace_runtime_settings", AsyncMock())
+    monkeypatch.setattr("alpha_desk.routes.settings._replace_runtime_settings", AsyncMock())
     monkeypatch.setattr(
-        "finrobot.server.hydrate_settings_from_secrets",
+        "alpha_desk.server.hydrate_settings_from_secrets",
         AsyncMock(side_effect=lambda s, _store: s),
     )
 
@@ -1021,9 +1021,9 @@ async def test_clear_secret_deletes_provider_key(tmp_path: Path, monkeypatch: An
     secret_store.delete = AsyncMock()
 
     app = _make_app(tmp_path, secret_store=secret_store)
-    monkeypatch.setattr("finrobot.routes.settings._replace_runtime_settings", AsyncMock())
+    monkeypatch.setattr("alpha_desk.routes.settings._replace_runtime_settings", AsyncMock())
     monkeypatch.setattr(
-        "finrobot.server.hydrate_settings_from_secrets",
+        "alpha_desk.server.hydrate_settings_from_secrets",
         AsyncMock(side_effect=lambda s, _store: s),
     )
 
@@ -1044,18 +1044,18 @@ async def test_replace_runtime_settings_skips_agents_when_config_invalid(
     500'd the clear-secret request. Mirror the boot path: no agents while invalid,
     agent=None for the 503 guard, and don't raise.
     """
-    from finrobot.routes.settings import _replace_runtime_settings
+    from alpha_desk.routes.settings import _replace_runtime_settings
 
     called = {"lead": 0, "sub": 0}
     monkeypatch.setattr(
-        "finrobot.engine.orchestrator.create_lead_agent",
+        "alpha_desk.engine.orchestrator.create_lead_agent",
         lambda *a, **k: called.__setitem__("lead", called["lead"] + 1),
     )
     monkeypatch.setattr(
-        "finrobot.engine.agents.factory.create_sub_agents",
+        "alpha_desk.engine.agents.factory.create_sub_agents",
         lambda *a, **k: called.__setitem__("sub", called["sub"] + 1),
     )
-    monkeypatch.setattr("finrobot.routes.settings.build_data_layer", lambda _s: MagicMock())
+    monkeypatch.setattr("alpha_desk.routes.settings.build_data_layer", lambda _s: MagicMock())
 
     # anthropic model with NO provider key → validate_runtime_config raises.
     settings = get_settings(model_name="anthropic:claude-sonnet-4-6", provider_keys={})
@@ -1078,7 +1078,7 @@ async def test_replace_runtime_settings_shares_sub_agents_with_lead_agent(
     that mapping, and pass the same object into the lead agent."""
     import asyncio as _asyncio
 
-    from finrobot.routes import settings as settings_mod
+    from alpha_desk.routes import settings as settings_mod
 
     app = _make_app(tmp_path)
     old_layer = app.state.deps.data_layer
@@ -1091,8 +1091,8 @@ async def test_replace_runtime_settings_shares_sub_agents_with_lead_agent(
 
     monkeypatch.setattr(settings_mod, "build_data_layer", lambda _s: new_layer)
     monkeypatch.setattr(settings_mod, "_RETIRED_LAYER_GRACE_S", 0)
-    monkeypatch.setattr("finrobot.engine.agents.factory.create_sub_agents", create_sub_agents)
-    monkeypatch.setattr("finrobot.engine.orchestrator.create_lead_agent", create_lead_agent)
+    monkeypatch.setattr("alpha_desk.engine.agents.factory.create_sub_agents", create_sub_agents)
+    monkeypatch.setattr("alpha_desk.engine.orchestrator.create_lead_agent", create_lead_agent)
 
     request = MagicMock()
     request.app = app
@@ -1144,9 +1144,9 @@ async def test_settings_update_non_logging_field_skips_reapply(
     async def _fake_replace(request: Any, candidate: Any) -> None:
         request.app.state.deps.settings = candidate
 
-    monkeypatch.setattr("finrobot.routes.settings._replace_runtime_settings", _fake_replace)
+    monkeypatch.setattr("alpha_desk.routes.settings._replace_runtime_settings", _fake_replace)
     calls: list[Any] = []
-    monkeypatch.setattr("finrobot.obs.setup_logging", lambda *a, **k: calls.append((a, k)))
+    monkeypatch.setattr("alpha_desk.obs.setup_logging", lambda *a, **k: calls.append((a, k)))
 
     async with _client(app) as c:
         resp = await c.put("/api/settings", json={"sec_holdings_auto_refresh": True})
@@ -1165,7 +1165,7 @@ def _denied_keychain_store() -> Any:
     "Deny" on the OS prompt), built without touching the actual OS keychain."""
     import keyring.errors
 
-    from finrobot.secret_store import KeychainSecretStore
+    from alpha_desk.secret_store import KeychainSecretStore
 
     class _RefusingKeyring:
         errors = keyring.errors
@@ -1181,7 +1181,7 @@ def _denied_keychain_store() -> Any:
 
     store = KeychainSecretStore.__new__(KeychainSecretStore)
     store._keyring = _RefusingKeyring()  # type: ignore[assignment]
-    store._service_name = "FinRobotTest"
+    store._service_name = "AlphaDeskTest"
     store._degraded_keys = set()
     return store
 
@@ -1206,7 +1206,7 @@ async def test_put_keychain_set_failure_is_user_visible(tmp_path: Path, monkeypa
     """A denied keychain write fails the PUT with the real reason — the key was
     NOT saved and the response must say so (no fake success, no opaque 500)."""
     app = _make_app(tmp_path, secret_store=_denied_keychain_store())
-    monkeypatch.setattr("finrobot.routes.settings._replace_runtime_settings", AsyncMock())
+    monkeypatch.setattr("alpha_desk.routes.settings._replace_runtime_settings", AsyncMock())
 
     async with _client(app) as c:
         resp = await c.put("/api/settings", json={"fmp_api_key": "fmp-key-123"})
@@ -1223,7 +1223,7 @@ async def test_clear_secret_keychain_failure_is_user_visible(
 ) -> None:
     """A keychain that refuses the delete must fail the clear loudly — the
     secret is still stored, so pretending success would lie to the user."""
-    from finrobot.secret_store import SecretStoreError
+    from alpha_desk.secret_store import SecretStoreError
 
     secret_store = AsyncMock()
     secret_store.has = AsyncMock(return_value=False)
@@ -1232,7 +1232,7 @@ async def test_clear_secret_keychain_failure_is_user_visible(
         side_effect=SecretStoreError("Failed to delete secret 'fmp_api_key' from the OS keychain")
     )
     app = _make_app(tmp_path, secret_store=secret_store)
-    monkeypatch.setattr("finrobot.routes.settings._replace_runtime_settings", AsyncMock())
+    monkeypatch.setattr("alpha_desk.routes.settings._replace_runtime_settings", AsyncMock())
 
     async with _client(app) as c:
         resp = await c.post("/api/settings/clear-secret", json={"field": "fmp_api_key"})
@@ -1364,7 +1364,7 @@ async def test_test_data_provider_success_closes_live_health_breaker(
     tmp_path: Path, monkeypatch: Any
 ) -> None:
     """A manual successful test should immediately turn an open status dot healthy."""
-    from finrobot.engine.data.provider_health import ProviderHealth
+    from alpha_desk.engine.data.provider_health import ProviderHealth
 
     monkeypatch.setitem(_DATA_PROBES, "fmp", ("fmp_api_key", AsyncMock(return_value=None)))
     app = _make_app(tmp_path, settings=_settings(fmp_api_key="fmp-key-123"))
@@ -1549,7 +1549,7 @@ async def test_concurrent_puts_do_not_lose_updates(tmp_path: Path, monkeypatch: 
         await _asyncio.sleep(0)  # yield so the other request can interleave
         request.app.state.deps.settings = new_settings
 
-    monkeypatch.setattr("finrobot.routes.settings._replace_runtime_settings", fake_replace)
+    monkeypatch.setattr("alpha_desk.routes.settings._replace_runtime_settings", fake_replace)
 
     async with _client(app) as c:
         r1, r2 = await _asyncio.gather(
@@ -1577,7 +1577,7 @@ async def test_replace_runtime_settings_defers_old_layer_close(
     closed after the grace window instead."""
     import asyncio as _asyncio
 
-    from finrobot.routes import settings as settings_mod
+    from alpha_desk.routes import settings as settings_mod
 
     # No LLM key → validate_runtime_config fails → agent construction skipped
     # (keeps the test offline); the layer-swap path is what we're pinning.
@@ -1608,7 +1608,7 @@ class TestClassifyProviderError:
     def test_http_401_403_is_auth(self) -> None:
         from pydantic_ai.exceptions import ModelHTTPError
 
-        from finrobot.llm_probe import classify_provider_error as _classify_provider_error
+        from alpha_desk.llm_probe import classify_provider_error as _classify_provider_error
 
         for status in (401, 403):
             code, _ = _classify_provider_error(
@@ -1619,7 +1619,7 @@ class TestClassifyProviderError:
     def test_http_404_is_not_found(self) -> None:
         from pydantic_ai.exceptions import ModelHTTPError
 
-        from finrobot.llm_probe import classify_provider_error as _classify_provider_error
+        from alpha_desk.llm_probe import classify_provider_error as _classify_provider_error
 
         code, _ = _classify_provider_error(
             ModelHTTPError(status_code=404, model_name="m", body=None)
@@ -1629,7 +1629,7 @@ class TestClassifyProviderError:
     def test_other_http_is_http(self) -> None:
         from pydantic_ai.exceptions import ModelHTTPError
 
-        from finrobot.llm_probe import classify_provider_error as _classify_provider_error
+        from alpha_desk.llm_probe import classify_provider_error as _classify_provider_error
 
         code, _ = _classify_provider_error(
             ModelHTTPError(status_code=500, model_name="m", body=None)
@@ -1639,19 +1639,19 @@ class TestClassifyProviderError:
     def test_connect_error_is_connect(self) -> None:
         import httpx
 
-        from finrobot.llm_probe import classify_provider_error as _classify_provider_error
+        from alpha_desk.llm_probe import classify_provider_error as _classify_provider_error
 
         code, _ = _classify_provider_error(httpx.ConnectError("refused"))
         assert code == "connect"
 
     def test_api_key_text_falls_back_to_auth(self) -> None:
-        from finrobot.llm_probe import classify_provider_error as _classify_provider_error
+        from alpha_desk.llm_probe import classify_provider_error as _classify_provider_error
 
         code, _ = _classify_provider_error(ValueError("Invalid api_key provided"))
         assert code == "auth"
 
     def test_unrecognised_is_unknown(self) -> None:
-        from finrobot.llm_probe import classify_provider_error as _classify_provider_error
+        from alpha_desk.llm_probe import classify_provider_error as _classify_provider_error
 
         code, detail = _classify_provider_error(RuntimeError("weird"))
         assert code == "unknown"

@@ -4,7 +4,7 @@ import { RouterProvider } from 'react-router-dom'
 // Fonts are bundled (not CDN-loaded) so the desktop app renders its cosmic
 // identity offline — Space Grotesk (--font-display), IBM Plex Sans
 // (--font-body), JetBrains Mono (--font-mono). These mirror the App.css design
-// tokens and the FinRobot.html research-cockpit reference. All three are Latin
+// tokens and the Alpha Desk.html research-cockpit reference. All three are Latin
 // faces; CJK glyphs (the app is zh/en bilingual) fall back to the system CJK
 // font (PingFang SC / Microsoft YaHei) declared in the token font stacks.
 import '@fontsource/space-grotesk/400.css'
@@ -47,7 +47,7 @@ async function bootstrap(): Promise<void> {
 
   const root = document.getElementById('root')
   if (!(root instanceof HTMLElement)) {
-    throw new Error('FinRobot root element #root was not found')
+    throw new Error('Alpha Desk root element #root was not found')
   }
 
   createRoot(root).render(

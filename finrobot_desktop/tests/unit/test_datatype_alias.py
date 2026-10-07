@@ -20,12 +20,12 @@ from datetime import datetime, timezone
 
 import pytest
 
-from finrobot.engine.data.cache import (
+from alpha_desk.engine.data.cache import (
     _DATA_TYPE_ALIASES,
     _get_ttl_seconds,
     _normalize_data_type,
 )
-from finrobot.engine.data.types import DataType
+from alpha_desk.engine.data.types import DataType
 
 
 class TestDataTypeAlias:
@@ -68,8 +68,8 @@ class TestDataTypeAliasCacheRoundTrip:
 
     @pytest.mark.asyncio
     async def test_set_legacy_get_new_collides(self, tmp_path) -> None:  # type: ignore[no-untyped-def]
-        from finrobot.engine.data.cache import DataCache
-        from finrobot.engine.data.interface import DataResult
+        from alpha_desk.engine.data.cache import DataCache
+        from alpha_desk.engine.data.interface import DataResult
 
         cache = DataCache(db_path=str(tmp_path / "cache.db"))
         envelope = DataResult(

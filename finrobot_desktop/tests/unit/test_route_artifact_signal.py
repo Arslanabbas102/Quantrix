@@ -7,11 +7,11 @@ from datetime import datetime, timedelta, timezone
 
 import pytest
 
-from finrobot.artifact.models import ArtifactSummary
-from finrobot.engine.data.interface import DataResult, ProviderError
-from finrobot.engine.data.normalize.contracts import NormalizedPrice, Provenance
-from finrobot.engine.data.types import DataType
-from finrobot.routes._artifact_signal import attach_signals
+from alpha_desk.artifact.models import ArtifactSummary
+from alpha_desk.engine.data.interface import DataResult, ProviderError
+from alpha_desk.engine.data.normalize.contracts import NormalizedPrice, Provenance
+from alpha_desk.engine.data.types import DataType
+from alpha_desk.routes._artifact_signal import attach_signals
 
 UTC = timezone.utc
 ENTRY = datetime(2026, 4, 1, tzinfo=UTC)
@@ -299,7 +299,7 @@ async def test_quote_fanout_capped_by_semaphore() -> None:
     """A big artifact page (hundreds of unique tickers) must not stampede the
     provider pool with a bare gather — in-flight fetches are capped at
     _QUOTE_FANOUT_CONCURRENCY (same budget shape as coverage's market fan-out)."""
-    from finrobot.routes._artifact_signal import _QUOTE_FANOUT_CONCURRENCY
+    from alpha_desk.routes._artifact_signal import _QUOTE_FANOUT_CONCURRENCY
 
     tickers = [f"T{i:03d}" for i in range(30)]
     layer = _ConcurrencyTrackingLayer(quotes=dict.fromkeys(tickers, 115.0))

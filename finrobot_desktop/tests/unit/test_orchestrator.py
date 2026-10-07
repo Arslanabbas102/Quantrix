@@ -11,22 +11,22 @@ from pydantic_ai.models.function import FunctionModel
 from pydantic_ai.models.test import TestModel
 from pydantic_ai.usage import RunUsage
 
-from finrobot.artifact.models import ArtifactSummary
-from finrobot.artifact.semantic_diff import (
+from alpha_desk.artifact.models import ArtifactSummary
+from alpha_desk.artifact.semantic_diff import (
     Attribution,
     AttributionItem,
     DataFootnote,
     DeltaItem,
     SemanticDelta,
 )
-from finrobot.config import get_settings
-from finrobot.engine.backtest.engine import BacktestResult
-from finrobot.engine.data.interface import DataResult
-from finrobot.engine.data.types import DataType
-from finrobot.engine.deps import FinRobotDeps
-from finrobot.engine.models.financial import DCFInputs
-from finrobot.engine.orchestrator import create_lead_agent
-from finrobot.engine.skills.registry import SkillRegistry
+from alpha_desk.config import get_settings
+from alpha_desk.engine.backtest.engine import BacktestResult
+from alpha_desk.engine.data.interface import DataResult
+from alpha_desk.engine.data.types import DataType
+from alpha_desk.engine.deps import AlphaDeskDeps
+from alpha_desk.engine.models.financial import DCFInputs
+from alpha_desk.engine.orchestrator import create_lead_agent
+from alpha_desk.engine.skills.registry import SkillRegistry
 from tests.unit.test_pipeline_methodology import INTERACTIVE_CHECKPOINT_PHRASES
 
 FIXTURES_DIR = Path(__file__).parent.parent / "fixtures" / "skills"
@@ -69,8 +69,8 @@ def _agent(skill_registry=None):
     return create_lead_agent(_settings(), skill_registry=skill_registry)
 
 
-def _deps(skill_runtime=None) -> FinRobotDeps:
-    return FinRobotDeps(
+def _deps(skill_runtime=None) -> AlphaDeskDeps:
+    return AlphaDeskDeps(
         data_layer=FakeDataLayer(), settings=_settings(), skill_runtime=skill_runtime
     )
 
@@ -85,7 +85,7 @@ def _activate_skill_fn(agent):
     return agent._function_toolset.tools["activate_skill"].function
 
 
-def _run_context(deps: FinRobotDeps) -> RunContext[FinRobotDeps]:
+def _run_context(deps: AlphaDeskDeps) -> RunContext[AlphaDeskDeps]:
     return RunContext(deps=deps, model=TestModel(), usage=RunUsage())
 
 
@@ -118,7 +118,7 @@ class TestCreateLeadAgent:
         the model's tool-selection signal, so a missing/empty/drifted one would
         silently break routing. This is the regression guard the refactor adds.
         """
-        from finrobot.engine.pipelines.registry import iter_pipeline_specs
+        from alpha_desk.engine.pipelines.registry import iter_pipeline_specs
 
         agent = _agent()
         tools = agent._function_toolset.tools
@@ -141,7 +141,7 @@ class TestCreateLeadAgent:
         """The 'ic-memo' key has a hyphen; its tool name must be run_ic_memo
         (a hyphen is illegal in a tool identifier), so tool_name is an explicit
         spec field rather than derived from the key."""
-        from finrobot.engine.pipelines.registry import get_pipeline_spec
+        from alpha_desk.engine.pipelines.registry import get_pipeline_spec
 
         spec = get_pipeline_spec("ic-memo")
         assert spec.tool_name == "run_ic_memo"
@@ -377,18 +377,18 @@ class TestPipelineToolLocale:
             return TestPipelineToolLocale._FakeResult()
 
     async def test_request_locale_threaded_as_lang(self):
-        from finrobot.engine.orchestrator import _run_pipeline_tool
+        from alpha_desk.engine.orchestrator import _run_pipeline_tool
 
-        deps = FinRobotDeps(data_layer=FakeDataLayer(), settings=_settings(), request_locale="zh")
+        deps = AlphaDeskDeps(data_layer=FakeDataLayer(), settings=_settings(), request_locale="zh")
         pipe = self._RecordingPipeline()
         out = await _run_pipeline_tool(_run_context(deps), "AAPL", pipe)  # type: ignore[arg-type]
         assert pipe.seen_lang == "zh"
         assert out["artifact_id"] == "art-1"
 
     async def test_no_locale_falls_back_to_none(self):
-        from finrobot.engine.orchestrator import _run_pipeline_tool
+        from alpha_desk.engine.orchestrator import _run_pipeline_tool
 
-        deps = FinRobotDeps(data_layer=FakeDataLayer(), settings=_settings())
+        deps = AlphaDeskDeps(data_layer=FakeDataLayer(), settings=_settings())
         pipe = self._RecordingPipeline()
         await _run_pipeline_tool(_run_context(deps), "AAPL", pipe)  # type: ignore[arg-type]
         assert pipe.seen_lang is None
@@ -449,8 +449,8 @@ def _find_reports_fn(agent):
     return agent._function_toolset.tools["find_reports"].function
 
 
-def _deps_with_store(store) -> FinRobotDeps:  # noqa: ANN001
-    return FinRobotDeps(data_layer=FakeDataLayer(), settings=_settings(), artifact_store=store)
+def _deps_with_store(store) -> AlphaDeskDeps:  # noqa: ANN001
+    return AlphaDeskDeps(data_layer=FakeDataLayer(), settings=_settings(), artifact_store=store)
 
 
 class TestFindReports:
@@ -539,7 +539,7 @@ class TestAskFilings:
     async def test_bad_ticker_returns_string_not_raise(self):
         agent = _agent()
         fn = _ask_filings_fn(agent)
-        deps = FinRobotDeps(data_layer=_RagDataLayer(), settings=_settings())
+        deps = AlphaDeskDeps(data_layer=_RagDataLayer(), settings=_settings())
         out = await fn(_run_context(deps), "###", "What are the risk factors?")
         assert isinstance(out, str)
         assert "Invalid ticker" in out
@@ -550,7 +550,7 @@ class TestAskFilings:
         # a raised ValueError tears down the live /chat SSE stream.
         agent = _agent()
         fn = _ask_filings_fn(agent)
-        deps = FinRobotDeps(data_layer=_RagDataLayer(rag_chunks=None), settings=_settings())
+        deps = AlphaDeskDeps(data_layer=_RagDataLayer(rag_chunks=None), settings=_settings())
         out = await fn(_run_context(deps), "AAPL", "What are the risk factors?")
         assert isinstance(out, str)
         assert "10-K" in out
@@ -558,7 +558,7 @@ class TestAskFilings:
     async def test_successful_qa_returns_grounded_answer(self, monkeypatch):
         # A realistic multi-chunk corpus so BM25 IDF gives the "regulatory" term
         # positive weight (a 1-2 doc corpus is degenerate — IDF ≤ 0).
-        deps = FinRobotDeps(
+        deps = AlphaDeskDeps(
             data_layer=_RagDataLayer(
                 rag_chunks=[
                     _rag_chunk(
@@ -577,7 +577,7 @@ class TestAskFilings:
         mock_result.output = "Per [Item 1A], regulatory change is the key risk."
         mock_agent = MagicMock()
         mock_agent.run = AsyncMock(return_value=mock_result)
-        monkeypatch.setattr("finrobot.engine.analysis.qa.Agent", MagicMock(return_value=mock_agent))
+        monkeypatch.setattr("alpha_desk.engine.analysis.qa.Agent", MagicMock(return_value=mock_agent))
 
         agent = _agent()
         fn = _ask_filings_fn(agent)
@@ -681,7 +681,7 @@ def _semantic_delta(*, identical: bool = False) -> SemanticDelta:
 
 class TestFormatDeltaForTool:
     def test_renders_conclusion_drivers_and_attribution(self):
-        from finrobot.engine.orchestrator import _format_delta_for_tool
+        from alpha_desk.engine.orchestrator import _format_delta_for_tool
 
         out = _format_delta_for_tool(_semantic_delta())
         assert "Target price" in out
@@ -694,7 +694,7 @@ class TestFormatDeltaForTool:
         assert "Fair value moved +$22.70" in out
 
     def test_identical_versions_say_no_change(self):
-        from finrobot.engine.orchestrator import _format_delta_for_tool
+        from alpha_desk.engine.orchestrator import _format_delta_for_tool
 
         out = _format_delta_for_tool(_semantic_delta(identical=True))
         assert "identical" in out.lower()
@@ -716,7 +716,7 @@ class TestDiffReports:
         agent = _agent()
         fn = _diff_reports_fn(agent)
         store = _ArtifactGetStore({"art_a": object()})  # art_b absent
-        deps = FinRobotDeps(data_layer=FakeDataLayer(), settings=_settings(), artifact_store=store)
+        deps = AlphaDeskDeps(data_layer=FakeDataLayer(), settings=_settings(), artifact_store=store)
         out = await fn(_run_context(deps), "art_a", "art_b")
         assert isinstance(out, str)
         assert "art_b" in out
@@ -724,9 +724,9 @@ class TestDiffReports:
 
     async def test_both_present_runs_diff_and_formats(self, monkeypatch):
         store = _ArtifactGetStore({"art_a": object(), "art_b": object()})
-        deps = FinRobotDeps(data_layer=FakeDataLayer(), settings=_settings(), artifact_store=store)
+        deps = AlphaDeskDeps(data_layer=FakeDataLayer(), settings=_settings(), artifact_store=store)
         monkeypatch.setattr(
-            "finrobot.engine.orchestrator.build_semantic_delta",
+            "alpha_desk.engine.orchestrator.build_semantic_delta",
             lambda a, b: _semantic_delta(),
         )
         agent = _agent()
@@ -801,7 +801,7 @@ class TestRunMonteCarlo:
         async def _fake_seed(data_layer, ticker, *, fmp_api_key=None):  # noqa: ANN001
             return _PriceOnlyFinancials(), _mc_inputs()
 
-        monkeypatch.setattr("finrobot.engine.orchestrator.seed_dcf_inputs_for_ticker", _fake_seed)
+        monkeypatch.setattr("alpha_desk.engine.orchestrator.seed_dcf_inputs_for_ticker", _fake_seed)
         agent = _agent()
         fn = _run_monte_carlo_fn(agent)
         out = await fn(_run_context(_deps()), "aapl")
@@ -816,7 +816,7 @@ class TestRunMonteCarlo:
         async def _boom(data_layer, ticker, *, fmp_api_key=None):  # noqa: ANN001
             raise ValueError("no financials available for ZZZZ")
 
-        monkeypatch.setattr("finrobot.engine.orchestrator.seed_dcf_inputs_for_ticker", _boom)
+        monkeypatch.setattr("alpha_desk.engine.orchestrator.seed_dcf_inputs_for_ticker", _boom)
         agent = _agent()
         fn = _run_monte_carlo_fn(agent)
         out = await fn(_run_context(_deps()), "ZZZZ")
@@ -883,7 +883,7 @@ class TestRunBacktest:
         assert "before" in out.lower()
 
     async def test_runs_and_formats_summary(self, monkeypatch):
-        monkeypatch.setattr("finrobot.engine.orchestrator.BackTraderAdapter", _StubBacktestAdapter)
+        monkeypatch.setattr("alpha_desk.engine.orchestrator.BackTraderAdapter", _StubBacktestAdapter)
         agent = _agent()
         fn = _run_backtest_fn(agent)
         out = await fn(_run_context(_deps()), "aapl", "2023-01-01", "2024-01-01")
@@ -900,7 +900,7 @@ class TestRunBacktest:
             async def run(self, config):  # noqa: ANN001, ANN201
                 raise ValueError("No price data for ZZZZ in the requested window")
 
-        monkeypatch.setattr("finrobot.engine.orchestrator.BackTraderAdapter", _BoomAdapter)
+        monkeypatch.setattr("alpha_desk.engine.orchestrator.BackTraderAdapter", _BoomAdapter)
         agent = _agent()
         fn = _run_backtest_fn(agent)
         out = await fn(_run_context(_deps()), "AAPL", "2023-01-01", "2024-01-01")

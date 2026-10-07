@@ -12,12 +12,12 @@ from typing import Any, cast
 
 import pytest
 
-from finrobot.engine.compute.coordinators.segment_extractor import (
+from alpha_desk.engine.compute.coordinators.segment_extractor import (
     build_segment_overview,
     build_sotp_breakdown,
 )
-from finrobot.engine.data.layer import DataLayer
-from finrobot.engine.models.financial import SegmentOverview, SOTPBreakdown
+from alpha_desk.engine.data.layer import DataLayer
+from alpha_desk.engine.models.financial import SegmentOverview, SOTPBreakdown
 
 
 class _SegResult:

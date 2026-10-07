@@ -13,7 +13,7 @@ from pathlib import Path
 
 import pytest
 
-from finrobot.coverage.sqlite_store import CoverageStore
+from alpha_desk.coverage.sqlite_store import CoverageStore
 
 
 @pytest.fixture

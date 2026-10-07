@@ -13,7 +13,7 @@ from pathlib import Path
 
 import pytest
 
-from finrobot.engine.compute.operators.signal import (
+from alpha_desk.engine.compute.operators.signal import (
     ClosedReturn,
     Signal,
     compute_hit_rate,
@@ -287,7 +287,7 @@ class TestHitRateStats:
 
 SIGNAL_PATH = (
     Path(__file__).resolve().parents[2]
-    / "finrobot"
+    / "alpha_desk"
     / "engine"
     / "compute"
     / "operators"
@@ -301,9 +301,9 @@ class TestSignalModuleIsolation:
     def test_signal_module_has_no_forbidden_imports(self) -> None:
         src = SIGNAL_PATH.read_text()
         forbidden = (
-            "from finrobot.engine.pipelines",
-            "from finrobot.engine.agents",
-            "from finrobot.engine.orchestrator",
+            "from alpha_desk.engine.pipelines",
+            "from alpha_desk.engine.agents",
+            "from alpha_desk.engine.orchestrator",
             "import pydantic_ai",
             "from pydantic_ai",
             "import openai",
@@ -314,8 +314,8 @@ class TestSignalModuleIsolation:
             "from litellm",
             # signal.py must not depend on the artifact layer either — keep the
             # numeric core pure; route adapters bridge to ArtifactSummary.
-            "from finrobot.artifact",
-            "import finrobot.artifact",
+            "from alpha_desk.artifact",
+            "import alpha_desk.artifact",
         )
         violations = [
             pat for pat in forbidden if re.search(rf"^\s*{re.escape(pat)}", src, re.MULTILINE)
@@ -323,10 +323,10 @@ class TestSignalModuleIsolation:
         assert not violations, f"signal.py leaks: {violations}"
 
     def test_signal_module_uses_only_stdlib_and_dataclass(self) -> None:
-        # Sanity check: at most a handful of imports, none from finrobot.*.
+        # Sanity check: at most a handful of imports, none from alpha_desk.*.
         src = SIGNAL_PATH.read_text()
-        finrobot_imports = re.findall(r"^\s*from\s+finrobot\.", src, re.MULTILINE)
-        assert not finrobot_imports, (
-            "signal.py imports finrobot.* — must remain a pure numeric leaf. "
-            f"Found: {finrobot_imports}"
+        alpha_desk_imports = re.findall(r"^\s*from\s+alpha_desk\.", src, re.MULTILINE)
+        assert not alpha_desk_imports, (
+            "signal.py imports alpha_desk.* — must remain a pure numeric leaf. "
+            f"Found: {alpha_desk_imports}"
         )

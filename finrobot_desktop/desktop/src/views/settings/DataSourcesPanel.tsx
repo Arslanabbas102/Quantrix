@@ -27,7 +27,7 @@ const DATA_SOURCE_SIGNUP_URLS = {
 } as const
 
 // ── Unified data-source row (门五②) ─────────────────────────────────────────
-// Mirror of finrobot.routes.settings.ProviderHealthEntry — live ProviderHealth
+// Mirror of alpha_desk.routes.settings.ProviderHealthEntry — live ProviderHealth
 // breaker signals, never mocked. circuit_state tokens: 'closed' | 'open'.
 export interface ProviderHealthEntryShape {
   name: string

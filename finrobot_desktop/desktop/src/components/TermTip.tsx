@@ -3,7 +3,7 @@
  *
  * 高要求但非投行背景的读者(分析师助理 / 跨界研究员)碰到密集的
  * WACC / NOPAT / EV-EBITDA / FCFF / 13F / DEF 14A,需要就地一句话口径解释,
- * 想深挖再点 "ask FinRobot" 让 RightChatPanel 展开。不做散户化简化,只补口径。
+ * 想深挖再点 "ask Alpha Desk" 让 RightChatPanel 展开。不做散户化简化,只补口径。
  *
  * Why a local glossary instead of always asking LLM?
  *   - 即时显示,hover 不需要网络

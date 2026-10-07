@@ -5,13 +5,13 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import httpx
 import pytest
 
-from finrobot.engine.data.interface import (
+from alpha_desk.engine.data.interface import (
     DataResult,
     ProviderError,
     RateLimitedProviderError,
     is_rate_limit_error,
 )
-from finrobot.engine.data.providers.fmp_provider import (
+from alpha_desk.engine.data.providers.fmp_provider import (
     FMPProvider,
     _interest_expense_or_none,
 )
@@ -564,7 +564,7 @@ class TestFMPFetch:
         """_resolve_total_debt defends the None≠0 contract: present total wins,
         else sum components, else 0 only for a genuine debt-free filing, else
         None for a missing figure."""
-        from finrobot.engine.data.providers.fmp_provider import _resolve_total_debt
+        from alpha_desk.engine.data.providers.fmp_provider import _resolve_total_debt
 
         assert _resolve_total_debt({"totalDebt": 8_067_565_000}) == 8_067_565_000
         assert _resolve_total_debt({"longTermDebt": 6e9, "shortTermDebt": 2e9}) == 8e9
@@ -615,7 +615,7 @@ class TestFMPFetch:
 
     @pytest.mark.asyncio
     async def test_fetch_financials_tags_foreign_adr_currency(self, provider):
-        """ADR regression (verified against ~/.finrobot cache 2026-05-29): FMP
+        """ADR regression (verified against ~/.alpha_desk cache 2026-05-29): FMP
         reports a foreign issuer's income statement in its home currency
         (reportedCurrency=TWD for TSM) while the ADR quote is USD. The provider
         MUST surface both so extract_company_financials + fx_normalize convert
@@ -640,8 +640,8 @@ class TestFMPFetch:
         # End-to-end: extract_company_financials must resolve reporting_currency
         # from the provider dict (the gap this fix closes — it used to default USD).
         # ADR-0006: extractor now accepts NormalizedFinancials; wrap with normalize_financials.
-        from finrobot.engine.compute.coordinators.extractor import extract_company_financials
-        from finrobot.engine.data.normalize.financials import normalize_financials
+        from alpha_desk.engine.compute.coordinators.extractor import extract_company_financials
+        from alpha_desk.engine.data.normalize.financials import normalize_financials
 
         company = extract_company_financials(normalize_financials(result))
         assert company.reporting_currency == "TWD"
@@ -1619,11 +1619,11 @@ class TestFMPPeerCandidates:
         """Mechanical drift gate: the provider's fetch-scope band must contain
         the operator's widest eligibility band, or in-band candidates would be
         silently dropped before the operator ever sees them."""
-        from finrobot.engine.compute.operators.peer_screen import (
+        from alpha_desk.engine.compute.operators.peer_screen import (
             PEER_SCREEN_HIGH_AFFINITY_FLOOR_BAND,
             PEER_SCREEN_MCAP_BAND,
         )
-        from finrobot.engine.data.providers.fmp_provider import (
+        from alpha_desk.engine.data.providers.fmp_provider import (
             _PEER_SCOPE_CAP_MULT,
             _PEER_SCOPE_FLOOR_DIV,
         )
@@ -1940,7 +1940,7 @@ class TestFMPPlanGate:
 
     @pytest.mark.asyncio
     async def test_403_with_plan_body_raises_provider_plan_error(self, provider, monkeypatch):
-        from finrobot.engine.data.interface import ProviderPlanError
+        from alpha_desk.engine.data.interface import ProviderPlanError
 
         monkeypatch.setattr(
             provider._client,
@@ -1960,7 +1960,7 @@ class TestFMPPlanGate:
 
     @pytest.mark.asyncio
     async def test_legacy_endpoint_body_also_classified_as_plan(self, provider, monkeypatch):
-        from finrobot.engine.data.interface import ProviderPlanError
+        from alpha_desk.engine.data.interface import ProviderPlanError
 
         monkeypatch.setattr(
             provider._client,
@@ -2048,7 +2048,7 @@ class TestFMPRateLimiter:
         """Second call within MIN_INTERVAL must trigger asyncio.sleep."""
         import asyncio
         import time
-        from finrobot.engine.data.providers.fmp_provider import _MIN_INTERVAL
+        from alpha_desk.engine.data.providers.fmp_provider import _MIN_INTERVAL
 
         sleep_durations: list[float] = []
 
@@ -2165,7 +2165,7 @@ class TestFMPHistoricalPerYear:
         ]
 
     async def test_per_year_net_debt_and_no_stale_market_data(self, provider) -> None:
-        from finrobot.engine.data.types import DataType
+        from alpha_desk.engine.data.types import DataType
 
         responses = [
             _mock_response(self._multi_year_income()),
@@ -2354,7 +2354,7 @@ class TestFMPBankCaliber:
     async def test_historical_bank_serves_net_revenue_per_year(self, provider):
         """Per-year (years>1) path mirrors the TTM net-revenue caliber so the
         revenue-history chart shows the analyst top line, not the gross sum."""
-        from finrobot.engine.data.types import DataType
+        from alpha_desk.engine.data.types import DataType
 
         annual = [
             {
@@ -2489,7 +2489,7 @@ class TestFMPBankCaliber:
     async def test_historical_bank_operating_margin_single_caliber(self, provider):
         """BUG #4 (per-year path): the years>1 bank branch keeps operating_margin
         single-caliber the same way the TTM path does."""
-        from finrobot.engine.data.types import DataType
+        from alpha_desk.engine.data.types import DataType
 
         annual = [
             {
@@ -2539,7 +2539,7 @@ class TestFMPFetchDividends:
 
     @pytest.mark.asyncio
     async def test_aggregates_payments_to_annual_dps(self, provider):
-        from finrobot.engine.data.types import DataType
+        from alpha_desk.engine.data.types import DataType
 
         rows = [
             {"date": "2025-12-01", "dividend": 0.51},
@@ -2558,7 +2558,7 @@ class TestFMPFetchDividends:
 
     @pytest.mark.asyncio
     async def test_empty_or_malformed_rows_yield_empty_map(self, provider):
-        from finrobot.engine.data.types import DataType
+        from alpha_desk.engine.data.types import DataType
 
         with patch.object(provider, "_get", AsyncMock(return_value=_mock_response([]))):
             result = await provider.fetch("XYZ", DataType.DIVIDENDS)
@@ -2566,6 +2566,6 @@ class TestFMPFetchDividends:
 
     @pytest.mark.asyncio
     async def test_dividends_is_a_supported_capability(self, provider):
-        from finrobot.engine.data.types import DataType
+        from alpha_desk.engine.data.types import DataType
 
         assert DataType.DIVIDENDS in provider.capabilities()

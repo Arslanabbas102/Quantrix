@@ -1,4 +1,4 @@
-"""Tests for finrobot.sdk.FinRobot (Track 2 Tasks 5-7).
+"""Tests for alpha_desk.sdk.AlphaDesk (Track 2 Tasks 5-7).
 
 Covers:
 - Lazy deps construction
@@ -16,10 +16,10 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from finrobot import FinRobot, PipelineResult
-from finrobot.engine.data.interface import DataResult
-from finrobot.engine.pipelines.base import Pipeline, PipelineStep
-from finrobot.engine.pipelines.validators import validate_is_non_empty
+from alpha_desk import AlphaDesk, PipelineResult
+from alpha_desk.engine.data.interface import DataResult
+from alpha_desk.engine.pipelines.base import Pipeline, PipelineStep
+from alpha_desk.engine.pipelines.validators import validate_is_non_empty
 
 
 def _fake_result() -> DataResult:
@@ -42,16 +42,16 @@ def _fake_result() -> DataResult:
     )
 
 
-def _inject_mock_deps(agent: FinRobot):
+def _inject_mock_deps(agent: AlphaDesk):
     """Replace agent's deps/sub_agents so no real IO happens."""
-    from finrobot.engine.agents.factory import create_sub_agents
-    from finrobot.engine.deps import FinRobotDeps
+    from alpha_desk.engine.agents.factory import create_sub_agents
+    from alpha_desk.engine.deps import AlphaDeskDeps
 
     mock_layer = MagicMock()
     mock_layer.fetch = AsyncMock(return_value=_fake_result())
     mock_layer.close = AsyncMock()
 
-    agent._deps = FinRobotDeps(
+    agent._deps = AlphaDeskDeps(
         data_layer=mock_layer,
         settings=agent._settings,
         skill_runtime=None,
@@ -70,7 +70,7 @@ def _trivial_pipeline(*args, **kwargs) -> Pipeline:
     async def fn(agent, deps, prompt, structured_context, ticker):
         return f"trivial result for {ticker}"
 
-    from finrobot.engine.pipelines.base import TextValidator
+    from alpha_desk.engine.pipelines.base import TextValidator
 
     step = PipelineStep(
         name="trivial",
@@ -82,7 +82,7 @@ def _trivial_pipeline(*args, **kwargs) -> Pipeline:
 
 
 def test_init_with_model_override():
-    agent = FinRobot(model="test")
+    agent = AlphaDesk(model="test")
     assert agent._settings.model_name == "test"
 
 
@@ -90,13 +90,13 @@ def test_init_bad_provider_fails_fast():
     """P3 audit D2: SDK must fail fast on bad model config instead of
     waiting for the first LLM call to blow up 60 seconds later."""
     with pytest.raises(ValueError, match="Unknown provider"):
-        FinRobot(model="bogus:model-x")
+        AlphaDesk(model="bogus:model-x")
 
 
 def test_init_missing_api_key_fails_fast():
     """Missing API key should raise during __init__, not at first call."""
     with pytest.raises(ValueError, match="No API key configured for provider 'anthropic'"):
-        FinRobot(model="anthropic:claude-sonnet-4-6", provider_keys={"anthropic": ""})
+        AlphaDesk(model="anthropic:claude-sonnet-4-6", provider_keys={"anthropic": ""})
 
 
 def test_init_empty_default_model_fails_fast():
@@ -105,17 +105,17 @@ def test_init_empty_default_model_fails_fast():
     # message rather than defer the crash to the first LLM call. A key alone is
     # not enough; the caller must pick a model explicitly.
     with pytest.raises(ValueError, match="No AI model configured"):
-        FinRobot(provider_keys={"openai": "sk-test"})
+        AlphaDesk(provider_keys={"openai": "sk-test"})
 
 
 def test_init_explicit_model_is_honoured():
-    agent = FinRobot(model="anthropic:claude-sonnet-4-6", provider_keys={"anthropic": "sk-test"})
+    agent = AlphaDesk(model="anthropic:claude-sonnet-4-6", provider_keys={"anthropic": "sk-test"})
     assert agent._settings.model_name == "anthropic:claude-sonnet-4-6"
 
 
 def test_lazy_deps_not_built_on_init():
     """__init__ must not construct providers or cache."""
-    agent = FinRobot(model="test")
+    agent = AlphaDesk(model="test")
     assert agent._deps is None
     assert agent._sub_agents is None
 
@@ -123,7 +123,7 @@ def test_lazy_deps_not_built_on_init():
 async def test_sync_method_in_async_context_raises():
     """Sync methods must detect an already-running loop and raise a clear
     error instead of crashing or silently creating orphaned coroutines."""
-    agent = FinRobot(model="test")
+    agent = AlphaDesk(model="test")
     with pytest.raises(RuntimeError, match="async context"):
         agent.research("TEST")
 
@@ -136,7 +136,7 @@ def _patch_research_factory(monkeypatch) -> None:
     of importing ``create_equity_research_pipeline`` directly, so the seam these
     plumbing tests stub is the registry, not the pipeline module.
     """
-    import finrobot.engine.pipelines.registry as reg
+    import alpha_desk.engine.pipelines.registry as reg
 
     monkeypatch.setattr(reg, "get_pipeline_factories", lambda: {"research": _trivial_pipeline})
 
@@ -146,7 +146,7 @@ async def test_aresearch_returns_pipeline_result(monkeypatch):
     dep injection + return type, not equity_research's DCF math."""
     _patch_research_factory(monkeypatch)
 
-    agent = FinRobot(model="test")
+    agent = AlphaDesk(model="test")
     _inject_mock_deps(agent)
 
     result = await agent.aresearch("TEST")
@@ -158,7 +158,7 @@ async def test_aresearch_returns_pipeline_result(monkeypatch):
 async def test_context_manager_closes_data_layer(monkeypatch):
     _patch_research_factory(monkeypatch)
 
-    async with FinRobot(model="test") as agent:
+    async with AlphaDesk(model="test") as agent:
         mock_layer = _inject_mock_deps(agent)
         result = await agent.aresearch("TEST")
         assert isinstance(result, PipelineResult)
@@ -168,14 +168,14 @@ async def test_context_manager_closes_data_layer(monkeypatch):
 
 async def test_close_safe_without_deps():
     """close() is a no-op if the agent never built deps."""
-    agent = FinRobot(model="test")
+    agent = AlphaDesk(model="test")
     await agent.close()  # must not raise
 
 
 async def test_close_safe_called_twice(monkeypatch):
     _patch_research_factory(monkeypatch)
 
-    agent = FinRobot(model="test")
+    agent = AlphaDesk(model="test")
     mock_layer = _inject_mock_deps(agent)
     _ = await agent.aresearch("TEST")
     await agent.close()
@@ -187,14 +187,14 @@ async def test_close_safe_called_twice(monkeypatch):
 
 async def test_aanalyze_returns_string(monkeypatch):
     """SDK analyze method returns LLM analysis text."""
-    import finrobot.engine.analysis.prompts as ap
+    import alpha_desk.engine.analysis.prompts as ap
 
     async def mock_run_analysis(data_layer, settings, ticker, analysis_type):
         return f"## {analysis_type.title()} Analysis for {ticker}"
 
     monkeypatch.setattr(ap, "run_analysis", mock_run_analysis)
 
-    agent = FinRobot(model="test")
+    agent = AlphaDesk(model="test")
     _inject_mock_deps(agent)
 
     result = await agent.aanalyze("AAPL", "income")
@@ -205,14 +205,14 @@ async def test_aanalyze_returns_string(monkeypatch):
 
 async def test_aask_returns_string(monkeypatch):
     """SDK ask method returns RAG-based answer text."""
-    import finrobot.engine.analysis.qa as qa
+    import alpha_desk.engine.analysis.qa as qa
 
     async def mock_run_qa(data_layer, settings, ticker, question, top_k=5):
         return f"Based on [Item 1A], {ticker} faces regulatory risks."
 
     monkeypatch.setattr(qa, "run_qa", mock_run_qa)
 
-    agent = FinRobot(model="test")
+    agent = AlphaDesk(model="test")
     _inject_mock_deps(agent)
 
     result = await agent.aask("AAPL", "What are the risk factors?")
@@ -223,8 +223,8 @@ async def test_aask_returns_string(monkeypatch):
 
 async def test_abacktest_returns_result(monkeypatch):
     """SDK backtest method returns BacktestResult."""
-    from finrobot.engine.backtest.engine import BacktestConfig, BacktestResult
-    import finrobot.engine.backtest.backtrader_adapter as bta
+    from alpha_desk.engine.backtest.engine import BacktestConfig, BacktestResult
+    import alpha_desk.engine.backtest.backtrader_adapter as bta
 
     async def mock_run(self, config):
         return BacktestResult(
@@ -239,7 +239,7 @@ async def test_abacktest_returns_result(monkeypatch):
 
     monkeypatch.setattr(bta.BackTraderAdapter, "run", mock_run)
 
-    agent = FinRobot(model="test")
+    agent = AlphaDesk(model="test")
     _inject_mock_deps(agent)
 
     config = BacktestConfig(
@@ -255,14 +255,14 @@ async def test_abacktest_returns_result(monkeypatch):
 
 async def test_aanalyze_all_types(monkeypatch):
     """All 6 analysis types work through the SDK."""
-    import finrobot.engine.analysis.prompts as ap
+    import alpha_desk.engine.analysis.prompts as ap
 
     async def mock_run_analysis(data_layer, settings, ticker, analysis_type):
         return f"Result: {analysis_type}"
 
     monkeypatch.setattr(ap, "run_analysis", mock_run_analysis)
 
-    agent = FinRobot(model="test")
+    agent = AlphaDesk(model="test")
     _inject_mock_deps(agent)
 
     for atype in ("income", "balance", "cashflow", "risk", "competitors", "overview"):
@@ -275,7 +275,7 @@ def test_ensure_deps_reuses_build_data_layer(monkeypatch):
     (single source of truth), not a hand-rolled divergent chain. We assert it
     calls build_data_layer with self._settings and adopts its DataLayer.
     """
-    import finrobot.sdk as sdk_mod
+    import alpha_desk.sdk as sdk_mod
 
     sentinel_layer = MagicMock()
     captured: dict = {}
@@ -287,11 +287,11 @@ def test_ensure_deps_reuses_build_data_layer(monkeypatch):
     monkeypatch.setattr(sdk_mod, "build_data_layer", fake_build, raising=False)
     # build_data_layer is imported inside _ensure_deps; patch the source module
     # too so the deferred import resolves to our fake.
-    import finrobot.engine.data.factory as dlf
+    import alpha_desk.engine.data.factory as dlf
 
     monkeypatch.setattr(dlf, "build_data_layer", fake_build)
 
-    agent = FinRobot(model="test")
+    agent = AlphaDesk(model="test")
     deps = agent._ensure_deps()
 
     assert captured["settings"] is agent._settings
@@ -303,9 +303,9 @@ def test_ensure_deps_provider_chain_includes_news_aggregator():
     NewsAggregatorProvider (yfinance news, free/no-key, always-on) so SDK callers
     get the same DataType.NEWS coverage as the server — no silent drift.
     """
-    from finrobot.engine.data.providers.news_aggregator import NewsAggregatorProvider
+    from alpha_desk.engine.data.providers.news_aggregator import NewsAggregatorProvider
 
-    agent = FinRobot(model="test")
+    agent = AlphaDesk(model="test")
     try:
         deps = agent._ensure_deps()
         providers = deps.data_layer._providers
@@ -328,7 +328,7 @@ async def test_close_does_not_emit_event_loop_closed_warning():
     import asyncio
     import warnings
 
-    agent = FinRobot(model="test")
+    agent = AlphaDesk(model="test")
     # Simulate the persistent sync loop that _run_sync creates.
     agent._loop = asyncio.new_event_loop()
 
@@ -347,7 +347,7 @@ async def test_close_does_not_emit_event_loop_closed_warning():
 
 async def test_sdk_rejects_junk_ticker_before_pipeline(monkeypatch):
     _patch_research_factory(monkeypatch)
-    agent = FinRobot(model="test")
+    agent = AlphaDesk(model="test")
     _inject_mock_deps(agent)
 
     for junk in ("苹果", "AAPL;DROP", "", "A" * 13, "AAPL OK"):
@@ -363,7 +363,7 @@ async def test_sdk_normalises_ticker_case(monkeypatch):
     """Lower-case input reaches the pipeline upper-cased — one cache key per
     symbol, matching every other entry point."""
     _patch_research_factory(monkeypatch)
-    agent = FinRobot(model="test")
+    agent = AlphaDesk(model="test")
     _inject_mock_deps(agent)
 
     result = await agent.aresearch("  test ")

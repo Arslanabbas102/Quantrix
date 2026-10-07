@@ -1,6 +1,6 @@
 """Offline prompt A/B eval for the equity-research report LLM surfaces.
 
-Reads the OpenAI provider key from FinRobot's secret store, runs fixed-input
+Reads the OpenAI provider key from Alpha Desk's secret store, runs fixed-input
 prompt variants, and writes a JSON artifact under .tmp/. This is intentionally
 not part of the production pipeline: it is a diagnostic harness for deciding
 whether skill-derived prompt text is better than the current prompts.
@@ -19,8 +19,8 @@ from typing import Any
 
 import httpx
 
-from finrobot.engine.skills.pipeline_methodology import _PIPELINE_SAFE_METHODOLOGY
-from finrobot.secret_store import create_secret_store
+from alpha_desk.engine.skills.pipeline_methodology import _PIPELINE_SAFE_METHODOLOGY
+from alpha_desk.secret_store import create_secret_store
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -38,7 +38,7 @@ async def _openai_key() -> str:
     store, _mode = create_secret_store()
     key = await store.get("provider_key:openai")
     if not key:
-        raise RuntimeError("OpenAI provider key is not set in FinRobot secret store")
+        raise RuntimeError("OpenAI provider key is not set in Alpha Desk secret store")
     return key
 
 
@@ -86,14 +86,14 @@ def _extract_markdown_guidance(raw: str, *, max_chars: int = 5000) -> str:
     return body[:max_chars]
 
 
-CURRENT_DATA_AGENT = (ROOT / "finrobot/engine/agents/instructions/data_agent.md").read_text(
+CURRENT_DATA_AGENT = (ROOT / "alpha_desk/engine/agents/instructions/data_agent.md").read_text(
     encoding="utf-8"
 )
-CURRENT_REPORT_AGENT = (ROOT / "finrobot/engine/agents/instructions/report_agent.md").read_text(
+CURRENT_REPORT_AGENT = (ROOT / "alpha_desk/engine/agents/instructions/report_agent.md").read_text(
     encoding="utf-8"
 )
 CURRENT_SYNTHESIS_AGENT = (
-    ROOT / "finrobot/engine/agents/instructions/synthesis_agent.md"
+    ROOT / "alpha_desk/engine/agents/instructions/synthesis_agent.md"
 ).read_text(encoding="utf-8")
 
 CURRENT_NEWS_CLASSIFIER = """You are screening news for an equity research report on Micron Technology (MU). Each item is prefixed with its index in brackets, e.g. [0]. Classify every item and return, for each, that same index plus:

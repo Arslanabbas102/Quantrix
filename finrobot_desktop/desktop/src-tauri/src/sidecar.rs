@@ -1,7 +1,7 @@
 //! Python sidecar lifecycle manager.
 //!
-//! Spawns the bundled `finrobot-server` exe (a PyInstaller one-dir bundle
-//! shipped under `Contents/Resources/finrobot-server/`) via
+//! Spawns the bundled `alpha-desk-server` exe (a PyInstaller one-dir bundle
+//! shipped under `Contents/Resources/alpha-desk-server/`) via
 //! `tauri-plugin-shell`, waits up to `READINESS_TIMEOUT_SECS` for `/health`
 //! to return 200, and returns the `CommandChild` handle so the caller can
 //! kill it on exit.
@@ -27,10 +27,10 @@ const STDERR_RING_CAPACITY: usize = 50;
 /// install, when Gatekeeper/antivirus may verify every bundled dylib once.
 const READINESS_TIMEOUT_SECS: u64 = 90;
 
-/// Spawn the bundled `finrobot-server` sidecar and block until it is ready.
+/// Spawn the bundled `alpha-desk-server` sidecar and block until it is ready.
 ///
 /// The exe lives inside the resource bundle at
-/// `sidecar/finrobot-server` (next to its `_internal/` runtime).
+/// `sidecar/alpha-desk-server` (next to its `_internal/` runtime).
 ///
 /// Stdout/stderr from the sidecar are forwarded to the host process's stderr
 /// so they appear in the terminal during `cargo tauri dev`.
@@ -53,26 +53,26 @@ pub fn spawn_and_wait_for_ready(
     capability_token: &str,
 ) -> Result<tauri_plugin_shell::process::CommandChild, String> {
     // Pass our own PID so the sidecar self-terminates if this shell dies — see
-    // the parent-death watchdog in finrobot/cli.py. Tauri kills the sidecar
+    // the parent-death watchdog in alpha_desk/cli.py. Tauri kills the sidecar
     // bootloader with SIGKILL on a clean quit (handled in lib.rs), but SIGKILL
     // can't be forwarded to the Python grandchild; the watchdog is the backstop
     // that also covers a shell *crash*.
     let parent_pid = std::process::id().to_string();
 
     // Resolve the one-dir exe from the bundled resources. In a packaged app
-    // this is Contents/Resources/sidecar/finrobot-server; in `cargo tauri dev`
+    // this is Contents/Resources/sidecar/alpha-desk-server; in `cargo tauri dev`
     // the resource dir sits next to the debug binary. The resource dir is
-    // named `sidecar`, NOT `finrobot-server`: the legacy externalBin config
-    // left a FILE called finrobot-server in old cargo target dirs, and the
+    // named `sidecar`, NOT `alpha-desk-server`: the legacy externalBin config
+    // left a FILE called alpha-desk-server in old cargo target dirs, and the
     // resource copier dies with "Not a directory" on the name collision.
     // PyInstaller names the one-dir launcher after the spec's COLLECT `name`;
     // Windows appends `.exe`, macOS/Linux leave it bare. The bundled resource
     // DIR is `sidecar/` on every platform (tauri.conf.json `resources`); only
     // the launcher file inside it differs by OS.
     #[cfg(windows)]
-    const SIDECAR_REL: &str = "sidecar/finrobot-server.exe";
+    const SIDECAR_REL: &str = "sidecar/alpha-desk-server.exe";
     #[cfg(not(windows))]
-    const SIDECAR_REL: &str = "sidecar/finrobot-server";
+    const SIDECAR_REL: &str = "sidecar/alpha-desk-server";
 
     let exe_path = app
         .path()
@@ -105,8 +105,8 @@ pub fn spawn_and_wait_for_ready(
         .command(&exe_path)
         // Hand the capability token to the server via env (never argv — argv is
         // world-readable via `ps`). The middleware enforces it on every request;
-        // the readiness /health poll below stays exempt. See finrobot/auth.py.
-        .env("FINROBOT_CAPABILITY_TOKEN", capability_token)
+        // the readiness /health poll below stays exempt. See alpha_desk/auth.py.
+        .env("ALPHA_DESK_CAPABILITY_TOKEN", capability_token)
         .args([
             "--host",
             "127.0.0.1",
@@ -128,7 +128,7 @@ pub fn spawn_and_wait_for_ready(
     // forwarder below, so it is the only place we learn the child has
     // Terminated. Bridge that signal to the readiness loop via an atomic so a
     // child that dies on bind failure (port 8321 already taken → SystemExit in
-    // finrobot/cli.py) fails readiness *immediately* instead of letting the
+    // alpha_desk/cli.py) fails readiness *immediately* instead of letting the
     // loop poll a foreign backend that happens to answer 200 on the same port.
     let child_dead = Arc::new(AtomicBool::new(false));
     let child_dead_for_task = child_dead.clone();
@@ -185,7 +185,7 @@ pub fn spawn_and_wait_for_ready(
     //
     // A bare "200 from :8321" is NOT proof our child is up: loopback is shared,
     // and if our child died on a bind clash (port already taken → SystemExit in
-    // finrobot/cli.py) some *other* finrobot backend may be answering on the
+    // alpha_desk/cli.py) some *other* alpha_desk backend may be answering on the
     // same port. We close that hole two ways:
     //   1. If the child has Terminated (death flag set by the forward task),
     //      bail immediately — never return Ok holding a corpse handle.

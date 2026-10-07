@@ -1,7 +1,7 @@
 """Nightly historical scan of the output-contract clauses over EVERY persisted
 artifact (spec §6 step 5; §4.5 item 3 / Q3).
 
-Walks the whole ~/.finrobot/artifacts.db, runs each contract clause's pure
+Walks the whole ~/.alpha_desk/artifacts.db, runs each contract clause's pure
 ``check()`` against every already-stored artifact, and reports — per clause — how
 many artifacts in history today's clauses would flag for REVIEW. Two operational
 uses:
@@ -37,10 +37,10 @@ import asyncio
 import sys
 from dataclasses import dataclass
 
-from finrobot.artifact.contract import CONTRACT_CLAUSES, ContractClause
-from finrobot.artifact.models import Artifact, ArtifactSummary
-from finrobot.artifact.store import ArtifactStore
-from finrobot.artifact.summary_extractor import (
+from alpha_desk.artifact.contract import CONTRACT_CLAUSES, ContractClause
+from alpha_desk.artifact.models import Artifact, ArtifactSummary
+from alpha_desk.artifact.store import ArtifactStore
+from alpha_desk.artifact.summary_extractor import (
     extract_entry_price,
     extract_target_price,
     extract_verdict,

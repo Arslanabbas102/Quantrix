@@ -12,13 +12,13 @@ from __future__ import annotations
 
 import logging
 
-from finrobot.engine.compute.operators.valuation_synthesis import CanonicalThesis
-from finrobot.engine.models.financial import (
+from alpha_desk.engine.compute.operators.valuation_synthesis import CanonicalThesis
+from alpha_desk.engine.models.financial import (
     ThesisResult,
     ValuationMethod,
     ValuationSynthesis,
 )
-from finrobot.engine.pipelines.equity_research import (
+from alpha_desk.engine.pipelines.equity_research import (
     _reconcile_narrative_targets,
     apply_canonical_override,
 )

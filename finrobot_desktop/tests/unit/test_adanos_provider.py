@@ -5,13 +5,13 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import httpx
 import pytest
 
-from finrobot.engine.data.interface import (
+from alpha_desk.engine.data.interface import (
     DataResult,
     ProviderError,
     RateLimitedProviderError,
     is_rate_limit_error,
 )
-from finrobot.engine.data.providers.adanos_provider import (
+from alpha_desk.engine.data.providers.adanos_provider import (
     _PLATFORM_SPECS,
     AdanosProvider,
     _compute_alignment,
@@ -322,7 +322,7 @@ class TestAdanosAlignment:
         a new phrase that isn't a known token fails here, not in production."""
         from typing import get_args
 
-        from finrobot.engine.data.providers.adanos_provider import AlignmentToken
+        from alpha_desk.engine.data.providers.adanos_provider import AlignmentToken
 
         tokens = set(get_args(AlignmentToken))
         produced = {
@@ -412,7 +412,7 @@ class TestAdanosRateLimiter:
         import asyncio
         import time
 
-        from finrobot.engine.data.providers.adanos_provider import _MIN_INTERVAL
+        from alpha_desk.engine.data.providers.adanos_provider import _MIN_INTERVAL
 
         sleep_durations: list[float] = []
 

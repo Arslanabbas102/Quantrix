@@ -11,8 +11,8 @@ from __future__ import annotations
 
 import pytest
 
-from finrobot.engine.compute.operators.ddm import calculate_ddm
-from finrobot.engine.models.financial import DDMInputs
+from alpha_desk.engine.compute.operators.ddm import calculate_ddm
+from alpha_desk.engine.models.financial import DDMInputs
 
 
 def _inputs(**ov: object) -> DDMInputs:

@@ -51,7 +51,7 @@ IGNORED = [
 ]
 # Where a definition might live, and where references might appear.
 GREP_GLOBS = ["*.py", "*.ts", "*.tsx", "*.md", "*.json", "*.toml"]
-GREP_ROOTS = ["finrobot", "tests", "scripts", "desktop/src"]
+GREP_ROOTS = ["alpha_desk", "tests", "scripts", "desktop/src"]
 
 
 def _line_of(text: str, offset: int) -> int:

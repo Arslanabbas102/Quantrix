@@ -10,7 +10,7 @@ import importlib.util
 
 import pytest
 
-from finrobot.engine.backtest.engine import BacktestConfig, BacktestResult
+from alpha_desk.engine.backtest.engine import BacktestConfig, BacktestResult
 
 # Config/result tests below are pure logic and run anywhere. The A-share gate
 # tests drive ``adapter.run()``, which calls ``_check_backtrader()`` first, so
@@ -234,7 +234,7 @@ class TestBacktestAShareRejection:
     def test_a_share_and_hk_tickers_rejected(self, ticker: str) -> None:
         import asyncio
 
-        from finrobot.engine.backtest.backtrader_adapter import BackTraderAdapter
+        from alpha_desk.engine.backtest.backtrader_adapter import BackTraderAdapter
 
         adapter = BackTraderAdapter(_NullDataLayer())  # type: ignore[arg-type]
         config = BacktestConfig(
@@ -250,7 +250,7 @@ class TestBacktestAShareRejection:
         """US symbols clear the gate (proven by hitting the next stage's I/O)."""
         import asyncio
 
-        from finrobot.engine.backtest.backtrader_adapter import BackTraderAdapter
+        from alpha_desk.engine.backtest.backtrader_adapter import BackTraderAdapter
 
         adapter = BackTraderAdapter(_NullDataLayer())  # type: ignore[arg-type]
         config = BacktestConfig(

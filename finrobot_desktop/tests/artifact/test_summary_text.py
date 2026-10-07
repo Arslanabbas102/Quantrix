@@ -6,7 +6,7 @@ summary — every number traced to the compute layer.
 the LLM ``*_narrative`` step is only a fallback, because it balloons into a full
 report that restates financial figures (a contract-① drift surface) and
 editorialises a single-method recommendation. ``format_summary`` (the generic
-"# FinRobot Analysis Report" that concatenates every step — for valuation
+"# Alpha Desk Analysis Report" that concatenates every step — for valuation
 pipelines it led with the historical_data table and truncated the model result
 away) is the last resort, kept for pipelines that declare no summary_steps
 (equity_research).
@@ -16,8 +16,8 @@ from __future__ import annotations
 
 from typing import Any, cast
 
-from finrobot.artifact.builders import _summary_text
-from finrobot.engine.pipelines.base import PipelineResult
+from alpha_desk.artifact.builders import _summary_text
+from alpha_desk.engine.pipelines.base import PipelineResult
 
 _CALC = (
     "DDM implies $319.89 per share (10.3% upside vs $290.00). "
@@ -48,7 +48,7 @@ def test_summary_is_the_deterministic_calc_line() -> None:
     assert summary.startswith("DDM implies $319.89 per share")
     assert "Cost of equity: 8.7%" in summary
     # The generic report scaffolding and the financials dump must NOT leak in.
-    assert "# FinRobot Analysis Report" not in summary
+    assert "# Alpha Desk Analysis Report" not in summary
     assert "Financial Summary" not in summary
 
 
@@ -66,18 +66,18 @@ def test_narrative_is_fallback_when_calc_step_missing() -> None:
     # priority step (the LLM narrative) rather than the generic report dump.
     summary = _summary_text(_result(with_calc=False), {}, cast(Any, None), summary_steps=_STEPS)
     assert "Equity Research Report" in summary
-    assert "# FinRobot Analysis Report" not in summary
+    assert "# Alpha Desk Analysis Report" not in summary
 
 
 def test_no_summary_steps_falls_back_to_full_report() -> None:
     # equity_research declares no summary_steps → keeps the legacy full report.
     summary = _summary_text(_result(), {}, cast(Any, None))
-    assert "# FinRobot Analysis Report" in summary
+    assert "# Alpha Desk Analysis Report" in summary
 
 
 def test_unknown_step_names_fall_back_to_full_report() -> None:
     summary = _summary_text(_result(), {}, cast(Any, None), summary_steps=("nope", "x"))
-    assert "# FinRobot Analysis Report" in summary
+    assert "# Alpha Desk Analysis Report" in summary
 
 
 def test_withheld_overrides_steps() -> None:
@@ -104,7 +104,7 @@ def test_equity_research_fairly_valued_keeps_full_summary_not_numeric_audit_stub
     summary = _summary_text(_result(), structured, cast(Any, None))
     assert "numeric audit" not in summary.lower()  # the misattribution is gone
     assert "fairly valued" in summary.lower()
-    assert "# FinRobot Analysis Report" in summary  # full data summary retained (BAC parity)
+    assert "# Alpha Desk Analysis Report" in summary  # full data summary retained (BAC parity)
 
 
 def test_equity_research_dial_withhold_attributes_to_synthesis_not_audit() -> None:
@@ -118,7 +118,7 @@ def test_equity_research_dial_withhold_attributes_to_synthesis_not_audit() -> No
     summary = _summary_text(_result(), structured, cast(Any, None))
     assert "numeric audit" not in summary.lower()
     assert "valuation synthesis" in summary.lower()
-    assert "# FinRobot Analysis Report" in summary
+    assert "# Alpha Desk Analysis Report" in summary
 
 
 def test_numeric_audit_blocked_still_reads_numeric_audit() -> None:
@@ -137,8 +137,8 @@ def test_build_ddm_artifact_summary_is_calc_line_not_generic_report() -> None:
     """
     from datetime import datetime, timezone
 
-    from finrobot.artifact.builders import build_ddm_artifact
-    from finrobot.engine.models.financial import (
+    from alpha_desk.artifact.builders import build_ddm_artifact
+    from alpha_desk.engine.models.financial import (
         BalanceSheet,
         FinancialData,
         IncomeStatement,
@@ -171,5 +171,5 @@ def test_build_ddm_artifact_summary_is_calc_line_not_generic_report() -> None:
     art = build_ddm_artifact(result, "JPM", cast(Any, None))
 
     assert art.outputs.summary_text == _CALC
-    assert "# FinRobot Analysis Report" not in art.outputs.summary_text
+    assert "# Alpha Desk Analysis Report" not in art.outputs.summary_text
     assert "Recommendation:" not in art.outputs.summary_text

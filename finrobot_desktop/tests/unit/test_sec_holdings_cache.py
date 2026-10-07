@@ -13,8 +13,8 @@ from pathlib import Path
 
 import pytest
 
-from finrobot import paths as _paths
-from finrobot.engine.data import sec_holdings_cache as cache_mod
+from alpha_desk import paths as _paths
+from alpha_desk.engine.data import sec_holdings_cache as cache_mod
 
 
 @pytest.fixture

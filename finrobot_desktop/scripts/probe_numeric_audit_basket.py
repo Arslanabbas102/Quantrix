@@ -20,17 +20,17 @@ from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from finrobot.config import get_settings
-from finrobot.engine.data.factory import build_data_layer
-from finrobot.engine.data.interface import DataProvider, DataResult, ProviderError
-from finrobot.engine.data.normalize import normalize_financials, normalize_price
-from finrobot.engine.data.normalize.contracts import NormalizedFinancials, NormalizedPrice
-from finrobot.engine.data.types import DataType
-from finrobot.engine.data.validator import cross_validate, market_cap_consistency
-from finrobot.paths import SETTINGS_JSON
-from finrobot.routes.settings import load_non_secret_settings
-from finrobot.secret_store import create_secret_store
-from finrobot.server import hydrate_settings_from_secrets
+from alpha_desk.config import get_settings
+from alpha_desk.engine.data.factory import build_data_layer
+from alpha_desk.engine.data.interface import DataProvider, DataResult, ProviderError
+from alpha_desk.engine.data.normalize import normalize_financials, normalize_price
+from alpha_desk.engine.data.normalize.contracts import NormalizedFinancials, NormalizedPrice
+from alpha_desk.engine.data.types import DataType
+from alpha_desk.engine.data.validator import cross_validate, market_cap_consistency
+from alpha_desk.paths import SETTINGS_JSON
+from alpha_desk.routes.settings import load_non_secret_settings
+from alpha_desk.secret_store import create_secret_store
+from alpha_desk.server import hydrate_settings_from_secrets
 
 DEFAULT_BASKET = ("AAPL", "MSFT", "NVDA", "TSLA", "TSM", "SAP", "KO", "JPM", "F", "MU")
 PROVIDER_A = "fmp"
@@ -437,7 +437,7 @@ async def main() -> int:
     finally:
         # Non-server entrypoint: join the aiosqlite workers + checkpoint WAL so the
         # process exits cleanly instead of hanging on "Event loop is closed" (2026-06-24).
-        from finrobot.engine.data.factory import shutdown_data_layer
+        from alpha_desk.engine.data.factory import shutdown_data_layer
 
         await shutdown_data_layer(data_layer)
 

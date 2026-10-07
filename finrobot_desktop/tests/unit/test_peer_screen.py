@@ -1,5 +1,5 @@
-from finrobot.engine.compute.operators.cyclical_peers import screen_peers_with_cyclical
-from finrobot.engine.compute.operators.peer_screen import (
+from alpha_desk.engine.compute.operators.cyclical_peers import screen_peers_with_cyclical
+from alpha_desk.engine.compute.operators.peer_screen import (
     _normalize_issuer_name,
     screen_peers,
 )

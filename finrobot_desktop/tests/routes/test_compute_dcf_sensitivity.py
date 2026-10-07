@@ -16,8 +16,8 @@ import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from finrobot.engine.models.financial import DCFInputs
-from finrobot.routes.compute import DcfSensitivityRequest, router as compute_router
+from alpha_desk.engine.models.financial import DCFInputs
+from alpha_desk.routes.compute import DcfSensitivityRequest, router as compute_router
 
 
 def _inputs() -> DCFInputs:

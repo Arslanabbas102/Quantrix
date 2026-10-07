@@ -14,7 +14,7 @@ from datetime import datetime, timezone
 
 import pytest
 
-from finrobot.engine.compute.operators.signal import compute_signal
+from alpha_desk.engine.compute.operators.signal import compute_signal
 
 UTC = timezone.utc
 ENTRY = datetime(2026, 1, 1, tzinfo=UTC)

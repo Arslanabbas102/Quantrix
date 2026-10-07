@@ -16,12 +16,12 @@ from __future__ import annotations
 
 import pytest
 
-from finrobot.engine.compute.operators.dcf import (
+from alpha_desk.engine.compute.operators.dcf import (
     calculate_dcf,
     solve_for_implied_growth,
     solve_for_implied_wacc,
 )
-from finrobot.engine.models.financial import DCFInputs
+from alpha_desk.engine.models.financial import DCFInputs
 
 
 def _negative_terminal_inputs() -> DCFInputs:

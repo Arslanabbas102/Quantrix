@@ -13,17 +13,17 @@ from datetime import datetime, timezone
 
 import pytest
 
-from finrobot.engine.compute.operators.forward_estimates import ForwardFinancials
-from finrobot.engine.compute.operators.valuation_aggregator import (
+from alpha_desk.engine.compute.operators.forward_estimates import ForwardFinancials
+from alpha_desk.engine.compute.operators.valuation_aggregator import (
     _comps_median_refusal,
     _ev_ebitda_method,
     aggregate_valuation,
 )
-from finrobot.engine.compute.operators.valuation_synthesis import (
+from alpha_desk.engine.compute.operators.valuation_synthesis import (
     resolve_canonical_thesis,
     synthesize_valuations,
 )
-from finrobot.engine.models.financial import (
+from alpha_desk.engine.models.financial import (
     CompanyFinancials,
     DCFInputs,
     DCFResult,
@@ -38,7 +38,7 @@ from finrobot.engine.models.financial import (
     PeerComps,
     ValuationMethod,
 )
-from finrobot.engine.pipelines._helpers import build_valuation_synthesis
+from alpha_desk.engine.pipelines._helpers import build_valuation_synthesis
 
 
 # ---------------------------------------------------------------------------
@@ -805,7 +805,7 @@ class TestReratingDisclosureReachesWarnings:
     def test_rerating_warning_forwarded_to_synthesis_warnings(self) -> None:
         """re-rating 披露必须经 RERATING_WARNING_MARKER 转发进 vs.warnings
         (报告 warnings 区);只进 REST agg.warnings = 外审读者看不见 = 白修。"""
-        from finrobot.engine.compute.operators.valuation_aggregator import (
+        from alpha_desk.engine.compute.operators.valuation_aggregator import (
             RERATING_WARNING_MARKER,
         )
 
@@ -819,7 +819,7 @@ class TestReratingDisclosureReachesWarnings:
     def test_rerating_warning_stays_out_of_canonical_basis(self) -> None:
         """有意行为:re-rating 披露不是方法退出,basis 的 withheld-only 过滤不许
         吸收它——封面保持克制,方法行 assumptions 已带同一信息。"""
-        from finrobot.engine.compute.operators.valuation_aggregator import (
+        from alpha_desk.engine.compute.operators.valuation_aggregator import (
             RERATING_WARNING_MARKER,
         )
 

@@ -16,7 +16,7 @@ from types import SimpleNamespace
 import pytest
 from fastapi import FastAPI
 
-from finrobot.engine.data import sec_holdings_sync
+from alpha_desk.engine.data import sec_holdings_sync
 
 _VALID_IDENTITY = "Acme Research analyst@example.com"
 
@@ -36,7 +36,7 @@ def _app() -> FastAPI:
 
 def _patch_env(monkeypatch, *, latest: str | None, target: date, complete: bool = True) -> None:
     import scripts.refresh_sec_holdings as refresh_mod
-    from finrobot.engine.data import sec_holdings_cache as cache_mod
+    from alpha_desk.engine.data import sec_holdings_cache as cache_mod
 
     async def _status() -> dict:
         return {

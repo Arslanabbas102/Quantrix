@@ -9,7 +9,7 @@ import type { ReactNode } from 'react'
 import { createElement } from 'react'
 import { useChatSessions, type ChatSessionSummary } from './useChatSessions'
 
-const ACTIVE_KEY = 'finrobot-active-session'
+const ACTIVE_KEY = 'alpha_desk-active-session'
 
 function summary(over: Partial<ChatSessionSummary> = {}): ChatSessionSummary {
   return {

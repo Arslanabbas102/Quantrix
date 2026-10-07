@@ -1,9 +1,9 @@
 #!/bin/bash
 
 ################################################################################
-# FinRobot Equity Research - Complete Deployment Script
+# Alpha Desk Equity Research - Complete Deployment Script
 # 
-# This script manages the complete FinRobot Equity Research module including:
+# This script manages the complete Alpha Desk Equity Research module including:
 # - Virtual environment setup
 # - Dependency installation (core + equity + web)
 # - Web application startup
@@ -210,7 +210,7 @@ install_deps() {
 # ============================================================================
 
 start_app() {
-    print_header "Starting FinRobot Equity Research Web Application"
+    print_header "Starting Alpha Desk Equity Research Web Application"
     
     # Check if already running
     if [ -f "$PID_FILE" ]; then
@@ -293,7 +293,7 @@ start_app() {
 }
 
 stop_app() {
-    print_header "Stopping FinRobot Equity Research Web Application"
+    print_header "Stopping Alpha Desk Equity Research Web Application"
     
     if [ ! -f "$PID_FILE" ]; then
         print_warning "Application is not running (no PID file found)"
@@ -332,7 +332,7 @@ stop_app() {
 }
 
 check_status() {
-    print_header "FinRobot Equity Research Application Status"
+    print_header "Alpha Desk Equity Research Application Status"
     
     if [ ! -f "$PID_FILE" ]; then
         print_warning "Application is not running"
@@ -361,7 +361,7 @@ check_status() {
 }
 
 restart_app() {
-    print_header "Restarting FinRobot Equity Research Web Application"
+    print_header "Restarting Alpha Desk Equity Research Web Application"
     
     stop_app
     sleep 2
@@ -376,7 +376,7 @@ show_help() {
     cat << 'EOF'
 
 ================================================================================
-  FinRobot Equity Research - Deployment Script
+  Alpha Desk Equity Research - Deployment Script
 ================================================================================
 
 USAGE:

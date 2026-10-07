@@ -1,9 +1,9 @@
-"""PyInstaller entry point for the FinRobot desktop sidecar.
+"""PyInstaller entry point for the Alpha Desk desktop sidecar.
 
 The Tauri shell spawns this frozen binary with ``--host 127.0.0.1 --port 8321``
 (see desktop/src-tauri/src/sidecar.rs). We inject the ``serve`` subcommand and hand off
 to the existing Click CLI, so the bundled server runs the byte-for-byte same
-code path as ``finrobot serve`` does in development — no parallel entrypoint to
+code path as ``alpha_desk serve`` does in development — no parallel entrypoint to
 drift out of sync.
 """
 
@@ -29,7 +29,7 @@ def main() -> None:
     # re-exec itself as a runaway fork bomb when a child process starts.
     multiprocessing.freeze_support()
 
-    from finrobot.cli import cli
+    from alpha_desk.cli import cli
 
     # Prepend the `serve` subcommand; everything Tauri passes (--host/--port)
     # flows through unchanged as serve options.

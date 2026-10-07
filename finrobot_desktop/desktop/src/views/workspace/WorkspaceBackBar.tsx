@@ -1,6 +1,6 @@
 // Sticky back strip for workspace pages (TickerHero / TickerNotFoundView).
 //
-// Replaces the old FINROBOT › STOCKS › TSLA breadcrumb. A breadcrumb implies a
+// Replaces the old ALPHA_DESK › STOCKS › TSLA breadcrumb. A breadcrumb implies a
 // fixed hierarchy the app no longer has (the /stocks landing retired into
 // /research), and it scrolled away with the hero. This is a single ← that
 // returns to wherever the user came from (useHistoryBack), pinned to the top

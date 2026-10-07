@@ -1,4 +1,4 @@
-"""Unit tests for finrobot/routes/runs.py bug fixes.
+"""Unit tests for alpha_desk/routes/runs.py bug fixes.
 
 B3 — get_run non-dict result_json defence
 B3 — create_run task-registration ordering
@@ -14,8 +14,8 @@ import pytest
 from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
 
-from finrobot.llm_probe import LlmProbeGate
-from finrobot.routes.runs import router as runs_router
+from alpha_desk.llm_probe import LlmProbeGate
+from alpha_desk.routes.runs import router as runs_router
 
 
 # ---------------------------------------------------------------------------
@@ -86,8 +86,8 @@ def test_result_to_json_warnings_match_artifact_haul() -> None:
     through PipelineResult.collect_warnings — the single authoritative haul."""
     from types import SimpleNamespace
 
-    from finrobot.engine.pipelines.base import PipelineResult
-    from finrobot.routes.runs import _result_to_json
+    from alpha_desk.engine.pipelines.base import PipelineResult
+    from alpha_desk.routes.runs import _result_to_json
 
     result = PipelineResult(
         steps={"financial_modeling": "DCF FAIR VALUE —"},
@@ -232,7 +232,7 @@ async def test_create_run_503_when_key_fails_live_probe(monkeypatch: Any) -> Non
     """A key that EXISTS but cannot authenticate must reject the run at submit
     time (classified reason in the detail), not minutes later inside the first
     agent LLM step — and must not persist an orphan run row."""
-    from finrobot import llm_probe
+    from alpha_desk import llm_probe
 
     app = _make_app()
     _configure_live_provider(app)
@@ -256,7 +256,7 @@ async def test_create_run_503_when_key_fails_live_probe(monkeypatch: Any) -> Non
 async def test_llm_probe_success_cached_per_fingerprint(monkeypatch: Any) -> None:
     """One green probe per (model, key) fingerprint: the second submit makes no
     extra LLM call; a key change invalidates the cache (new fingerprint)."""
-    from finrobot import llm_probe
+    from alpha_desk import llm_probe
 
     app = _make_app()
     _configure_live_provider(app)
@@ -270,7 +270,7 @@ async def test_llm_probe_success_cached_per_fingerprint(monkeypatch: Any) -> Non
 
     monkeypatch.setattr(llm_probe, "probe_model", fake_probe)
     monkeypatch.setattr(
-        "finrobot.routes.runs.get_pipeline_factories",
+        "alpha_desk.routes.runs.get_pipeline_factories",
         lambda: {"full_analysis": lambda agents: MagicMock()},
     )
     app.state.run_store.create_run = AsyncMock(return_value=_make_run_record(status="created"))
@@ -321,7 +321,7 @@ async def test_create_run_with_startup_error_creates_no_run_record() -> None:
 @pytest.mark.asyncio
 async def test_create_run_succeeds_when_no_startup_error(monkeypatch: Any) -> None:
     """Sanity counter-test: with startup_error=None the run is created (no 503)."""
-    from finrobot.routes import runs as runs_mod
+    from alpha_desk.routes import runs as runs_mod
 
     monkeypatch.setattr(
         runs_mod, "get_pipeline_factories", lambda: {"full_analysis": lambda agents: MagicMock()}
@@ -356,8 +356,8 @@ async def test_run_completion_emits_artifact_id_and_type(monkeypatch: Any) -> No
     """_run_pipeline_impl emits artifact.ready + run.completed carrying the
     persisted artifact's id AND its real type (resolved from artifact_store),
     not the opaque "artifact" placeholder."""
-    from finrobot.engine.pipelines.base import PipelineResult
-    from finrobot.routes import runs as runs_mod
+    from alpha_desk.engine.pipelines.base import PipelineResult
+    from alpha_desk.routes import runs as runs_mod
 
     # Fake pipeline: 1 step, execute() returns a result with an artifact_id.
     pipeline = MagicMock()
@@ -445,7 +445,7 @@ def _parse_sse(raw: str) -> list[dict[str, str]]:
 
 async def _seed_completed_run(store: Any, ticker: str) -> str:
     """Create a run, append a run.started + run.completed, mark it completed."""
-    from finrobot.events import RunCompleted, RunStarted
+    from alpha_desk.events import RunCompleted, RunStarted
 
     record = await store.create_run("research", ticker)
     run_id = record.run_id
@@ -494,7 +494,7 @@ def _make_app_with_store(store: Any) -> FastAPI:
 async def test_aggregated_stream_multiplexes_and_tags_runs(tmp_path: Any) -> None:
     """Two terminal runs over ONE stream: every frame is tagged with its
     run_id + ticker, and the stream closes once both are terminal."""
-    from finrobot.run_store import RunStore
+    from alpha_desk.run_store import RunStore
 
     store = RunStore(tmp_path / "runs.db")
     rid_a = await _seed_completed_run(store, "AAPL")
@@ -524,7 +524,7 @@ async def test_aggregated_stream_multiplexes_and_tags_runs(tmp_path: Any) -> Non
 async def test_aggregated_stream_resumes_from_last_event_id(tmp_path: Any) -> None:
     """Last-Event-ID with a per-id cursor at the final seq skips already-seen
     events for that run (resume parity with the single-run stream)."""
-    from finrobot.run_store import RunStore
+    from alpha_desk.run_store import RunStore
 
     store = RunStore(tmp_path / "runs.db")
     rid_a = await _seed_completed_run(store, "AAPL")
@@ -561,7 +561,7 @@ async def test_aggregated_stream_404_when_all_ids_unknown() -> None:
 async def test_aggregated_stream_400_when_too_many_ids() -> None:
     """An unbounded ?ids= list (script-built, not the UI) must 400 before it
     fans N get_run/get_events polls onto the shared store connection."""
-    from finrobot.routes import runs as runs_mod
+    from alpha_desk.routes import runs as runs_mod
 
     app = _make_app(_make_run_record())
     ids = ",".join(f"run-{i}" for i in range(runs_mod._MAX_MULTIPLEX_IDS + 1))
@@ -612,7 +612,7 @@ class _OrderRecordingStore:
         # its append_event/update_run calls flow through the recording methods
         # above — re-implementing the sequence here would test a copy of the
         # invariant instead of the invariant.
-        from finrobot.run_store import RunStore
+        from alpha_desk.run_store import RunStore
 
         return await RunStore.finish_run(self, run_id, terminal_event, **kwargs)  # type: ignore[arg-type]
 
@@ -636,9 +636,9 @@ async def test_completed_event_appended_before_status_flip(tmp_path: Any, monkey
     """Success path: run.completed must be in run_events BEFORE the run row
     flips to status='completed', and the event must exist whenever the status
     is terminal."""
-    from finrobot.engine.pipelines.base import PipelineResult
-    from finrobot.routes import runs as runs_mod
-    from finrobot.run_store import RunStore
+    from alpha_desk.engine.pipelines.base import PipelineResult
+    from alpha_desk.routes import runs as runs_mod
+    from alpha_desk.run_store import RunStore
 
     inner = RunStore(tmp_path / "runs.db")
     record = await inner.create_run("research", "AAPL")
@@ -672,8 +672,8 @@ async def test_failed_event_appended_before_status_flip(tmp_path: Any, monkeypat
     """Failure path: run.failed must be in run_events BEFORE the run row flips
     to status='failed', and the event must exist whenever the status is
     terminal."""
-    from finrobot.routes import runs as runs_mod
-    from finrobot.run_store import RunStore
+    from alpha_desk.routes import runs as runs_mod
+    from alpha_desk.run_store import RunStore
 
     inner = RunStore(tmp_path / "runs.db")
     record = await inner.create_run("research", "AAPL")
@@ -722,7 +722,7 @@ async def test_failed_event_appended_before_status_flip(tmp_path: Any, monkeypat
 
 @pytest.mark.asyncio
 async def test_list_runs_returns_all_newest_first(tmp_path: Any) -> None:
-    from finrobot.run_store import RunStore
+    from alpha_desk.run_store import RunStore
 
     store = RunStore(tmp_path / "runs.db")
     rid_done = await _seed_completed_run(store, "AAPL")
@@ -743,7 +743,7 @@ async def test_list_runs_returns_all_newest_first(tmp_path: Any) -> None:
 @pytest.mark.asyncio
 async def test_list_runs_status_filter_returns_only_active(tmp_path: Any) -> None:
     """?status=created,running excludes terminal rows — the reattach query."""
-    from finrobot.run_store import RunStore
+    from alpha_desk.run_store import RunStore
 
     store = RunStore(tmp_path / "runs.db")
     await _seed_completed_run(store, "AAPL")
@@ -766,7 +766,7 @@ async def test_list_runs_status_filter_returns_only_active(tmp_path: Any) -> Non
 async def test_list_runs_filter_in_sql_not_on_limited_page(tmp_path: Any) -> None:
     """An active run older than `limit` newer terminal rows must still be
     returned: the status filter runs in SQL, not post-hoc on a LIMITed page."""
-    from finrobot.run_store import RunStore
+    from alpha_desk.run_store import RunStore
 
     store = RunStore(tmp_path / "runs.db")
     rec_running = await store.create_run("research", "NVDA")
@@ -796,7 +796,7 @@ async def test_list_runs_unknown_status_is_400() -> None:
 
 def test_next_poll_interval_floors_when_events_arrive() -> None:
     """Any event in a round snaps the interval back to the responsive floor."""
-    from finrobot.routes import runs as runs_mod
+    from alpha_desk.routes import runs as runs_mod
 
     # Even from a backed-off interval, fresh events reset to the minimum.
     assert (
@@ -807,7 +807,7 @@ def test_next_poll_interval_floors_when_events_arrive() -> None:
 
 def test_next_poll_interval_backs_off_exponentially_to_ceiling() -> None:
     """Empty rounds grow the interval geometrically, capped at the ceiling."""
-    from finrobot.routes import runs as runs_mod
+    from alpha_desk.routes import runs as runs_mod
 
     interval = runs_mod._SSE_POLL_MIN_INTERVAL
     seen = [interval]
@@ -856,8 +856,8 @@ async def test_cancel_running_run_persists_cancelled_state(tmp_path: Any, monkey
     lands on status='cancelled' with a run.cancelled terminal event."""
     import asyncio as _asyncio
 
-    from finrobot.routes import runs as runs_mod
-    from finrobot.run_store import RunStore
+    from alpha_desk.routes import runs as runs_mod
+    from alpha_desk.run_store import RunStore
 
     monkeypatch.setattr(
         runs_mod,
@@ -910,8 +910,8 @@ async def test_cancelled_event_appended_before_status_flip(tmp_path: Any) -> Non
     run.cancelled is committed BEFORE the status flips to 'cancelled'."""
     import asyncio as _asyncio
 
-    from finrobot.routes import runs as runs_mod
-    from finrobot.run_store import RunStore
+    from alpha_desk.routes import runs as runs_mod
+    from alpha_desk.run_store import RunStore
 
     inner = RunStore(tmp_path / "runs.db")
     record = await inner.create_run("research", "AAPL")
@@ -953,8 +953,8 @@ async def test_shutdown_cancel_does_not_mark_cancelled(tmp_path: Any) -> None:
     startup's reconciler to mark failed('interrupted by server restart')."""
     import asyncio as _asyncio
 
-    from finrobot.routes import runs as runs_mod
-    from finrobot.run_store import RunStore
+    from alpha_desk.routes import runs as runs_mod
+    from alpha_desk.run_store import RunStore
 
     store = RunStore(tmp_path / "runs.db")
     record = await store.create_run("research", "AAPL")
@@ -993,7 +993,7 @@ async def test_shutdown_cancel_does_not_mark_cancelled(tmp_path: Any) -> None:
 async def test_cancel_terminal_run_is_idempotent_noop(tmp_path: Any) -> None:
     """Cancelling an already-finished run reports its real status and appends
     nothing — history is not rewritten."""
-    from finrobot.run_store import RunStore
+    from alpha_desk.run_store import RunStore
 
     store = RunStore(tmp_path / "runs.db")
     run_id = await _seed_completed_run(store, "AAPL")
@@ -1020,7 +1020,7 @@ async def test_cancel_unknown_run_404() -> None:
 async def test_cancel_orphaned_record_finalises_directly(tmp_path: Any) -> None:
     """A non-terminal row with no live task (crash orphan) is finalised to
     'cancelled' by the endpoint itself instead of staying wedged."""
-    from finrobot.run_store import RunStore
+    from alpha_desk.run_store import RunStore
 
     store = RunStore(tmp_path / "runs.db")
     record = await store.create_run("research", "AAPL")
@@ -1044,8 +1044,8 @@ async def test_sse_stream_closes_on_cancelled_run(tmp_path: Any) -> None:
     """`cancelled` is terminal for the SSE poll loop: the single-run stream
     emits the run.cancelled frame and then closes instead of polling forever
     (the wedge that {completed,failed} literals would reintroduce)."""
-    from finrobot.events import RunCancelled, RunStarted
-    from finrobot.run_store import RunStore
+    from alpha_desk.events import RunCancelled, RunStarted
+    from alpha_desk.run_store import RunStore
 
     store = RunStore(tmp_path / "runs.db")
     record = await store.create_run("research", "AAPL")
@@ -1079,8 +1079,8 @@ async def test_sse_stream_closes_on_cancelled_run(tmp_path: Any) -> None:
 @pytest.mark.asyncio
 async def test_list_runs_accepts_cancelled_status_filter(tmp_path: Any) -> None:
     """?status=cancelled is a valid filter (T8: backend enum chain extended)."""
-    from finrobot.events import RunCancelled
-    from finrobot.run_store import RunStore
+    from alpha_desk.events import RunCancelled
+    from alpha_desk.run_store import RunStore
 
     store = RunStore(tmp_path / "runs.db")
     record = await store.create_run("research", "AAPL")

@@ -10,7 +10,7 @@ synchronous and has no FX rate, so it must NOT fabricate a mixed-currency P/E.
 
 from __future__ import annotations
 
-from finrobot.engine.data.providers.fmp_provider import _derive_pe
+from alpha_desk.engine.data.providers.fmp_provider import _derive_pe
 
 
 class TestDerivePe:

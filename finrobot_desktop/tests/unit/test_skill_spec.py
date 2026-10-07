@@ -1,4 +1,4 @@
-from finrobot.engine.skills.spec import Skill
+from alpha_desk.engine.skills.spec import Skill
 
 
 class TestSkillModel:

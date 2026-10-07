@@ -1,8 +1,8 @@
 """Tests for valuation synthesis with confidence-weighted averaging."""
 
 import pytest
-from finrobot.engine.models.financial import ValuationMethod
-from finrobot.engine.compute.operators.valuation_synthesis import (
+from alpha_desk.engine.models.financial import ValuationMethod
+from alpha_desk.engine.compute.operators.valuation_synthesis import (
     _VERDICT_BANDS,
     resolve_canonical_thesis,
     synthesize_valuations,
@@ -1265,7 +1265,7 @@ class TestStreetRangeDisclosure:
     sits entirely outside the sell-side range — never a gate."""
 
     def test_in_band_shows_pure_fact_line_no_judgment(self):
-        from finrobot.engine.compute.operators.valuation_synthesis import (
+        from alpha_desk.engine.compute.operators.valuation_synthesis import (
             STREET_CONTEXT_MARKER,
             street_range_disclosure,
         )
@@ -1281,7 +1281,7 @@ class TestStreetRangeDisclosure:
         assert "does not alter the verdict or confidence" not in note
 
     def test_below_entire_range_appends_out_of_consensus_clause(self):
-        from finrobot.engine.compute.operators.valuation_synthesis import (
+        from alpha_desk.engine.compute.operators.valuation_synthesis import (
             STREET_CONTEXT_MARKER,
             street_range_disclosure,
         )
@@ -1298,7 +1298,7 @@ class TestStreetRangeDisclosure:
         assert note.startswith(STREET_CONTEXT_MARKER)
 
     def test_above_entire_range_appends_out_of_consensus_clause(self):
-        from finrobot.engine.compute.operators.valuation_synthesis import (
+        from alpha_desk.engine.compute.operators.valuation_synthesis import (
             street_range_disclosure,
         )
 
@@ -1309,7 +1309,7 @@ class TestStreetRangeDisclosure:
         assert "consensus $" not in note  # consensus unavailable → omitted, not fabricated
 
     def test_missing_or_nonpositive_inputs_return_none(self):
-        from finrobot.engine.compute.operators.valuation_synthesis import (
+        from alpha_desk.engine.compute.operators.valuation_synthesis import (
             street_range_disclosure,
         )
 
@@ -1320,7 +1320,7 @@ class TestStreetRangeDisclosure:
         assert street_range_disclosure(-5.0, 360.0, 480.0) is None
 
     def test_degenerate_band_returns_none(self):
-        from finrobot.engine.compute.operators.valuation_synthesis import (
+        from alpha_desk.engine.compute.operators.valuation_synthesis import (
             street_range_disclosure,
         )
 

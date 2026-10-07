@@ -10,8 +10,8 @@ from typing import Any
 import keyring.errors
 import pytest
 
-import finrobot.secret_store as secret_store_module
-from finrobot.secret_store import (
+import alpha_desk.secret_store as secret_store_module
+from alpha_desk.secret_store import (
     FileSecretStore,
     KeychainSecretStore,
     SecretStoreError,
@@ -90,7 +90,7 @@ async def test_parent_permission_lock_failure_is_fatal(
             raise OSError("chmod denied")
         real_chmod(target, mode)
 
-    monkeypatch.setattr("finrobot.secret_store.os.chmod", deny_chmod)
+    monkeypatch.setattr("alpha_desk.secret_store.os.chmod", deny_chmod)
 
     with pytest.raises(SecretStoreError, match="could not be permission-locked"):
         await store.set("k", "v")
@@ -130,7 +130,7 @@ def _refusing_store(exc: Exception | None = None) -> KeychainSecretStore:
     store._keyring = _RefusingKeyring(  # type: ignore[assignment]
         exc or keyring.errors.KeyringLocked("Can't get password: user denied access")
     )
-    store._service_name = "FinRobotTest"
+    store._service_name = "AlphaDeskTest"
     store._degraded_keys = set()
     return store
 
@@ -138,7 +138,7 @@ def _refusing_store(exc: Exception | None = None) -> KeychainSecretStore:
 @pytest.mark.asyncio
 async def test_keychain_get_denied_degrades_to_none(caplog: Any) -> None:
     store = _refusing_store()
-    with caplog.at_level(logging.WARNING, logger="finrobot.secret_store"):
+    with caplog.at_level(logging.WARNING, logger="alpha_desk.secret_store"):
         assert await store.get("fmp_api_key") is None
         assert await store.get("fmp_api_key") is None  # second read: no new warning
         assert await store.get("finnhub_api_key") is None  # new key: its own warning
@@ -195,7 +195,7 @@ def _forbid_keychain(monkeypatch: Any) -> None:
 
 
 def test_create_store_dev_mode_uses_file(monkeypatch: Any) -> None:
-    monkeypatch.delenv("FINROBOT_DEV_MODE", raising=False)
+    monkeypatch.delenv("ALPHA_DESK_DEV_MODE", raising=False)
     _forbid_keychain(monkeypatch)
     store, mode = create_secret_store(dev_mode=True)
     assert isinstance(store, FileSecretStore)
@@ -203,7 +203,7 @@ def test_create_store_dev_mode_uses_file(monkeypatch: Any) -> None:
 
 
 def test_create_store_dev_mode_via_env(monkeypatch: Any) -> None:
-    monkeypatch.setenv("FINROBOT_DEV_MODE", "1")
+    monkeypatch.setenv("ALPHA_DESK_DEV_MODE", "1")
     _forbid_keychain(monkeypatch)
     _, mode = create_secret_store()
     assert mode == "plaintext"
@@ -211,8 +211,8 @@ def test_create_store_dev_mode_via_env(monkeypatch: Any) -> None:
 
 def test_create_store_macos_defaults_to_file(monkeypatch: Any) -> None:
     monkeypatch.setattr(sys, "platform", "darwin")
-    monkeypatch.delenv("FINROBOT_DEV_MODE", raising=False)
-    monkeypatch.delenv("FINROBOT_USE_KEYCHAIN", raising=False)
+    monkeypatch.delenv("ALPHA_DESK_DEV_MODE", raising=False)
+    monkeypatch.delenv("ALPHA_DESK_USE_KEYCHAIN", raising=False)
     _forbid_keychain(monkeypatch)  # macOS must skip the keychain entirely
     store, mode = create_secret_store()
     assert isinstance(store, FileSecretStore)
@@ -221,8 +221,8 @@ def test_create_store_macos_defaults_to_file(monkeypatch: Any) -> None:
 
 def test_create_store_macos_opt_in_keychain(monkeypatch: Any) -> None:
     monkeypatch.setattr(sys, "platform", "darwin")
-    monkeypatch.delenv("FINROBOT_DEV_MODE", raising=False)
-    monkeypatch.setenv("FINROBOT_USE_KEYCHAIN", "1")
+    monkeypatch.delenv("ALPHA_DESK_DEV_MODE", raising=False)
+    monkeypatch.setenv("ALPHA_DESK_USE_KEYCHAIN", "1")
     sentinel = object()
     monkeypatch.setattr(secret_store_module, "KeychainSecretStore", lambda *_a, **_k: sentinel)
     store, mode = create_secret_store()
@@ -232,7 +232,7 @@ def test_create_store_macos_opt_in_keychain(monkeypatch: Any) -> None:
 
 def test_create_store_windows_uses_keychain(monkeypatch: Any) -> None:
     monkeypatch.setattr(sys, "platform", "win32")
-    monkeypatch.delenv("FINROBOT_DEV_MODE", raising=False)
+    monkeypatch.delenv("ALPHA_DESK_DEV_MODE", raising=False)
     sentinel = object()
     monkeypatch.setattr(secret_store_module, "KeychainSecretStore", lambda *_a, **_k: sentinel)
     store, mode = create_secret_store()
@@ -242,7 +242,7 @@ def test_create_store_windows_uses_keychain(monkeypatch: Any) -> None:
 
 def test_create_store_keychain_unavailable_falls_back_to_file(monkeypatch: Any) -> None:
     monkeypatch.setattr(sys, "platform", "win32")
-    monkeypatch.delenv("FINROBOT_DEV_MODE", raising=False)
+    monkeypatch.delenv("ALPHA_DESK_DEV_MODE", raising=False)
 
     def _boom(*_a: Any, **_k: Any) -> None:
         raise RuntimeError("no functional backend")

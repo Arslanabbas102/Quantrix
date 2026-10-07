@@ -3,9 +3,9 @@ import logging
 
 import pytest
 
-from finrobot.config import console_color_enabled
-from finrobot.obs.filters import TraceFilter
-from finrobot.obs.formatters import HumanFormatter, JsonFormatter
+from alpha_desk.config import console_color_enabled
+from alpha_desk.obs.filters import TraceFilter
+from alpha_desk.obs.formatters import HumanFormatter, JsonFormatter
 
 
 def _record(msg: str = "hello", exc: bool = False) -> logging.LogRecord:
@@ -18,7 +18,7 @@ def _record(msg: str = "hello", exc: bool = False) -> logging.LogRecord:
 
             exc_info = sys.exc_info()
     rec = logging.LogRecord(
-        name="finrobot.pipelines.dcf",
+        name="alpha_desk.pipelines.dcf",
         level=logging.INFO,
         pathname=__file__,
         lineno=1,
@@ -34,7 +34,7 @@ def test_json_formatter_emits_valid_line() -> None:
     out = JsonFormatter().format(_record())
     parsed = json.loads(out)
     assert parsed["level"] == "INFO"
-    assert parsed["logger"] == "finrobot.pipelines.dcf"
+    assert parsed["logger"] == "alpha_desk.pipelines.dcf"
     assert parsed["msg"] == "hello"
     assert parsed["run_id"] == "-"
     assert "ts" in parsed
@@ -76,7 +76,7 @@ def test_console_color_enabled_honors_no_color(monkeypatch: pytest.MonkeyPatch) 
 
 def test_formatters_survive_mismatched_args() -> None:
     rec = logging.LogRecord(
-        name="finrobot.pipelines.dcf",
+        name="alpha_desk.pipelines.dcf",
         level=logging.INFO,
         pathname=__file__,
         lineno=1,

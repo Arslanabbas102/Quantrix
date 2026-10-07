@@ -20,8 +20,8 @@ import pytest
 from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
 
-from finrobot.ratelimit import RunRateLimiter
-from finrobot.run_store import RunRecord
+from alpha_desk.ratelimit import RunRateLimiter
+from alpha_desk.run_store import RunRecord
 
 
 # ── Unit: the token bucket itself ────────────────────────────────────────────
@@ -98,7 +98,7 @@ def test_chat_bucket_independent_of_runs() -> None:
 @pytest.fixture
 async def runs_client(monkeypatch: pytest.MonkeyPatch):
     """App with the runs router and a stubbed spawn_run (no real pipeline)."""
-    from finrobot.routes import runs as runs_module
+    from alpha_desk.routes import runs as runs_module
 
     app = FastAPI()
     app.include_router(runs_module.router)
@@ -150,10 +150,10 @@ async def test_runs_under_limit_all_ok(runs_client: AsyncClient) -> None:
 @pytest.fixture
 async def coverage_client(monkeypatch: pytest.MonkeyPatch, tmp_path):
     """App with the coverage router + a real group, stubbed spawn_run."""
-    from finrobot.coverage.sqlite_store import CoverageStore
-    from finrobot.routes import runs as runs_module
-    from finrobot.routes.coverage import _OVERVIEW_CACHE
-    from finrobot.routes.coverage import router as coverage_router
+    from alpha_desk.coverage.sqlite_store import CoverageStore
+    from alpha_desk.routes import runs as runs_module
+    from alpha_desk.routes.coverage import _OVERVIEW_CACHE
+    from alpha_desk.routes.coverage import router as coverage_router
 
     _OVERVIEW_CACHE.clear()
     app = FastAPI()
@@ -253,8 +253,8 @@ async def test_data_get_over_limit_returns_429() -> None:
     """Every provider-backed GET in routes/data.py + the sentiment GET runs
     through enforce_live_data_limit — a drained bucket means 429, and an app
     without a limiter configured (bare test apps) is never throttled."""
-    from finrobot.routes.data import router as data_router
-    from finrobot.routes.sentiment import router as sentiment_router
+    from alpha_desk.routes.data import router as data_router
+    from alpha_desk.routes.sentiment import router as sentiment_router
 
     clock = _FakeClock()
     app = FastAPI()

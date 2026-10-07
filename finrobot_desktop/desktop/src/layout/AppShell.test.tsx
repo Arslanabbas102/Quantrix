@@ -11,7 +11,7 @@ vi.mock('../lib/tauri', () => ({
   isWindows: vi.fn().mockReturnValue(false),
   startWindowDrag: vi.fn(),
   openExternal: vi.fn().mockResolvedValue(undefined),
-  DEFAULT_WORKSPACE_PATH: '~/finrobot',
+  DEFAULT_WORKSPACE_PATH: '~/alpha_desk',
 }))
 
 // Controllable health so the boot gate can be exercised; defaults to a live

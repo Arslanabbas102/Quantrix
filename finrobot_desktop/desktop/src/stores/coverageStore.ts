@@ -27,7 +27,7 @@ export const useCoverageStore = create<CoverageUiState>()(
       setDensity: (density) => set({ density }),
     }),
     {
-      name: 'finrobot-coverage-ui',
+      name: 'alpha_desk-coverage-ui',
       storage: createJSONStorage(() => localStorage),
       // Persist only durable view preferences.
       partialize: (s) => ({

@@ -12,7 +12,7 @@
 // Usage (backend on :8321 + vite on :5173 must be running, e.g. ./dev.sh):
 //   TICKER=PG node scripts/probe_workspace_waterfall.cjs
 //
-// Pick a ticker with artifacts in ~/.finrobot/artifacts.db but a COLD live
+// Pick a ticker with artifacts in ~/.alpha_desk/artifacts.db but a COLD live
 // cache (no recent rows in data_cache.db) — cold provider fetches are what
 // exposes queueing. Interpret: the timeline request (local SQLite read, ~2ms
 // server-side) must complete in <300ms wall-clock; if it lands seconds after

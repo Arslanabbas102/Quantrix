@@ -1,8 +1,8 @@
 from datetime import datetime, timezone
 
 import pytest
-from finrobot.engine.models.financial import CompanyFinancials, PeerComps
-from finrobot.engine.compute.operators.multiples import (
+from alpha_desk.engine.models.financial import CompanyFinancials, PeerComps
+from alpha_desk.engine.compute.operators.multiples import (
     calculate_core_pe,
     calculate_ev,
     calculate_multiples,
@@ -11,7 +11,7 @@ from finrobot.engine.compute.operators.multiples import (
     current_ev_ebitda,
     fcf_yield,
 )
-from finrobot.engine.primitives.ebitda import (
+from alpha_desk.engine.primitives.ebitda import (
     calculate_ebitda_operating,
     calculate_ebitda_reported,
 )
@@ -148,7 +148,7 @@ def test_current_ev_ebitda_includes_preferred_and_nci():
 
 def _financial_data(*, market_cap, ebitda, preferred=None, noncontrolling_interest=None):
     """Minimal canonical FinancialData for current_ev_ebitda (TTM) tests."""
-    from finrobot.engine.models.financial import (
+    from alpha_desk.engine.models.financial import (
         BalanceSheet,
         FinancialData,
         IncomeStatement,
@@ -439,7 +439,7 @@ def test_trailing_median_excludes_nm_high_pe_but_keeps_peer():
 
     Setup: market_cap / net_income → P/E. A=20, B=30, C=156 (NM, > 75 cap).
     """
-    from finrobot.engine.compute.operators.multiples import PEER_PE_NM_CAP
+    from alpha_desk.engine.compute.operators.multiples import PEER_PE_NM_CAP
 
     assert PEER_PE_NM_CAP == 75.0
     a = calculate_multiples(_make_company("A", 100, 30, 25, 500))  # pe = 20

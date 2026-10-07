@@ -479,7 +479,7 @@ export function CompactArtifactViewer({
             {
               key: 'compute_version',
               label: T(locale, '计算版本', 'Compute Version'),
-              value: cv?.version ? `finrobot ${cv.version}` : '—',
+              value: cv?.version ? `alpha_desk ${cv.version}` : '—',
             },
             { key: 'artifact_id', label: 'Artifact ID', value: artifact.id },
           ]}

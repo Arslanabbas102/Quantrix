@@ -25,7 +25,7 @@ from pathlib import Path
 
 import pytest
 
-from finrobot.engine.primitives.historical_valuation import (
+from alpha_desk.engine.primitives.historical_valuation import (
     PricePoint,
     YearlyFinancials,
     compute_historical_band,
@@ -33,7 +33,7 @@ from finrobot.engine.primitives.historical_valuation import (
 
 SRC = (
     Path(__file__).resolve().parents[2]
-    / "finrobot"
+    / "alpha_desk"
     / "engine"
     / "primitives"
     / "historical_valuation.py"
@@ -49,11 +49,11 @@ class TestLeafIsolation:
     def test_no_forbidden_imports(self) -> None:
         src = SRC.read_text()
         forbidden = (
-            "from finrobot.engine.pipelines",
-            "from finrobot.engine.agents",
-            "from finrobot.engine.orchestrator",
-            "from finrobot.engine.data",
-            "from finrobot.artifact",
+            "from alpha_desk.engine.pipelines",
+            "from alpha_desk.engine.agents",
+            "from alpha_desk.engine.orchestrator",
+            "from alpha_desk.engine.data",
+            "from alpha_desk.artifact",
             "import pydantic_ai",
             "from pydantic_ai",
             "import openai",

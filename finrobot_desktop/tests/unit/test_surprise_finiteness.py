@@ -12,8 +12,8 @@ from __future__ import annotations
 
 import pytest
 
-from finrobot.engine.compute.operators.earnings import _surprise_pct
-from finrobot.engine.compute.operators.forward_estimates import _coerce_positive_float
+from alpha_desk.engine.compute.operators.earnings import _surprise_pct
+from alpha_desk.engine.compute.operators.forward_estimates import _coerce_positive_float
 
 
 @pytest.mark.parametrize("bad", [float("inf"), float("nan"), float("-inf")])

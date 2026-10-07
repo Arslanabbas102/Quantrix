@@ -27,14 +27,14 @@ from datetime import date, datetime, timezone
 
 import pytest
 
-from finrobot.engine.compute.coordinators.extractor import extract_financial_data
-from finrobot.engine.data.normalize.contracts import (
+from alpha_desk.engine.compute.coordinators.extractor import extract_financial_data
+from alpha_desk.engine.data.normalize.contracts import (
     NormalizedFinancials,
     NormalizedPrice,
     PriceBar,
     Provenance,
 )
-from finrobot.engine.data.normalize.currency import normalize_canonical_financials_currency
+from alpha_desk.engine.data.normalize.currency import normalize_canonical_financials_currency
 
 TWD_USD = 0.03176
 _NOW = datetime(2026, 6, 9, tzinfo=timezone.utc)

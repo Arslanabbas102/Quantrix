@@ -6,7 +6,7 @@ structurally exempt and keep their raw low beta (dcf-recall red line).
 
 from __future__ import annotations
 
-from finrobot.engine.compute.operators.dcf_seed import (
+from alpha_desk.engine.compute.operators.dcf_seed import (
     _BETA_IMPLAUSIBLY_LOW_REASON,
     _BETA_RELATIVE_FLOOR,
     _BETA_RELATIVE_INDUSTRY_MIN,

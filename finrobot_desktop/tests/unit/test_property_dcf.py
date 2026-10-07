@@ -34,14 +34,14 @@ import pytest
 from hypothesis import given, settings
 from hypothesis import strategies as st
 
-from finrobot.engine.compute.operators.dcf import (
+from alpha_desk.engine.compute.operators.dcf import (
     _price_for,
     calculate_dcf,
     solve_for_implied_growth,
 )
-from finrobot.engine.compute.operators.wacc import calculate_wacc
-from finrobot.engine.models.financial import DCFInputs, DCFResult
-from finrobot.engine.models.valuation_thresholds import MIN_GORDON_SPREAD
+from alpha_desk.engine.compute.operators.wacc import calculate_wacc
+from alpha_desk.engine.models.financial import DCFInputs, DCFResult
+from alpha_desk.engine.models.valuation_thresholds import MIN_GORDON_SPREAD
 
 # Wide-but-finite settings: pure arithmetic per example, so 100 examples per
 # property keeps the whole module well under the 30s suite-increment budget.

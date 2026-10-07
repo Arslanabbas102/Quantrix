@@ -10,7 +10,7 @@ from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
 from pydantic import BaseModel, ConfigDict
 
-from finrobot.artifact.models import (
+from alpha_desk.artifact.models import (
     Artifact,
     ArtifactAssumptions,
     ArtifactComputeVersion,
@@ -18,17 +18,17 @@ from finrobot.artifact.models import (
     ArtifactMeta,
     ArtifactOutputs,
 )
-from finrobot.artifact.store import ArtifactStore
-from finrobot.engine.data.interface import DataResult
-from finrobot.engine.data.normalize.contracts import (
+from alpha_desk.artifact.store import ArtifactStore
+from alpha_desk.engine.data.interface import DataResult
+from alpha_desk.engine.data.normalize.contracts import (
     NormalizedFinancials,
     NormalizedForwardEstimates,
     NormalizedPrice,
     PriceBar,
     Provenance,
 )
-from finrobot.engine.data.types import DataType
-from finrobot.engine.models.financial import (
+from alpha_desk.engine.data.types import DataType
+from alpha_desk.engine.models.financial import (
     CompanyFinancials,
     DCFInputs,
     DCFResult,
@@ -37,7 +37,7 @@ from finrobot.engine.models.financial import (
     LBOYear,
     PeerComps,
 )
-from finrobot.routes.valuation import router
+from alpha_desk.routes.valuation import router
 
 UTC = timezone.utc
 NOW = datetime(2026, 5, 21, tzinfo=UTC)
@@ -102,7 +102,7 @@ class _StubSettings(BaseModel):
 
 
 class _StubDeps(BaseModel):
-    """Mimics FinRobotDeps just enough that routes/valuation can read
+    """Mimics AlphaDeskDeps just enough that routes/valuation can read
     .data_layer and .settings.fmp_api_key."""
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
@@ -355,7 +355,7 @@ async def test_aggregate_endpoint_converts_reporting_ccy_forward_eps_to_usd(
 
     # Patch the FX source: routes/valuation lazy-imports fetch_fx_rate_to_usd
     # locally (sidecar cold-start fix), so the canonical source is the patch point.
-    monkeypatch.setattr("finrobot.engine.data.providers.fx.fetch_fx_rate_to_usd", _fake_fx)
+    monkeypatch.setattr("alpha_desk.engine.data.providers.fx.fetch_fx_rate_to_usd", _fake_fx)
 
     forward_rows = [{"date": "2030-09-30", "epsAvg": 98.89}]  # TWD per share
     app = await _app_with_artifacts(
@@ -387,7 +387,7 @@ async def test_aggregate_endpoint_converts_foreign_quote_price_to_usd(
         assert from_ccy.upper() == "TWD"
         return twd_usd
 
-    monkeypatch.setattr("finrobot.engine.data.providers.fx.fetch_fx_rate_to_usd", _fake_fx)
+    monkeypatch.setattr("alpha_desk.engine.data.providers.fx.fetch_fx_rate_to_usd", _fake_fx)
 
     app = await _app_with_artifacts(
         tmp_path, _dcf_artifact(), reporting_currency="TWD", price_quote_currency="TWD"
@@ -411,7 +411,7 @@ async def test_aggregate_endpoint_usd_price_no_fx(
     async def _boom_fx(*_a: object, **_k: object) -> float:
         raise AssertionError("USD price must not consult the FX provider")
 
-    monkeypatch.setattr("finrobot.engine.data.providers.fx.fetch_fx_rate_to_usd", _boom_fx)
+    monkeypatch.setattr("alpha_desk.engine.data.providers.fx.fetch_fx_rate_to_usd", _boom_fx)
 
     app = await _app_with_artifacts(tmp_path, _dcf_artifact())  # quote defaults to USD
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://t") as client:

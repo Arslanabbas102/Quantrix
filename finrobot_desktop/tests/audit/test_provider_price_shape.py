@@ -27,10 +27,10 @@ import httpx
 import pandas as pd
 import pytest
 
-from finrobot.engine.data.interface import DataResult
-from finrobot.engine.data.providers.finnhub_provider import FinnhubProvider
-from finrobot.engine.data.providers.fmp_provider import FMPProvider
-from finrobot.engine.data.providers.yfinance_provider import YFinanceProvider
+from alpha_desk.engine.data.interface import DataResult
+from alpha_desk.engine.data.providers.finnhub_provider import FinnhubProvider
+from alpha_desk.engine.data.providers.fmp_provider import FMPProvider
+from alpha_desk.engine.data.providers.yfinance_provider import YFinanceProvider
 
 # The canonical PRICE shape every provider must honour.
 _TOP_LEVEL_KEYS = {"current_price", "price_history", "exchange"}
@@ -70,7 +70,7 @@ async def _yfinance_price() -> DataResult:
     mock_ticker.info = info
     mock_ticker.history.return_value = hist
     with patch(
-        "finrobot.engine.data.providers.yfinance_provider.yf.Ticker",
+        "alpha_desk.engine.data.providers.yfinance_provider.yf.Ticker",
         return_value=mock_ticker,
     ):
         return await YFinanceProvider().fetch("AAPL", "price")

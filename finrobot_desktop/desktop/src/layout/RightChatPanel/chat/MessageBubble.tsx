@@ -34,8 +34,8 @@ export function MessageBubble({ message }: { message: UIMessage }): React.ReactE
             ? `USER · ${timeStr}`
             : 'USER'
           : timeStr
-            ? `● FINROBOT · ${timeStr}`
-            : '● FINROBOT'}
+            ? `● ALPHA_DESK · ${timeStr}`
+            : '● ALPHA_DESK'}
       </div>
       {isUser ? <UserBubble message={message} /> : <AssistantContent message={message} />}
     </div>

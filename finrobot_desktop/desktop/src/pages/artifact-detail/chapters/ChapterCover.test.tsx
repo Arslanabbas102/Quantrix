@@ -141,7 +141,7 @@ describe('ChapterCover — withheld-target self-explanation', () => {
     expect(meta).toHaveTextContent('EQUITY RESEARCH')
     expect(meta).not.toHaveTextContent('EQUITY_RESEARCH')
     // The version sequence (v3 of 3) is analyst-meaningful and stays; the
-    // internal finrobot package version (e.g. "0.1.0") is not and must not
+    // internal alpha_desk package version (e.g. "0.1.0") is not and must not
     // render here (it still appears in the Disclaimer's reproducibility footer).
     expect(meta).toHaveTextContent('v3 of 3')
     expect(meta).not.toHaveTextContent('0.1.0')

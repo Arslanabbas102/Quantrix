@@ -1,8 +1,8 @@
-# FinRobot V0 — AutoGen Multi-Agent Framework
+# Alpha Desk V0 — AutoGen Multi-Agent Framework
 
-> **Educational.** The original FinRobot: a library of role-based financial agents, data-source wrappers, and analysis tools built on [Microsoft AutoGen](https://github.com/microsoft/autogen).
+> **Educational.** The original Alpha Desk: a library of role-based financial agents, data-source wrappers, and analysis tools built on [Microsoft AutoGen](https://github.com/microsoft/autogen).
 
-This is the codebase behind the [FinRobot whitepaper](https://arxiv.org/abs/2405.14767), kept in the repository for **learning and reference** — teaching, coursework, reproducing the paper, and understanding how financial agents are wired together. The agent definitions, the tool-registration pattern, and the data plumbing are all small enough to read end to end, which is exactly why it is worth keeping.
+This is the codebase behind the [Alpha Desk whitepaper](https://arxiv.org/abs/2405.14767), kept in the repository for **learning and reference** — teaching, coursework, reproducing the paper, and understanding how financial agents are wired together. The agent definitions, the tool-registration pattern, and the data plumbing are all small enough to read end to end, which is exactly why it is worth keeping.
 
 **It is not the production system.** There is no deterministic compute layer here, no provenance tracking, and no guarantee that a number in the output was computed rather than generated — the agents call tools and the LLM writes the result. For research you intend to act on, use [`finrobot_desktop/`](../finrobot_desktop/) (V2), where financial figures come from pure-Python operators and every one is traceable. For a self-hosted report-generating web service, use [`finrobot_equity/`](../finrobot_equity/) (V1).
 
@@ -12,12 +12,12 @@ This is the codebase behind the [FinRobot whitepaper](https://arxiv.org/abs/2405
 
 | Layer | Module | What it does |
 |:---|:---|:---|
-| **Agents** | `finrobot/agents/agent_library.py` | 10 predefined roles (system message + toolkit), keyed by name |
-| | `finrobot/agents/workflow.py` | Ready-made conversation topologies — single-agent, RAG, multi-agent, leader-led |
-| | `finrobot/agents/prompts.py` | Shared prompt fragments, including the financial chain-of-thought scaffolds |
-| **Tools** | `finrobot/toolkits.py` | Registers plain Python functions (or whole classes) as AutoGen tools |
-| **Data** | `finrobot/data_source/` | Finnhub, FMP, yfinance, SEC EDGAR, Reddit, FinNLP |
-| **Capabilities** | `finrobot/functional/` | Statement analysis, charting, quantitative backtesting, PDF reports, RAG |
+| **Agents** | `alpha_desk/agents/agent_library.py` | 10 predefined roles (system message + toolkit), keyed by name |
+| | `alpha_desk/agents/workflow.py` | Ready-made conversation topologies — single-agent, RAG, multi-agent, leader-led |
+| | `alpha_desk/agents/prompts.py` | Shared prompt fragments, including the financial chain-of-thought scaffolds |
+| **Tools** | `alpha_desk/toolkits.py` | Registers plain Python functions (or whole classes) as AutoGen tools |
+| **Data** | `alpha_desk/data_source/` | Finnhub, FMP, yfinance, SEC EDGAR, Reddit, FinNLP |
+| **Capabilities** | `alpha_desk/functional/` | Statement analysis, charting, quantitative backtesting, PDF reports, RAG |
 
 ### Agent roles
 
@@ -33,7 +33,7 @@ Artificial_Intelligence_Engineer        Market_Analyst   Expert_Investor
 
 ### Workflows
 
-`finrobot/agents/workflow.py` wraps AutoGen's `ConversableAgent` plumbing so you don't hand-roll group chats:
+`alpha_desk/agents/workflow.py` wraps AutoGen's `ConversableAgent` plumbing so you don't hand-roll group chats:
 
 | Class | Shape |
 |:---|:---|
@@ -48,8 +48,8 @@ Artificial_Intelligence_Engineer        Market_Analyst   Expert_Investor
 `register_toolkits` is the seam between plain Python and the agent layer. It takes a list of functions — or a class, via `register_tookits_from_cls` — and binds them to a caller/executor pair, so the LLM proposes the call and a separate proxy actually executes it:
 
 ```python
-from finrobot.toolkits import register_toolkits
-from finrobot.data_source import FMPUtils
+from alpha_desk.toolkits import register_toolkits
+from alpha_desk.data_source import FMPUtils
 
 register_toolkits([FMPUtils.get_sec_report], assistant, user_proxy)
 ```
@@ -72,26 +72,26 @@ register_toolkits([FMPUtils.get_sec_report], assistant, user_proxy)
 
 ## Install
 
-The package is published and imported as `finrobot`, but its source now lives under `finrobot_autogen/`. `setup.py` at the **repository root** maps the two, so install from the root — not from this directory:
+The package is published and imported as `alpha_desk`, but its source now lives under `finrobot_autogen/`. `setup.py` at the **repository root** maps the two, so install from the root — not from this directory:
 
 ```bash
-conda create --name finrobot python=3.10   # 3.10 or 3.11
-conda activate finrobot
+conda create --name alpha_desk python=3.10   # 3.10 or 3.11
+conda activate alpha_desk
 
-cd /path/to/FinRobot      # repo root
+cd /path/to/Alpha Desk      # repo root
 pip install -e .
 ```
 
 Or from PyPI:
 
 ```bash
-pip install -U finrobot
+pip install -U alpha_desk
 ```
 
 Either way the import name is unchanged:
 
 ```python
-from finrobot.agents.workflow import SingleAssistant
+from alpha_desk.agents.workflow import SingleAssistant
 ```
 
 ## Configure
@@ -123,7 +123,7 @@ cp config_api_keys_sample config_api_keys
 }
 ```
 
-Load them into the environment with `finrobot.utils.register_keys_from_json("config_api_keys")`. Only fill in the keys for the data sources you actually use — the others can stay as placeholders.
+Load them into the environment with `alpha_desk.utils.register_keys_from_json("config_api_keys")`. Only fill in the keys for the data sources you actually use — the others can stay as placeholders.
 
 Both `OAI_CONFIG_LIST` and `config_api_keys` are gitignored. The `*_sample` files are the ones under version control; never commit the filled-in copies.
 

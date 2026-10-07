@@ -12,14 +12,14 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 
-from finrobot.engine.compute.operators.audit.narrative_divergence import (
+from alpha_desk.engine.compute.operators.audit.narrative_divergence import (
     BUY_DIVERGENCE_1Y_RETURN_PCT,
     SELL_DIVERGENCE_1Y_RETURN_PCT,
     audit_momentum_narrative_hedge,
     compute_momentum_context,
     is_momentum_divergent,
 )
-from finrobot.engine.models.financial import FinancialData, IncomeStatement, MarketData
+from alpha_desk.engine.models.financial import FinancialData, IncomeStatement, MarketData
 
 
 def _financial_data(

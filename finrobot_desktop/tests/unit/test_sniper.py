@@ -1,4 +1,4 @@
-"""Unit tests for finrobot.engine.compute.operators.sniper.calculate_sniper_points.
+"""Unit tests for alpha_desk.engine.compute.operators.sniper.calculate_sniper_points.
 
 External sources for expected values:
 - Safety margin thresholds (15%/10%/5%) are hardcoded in sniper.py — we test
@@ -20,7 +20,7 @@ from __future__ import annotations
 
 import pytest
 
-from finrobot.engine.compute.operators.sniper import (
+from alpha_desk.engine.compute.operators.sniper import (
     SniperPoints,
     SniperRequest,
     calculate_sniper_levels_only,
@@ -690,7 +690,7 @@ def test_sniper_safe_wrapper_catches_degenerate_target() -> None:
     None + warning instead of letting the degenerate row reach the artifact."""
     from types import SimpleNamespace
 
-    from finrobot.engine.compute.coordinators.technical_payload import _safe_sniper
+    from alpha_desk.engine.compute.coordinators.technical_payload import _safe_sniper
 
     warnings: list[str] = []
     sniper = _safe_sniper(
@@ -736,7 +736,7 @@ def test_safe_sniper_withheld_target_returns_levels_only() -> None:
     """
     from types import SimpleNamespace
 
-    from finrobot.engine.compute.coordinators.technical_payload import _safe_sniper
+    from alpha_desk.engine.compute.coordinators.technical_payload import _safe_sniper
 
     prices = [SimpleNamespace(close=p) for p in (300.0, 305.0, 310.0, 307.0, 312.0)]
     warnings: list[str] = []
@@ -759,7 +759,7 @@ def test_safe_sniper_published_target_keeps_directional_trade() -> None:
     behaviour — a published target (even low confidence) anchors the trade."""
     from types import SimpleNamespace
 
-    from finrobot.engine.compute.coordinators.technical_payload import _safe_sniper
+    from alpha_desk.engine.compute.coordinators.technical_payload import _safe_sniper
 
     prices = [SimpleNamespace(close=p) for p in (300.0, 305.0, 310.0, 307.0, 312.0)]
     warnings: list[str] = []

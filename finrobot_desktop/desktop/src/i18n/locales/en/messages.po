@@ -46,7 +46,7 @@ msgstr "Open chat"
 
 #. js-lingui-explicit-id
 msgid "chat.input.placeholder"
-msgstr "Message FinRobot… (Enter to send, Shift+Enter for newline)"
+msgstr "Message Alpha Desk… (Enter to send, Shift+Enter for newline)"
 
 #. js-lingui-explicit-id
 msgid "chat.newSession"
@@ -850,7 +850,7 @@ msgstr "SEC EDGAR identity required"
 
 #. js-lingui-explicit-id
 msgid "chapter.ownership.empty.body"
-msgstr "SEC EDGAR requires every data request to carry an identifiable User-Agent. Once configured, FinRobot pulls insider transactions, 13F institutional holdings, and proxy compensation automatically."
+msgstr "SEC EDGAR requires every data request to carry an identifiable User-Agent. Once configured, Alpha Desk pulls insider transactions, 13F institutional holdings, and proxy compensation automatically."
 
 #. js-lingui-explicit-id
 msgid "chapter.ownership.empty.cta"
@@ -1470,7 +1470,7 @@ msgstr "Can't load settings"
 
 #. js-lingui-explicit-id
 msgid "settings.loadError.body"
-msgstr "The backend is unreachable or returned an error, so settings can't be shown or saved. Make sure the FinRobot backend is running, then retry — nothing you type here would be saved until the connection is restored."
+msgstr "The backend is unreachable or returned an error, so settings can't be shown or saved. Make sure the Alpha Desk backend is running, then retry — nothing you type here would be saved until the connection is restored."
 
 #. js-lingui-explicit-id
 msgid "settings.saving"
@@ -1702,7 +1702,7 @@ msgstr "✓ Saved"
 
 #. js-lingui-explicit-id
 msgid "shell.about.aria"
-msgstr "About FinRobot"
+msgstr "About Alpha Desk"
 
 #. js-lingui-explicit-id
 msgid "shell.about.charity"
@@ -2354,7 +2354,7 @@ msgstr "Term: {term}"
 
 #. js-lingui-explicit-id
 msgid "term.askMore"
-msgstr "Ask FinRobot to explain →"
+msgstr "Ask Alpha Desk to explain →"
 
 #. js-lingui-explicit-id
 msgid "sourced.title"
@@ -2746,7 +2746,7 @@ msgstr "Add an AI model key to begin"
 
 #. js-lingui-explicit-id
 msgid "settings.onboarding.body"
-msgstr "FinRobot uses a large language model to write the report narrative — pick a provider and paste its API key to begin. The data-source keys below (FMP, etc.) are optional and improve financial-data quality."
+msgstr "Alpha Desk uses a large language model to write the report narrative — pick a provider and paste its API key to begin. The data-source keys below (FMP, etc.) are optional and improve financial-data quality."
 
 #. js-lingui-explicit-id
 msgid "settings.key.show"
@@ -2990,7 +2990,7 @@ msgstr "Update required to continue"
 
 #. js-lingui-explicit-id
 msgid "update.gate.body"
-msgstr "This version is no longer supported. Update to {version} to continue using FinRobot."
+msgstr "This version is no longer supported. Update to {version} to continue using Alpha Desk."
 
 #. js-lingui-explicit-id
 msgid "update.gate.button"
@@ -3006,7 +3006,7 @@ msgstr "Updates"
 
 #. js-lingui-explicit-id
 msgid "settings.updates.intro"
-msgstr "Check for and install new versions of FinRobot."
+msgstr "Check for and install new versions of Alpha Desk."
 
 #. js-lingui-explicit-id
 msgid "settings.updates.currentVersion"

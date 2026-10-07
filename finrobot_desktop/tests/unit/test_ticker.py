@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import pytest
 
-from finrobot.engine.data.ticker import is_us_equity_ticker, validate_ticker
+from alpha_desk.engine.data.ticker import is_us_equity_ticker, validate_ticker
 
 
 class TestValidateTickerBasics:

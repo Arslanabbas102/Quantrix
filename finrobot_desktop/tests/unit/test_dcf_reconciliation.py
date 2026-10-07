@@ -16,7 +16,7 @@ formula itself (which would be self-derivation).
 import math
 from datetime import datetime, timezone
 
-from finrobot.engine.models.financial import (
+from alpha_desk.engine.models.financial import (
     BalanceSheet,
     DCFInputs,
     FinancialData,
@@ -24,8 +24,8 @@ from finrobot.engine.models.financial import (
     IncomeStatement,
     MarketData,
 )
-from finrobot.engine.compute.operators.dcf import calculate_dcf, margin_swing
-from finrobot.engine.compute.operators.dcf_seed import dcf_current_actuals, seed_dcf_inputs
+from alpha_desk.engine.compute.operators.dcf import calculate_dcf, margin_swing
+from alpha_desk.engine.compute.operators.dcf_seed import dcf_current_actuals, seed_dcf_inputs
 
 
 def _make_inputs(**overrides) -> DCFInputs:

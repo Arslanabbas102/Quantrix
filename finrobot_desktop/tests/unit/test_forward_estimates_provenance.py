@@ -9,8 +9,8 @@ pure slice that turns the pipeline's ForwardFinancials into that slim block.
 
 from __future__ import annotations
 
-from finrobot.artifact.builders import _forward_estimates_provenance
-from finrobot.engine.compute.operators.forward_estimates import ForwardFinancials
+from alpha_desk.artifact.builders import _forward_estimates_provenance
+from alpha_desk.engine.compute.operators.forward_estimates import ForwardFinancials
 
 
 def _forward(**overrides: object) -> ForwardFinancials:

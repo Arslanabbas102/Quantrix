@@ -2,8 +2,8 @@
 
 import inspect
 
-import finrobot.routes.runs as runs_mod
-from finrobot.obs.context import bind_run, current_trace
+import alpha_desk.routes.runs as runs_mod
+from alpha_desk.obs.context import bind_run, current_trace
 
 
 def test_run_pipeline_source_binds_run_id() -> None:

@@ -14,7 +14,7 @@ from pathlib import Path
 
 import pytest
 
-from finrobot.engine.data.quote_cache import Quote, QuoteCache, QuoteFetchRateLimited
+from alpha_desk.engine.data.quote_cache import Quote, QuoteCache, QuoteFetchRateLimited
 
 
 @pytest.mark.asyncio

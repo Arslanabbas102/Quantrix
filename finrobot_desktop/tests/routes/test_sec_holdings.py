@@ -18,9 +18,9 @@ import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from finrobot.engine.data import sec_holdings_sync
-from finrobot.routes import sec_holdings as sec_holdings_route
-from finrobot.routes.sec_holdings import router as sec_holdings_router
+from alpha_desk.engine.data import sec_holdings_sync
+from alpha_desk.routes import sec_holdings as sec_holdings_route
+from alpha_desk.routes.sec_holdings import router as sec_holdings_router
 
 _EMPTY_CACHE = {
     "populated": False,
@@ -65,7 +65,7 @@ def app() -> FastAPI:
     # current by PUT /api/settings), mirroring the real server wiring.
     app.state.deps = SimpleNamespace(
         settings=SimpleNamespace(
-            sec_user_agent="FinRobot admin@example.com", sec_holdings_auto_refresh=False
+            sec_user_agent="Alpha Desk admin@example.com", sec_holdings_auto_refresh=False
         )
     )
     return app
@@ -143,7 +143,7 @@ def test_status_reports_identity_not_configured_for_placeholder(
 ) -> None:
     """The config.py placeholder must read as identity_configured=False so the
     UI greys out the 立即同步 button instead of letting a doomed run start."""
-    _patch(app, monkeypatch, identity="FinRobot admin@example.com", auto_refresh=False)
+    _patch(app, monkeypatch, identity="Alpha Desk admin@example.com", auto_refresh=False)
     body = client.get("/api/sec-holdings/status").json()
     assert body["identity_configured"] is False
 
@@ -153,7 +153,7 @@ def test_refresh_without_identity_returns_identity_missing(
 ) -> None:
     """No valid SEC identity → refresh records the error code and spawns no
     work (no background task, no EDGAR call)."""
-    _patch(app, monkeypatch, identity="FinRobot admin@example.com", auto_refresh=False)
+    _patch(app, monkeypatch, identity="Alpha Desk admin@example.com", auto_refresh=False)
     resp = client.post("/api/sec-holdings/refresh")
     assert resp.status_code == 200
     body = resp.json()

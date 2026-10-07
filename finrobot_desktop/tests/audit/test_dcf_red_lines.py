@@ -28,8 +28,8 @@ from pathlib import Path
 
 import pytest
 
-from finrobot.engine.compute.operators.dcf_seed import seed_dcf_inputs
-from finrobot.engine.models.financial import (
+from alpha_desk.engine.compute.operators.dcf_seed import seed_dcf_inputs
+from alpha_desk.engine.models.financial import (
     BalanceSheet,
     FinancialData,
     HistoricalMetrics,
@@ -239,7 +239,7 @@ def test_dcf_result_does_not_resurrect_fcf_formula_fields():
     fix was to delete the warning, not to fix its copy. This guard makes
     sure the field doesn't sneak back via "add a small status flag".
     """
-    from finrobot.engine.models.financial import DCFResult
+    from alpha_desk.engine.models.financial import DCFResult
 
     forbidden = {"fcf_formula", "fcf_formula_warning"}
     present = forbidden & set(DCFResult.model_fields)
@@ -263,7 +263,7 @@ def test_ic_memo_financials_step_uses_seed_dcf_inputs():
     architecture red-line #5 as the standalone DCF and equity-research
     pipelines.
     """
-    src = (REPO_ROOT / "finrobot" / "engine" / "pipelines" / "ic_memo.py").read_text()
+    src = (REPO_ROOT / "alpha_desk" / "engine" / "pipelines" / "ic_memo.py").read_text()
 
     func_marker = "async def _execute_ic_financials("
     assert func_marker in src, (
@@ -311,7 +311,7 @@ def test_equity_research_financial_modeling_uses_seed_dcf_inputs():
       • Banned tokens: ``param_agent`` and ``output_type=DCFInputs`` must not
         appear anywhere in the file — both were the LLM-selects-numbers path.
     """
-    src = (REPO_ROOT / "finrobot" / "engine" / "pipelines" / "equity_research.py").read_text()
+    src = (REPO_ROOT / "alpha_desk" / "engine" / "pipelines" / "equity_research.py").read_text()
 
     # Locate the function body via a coarse marker.
     func_marker = "async def _execute_financial_modeling("

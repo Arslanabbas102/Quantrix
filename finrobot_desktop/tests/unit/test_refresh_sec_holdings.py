@@ -97,11 +97,11 @@ def _install_fakes(
     async def _fake_mark_complete(period_end: Any, filings_processed: int) -> None:
         marked.append((period_end, filings_processed))
 
-    fake_cache = types.ModuleType("finrobot.engine.data.sec_holdings_cache")
+    fake_cache = types.ModuleType("alpha_desk.engine.data.sec_holdings_cache")
     fake_cache.bulk_upsert_holdings = _capture_bulk_upsert  # type: ignore[attr-defined]
     fake_cache.cache_status = _fake_cache_status  # type: ignore[attr-defined]
     fake_cache.mark_period_complete = _fake_mark_complete  # type: ignore[attr-defined]
-    monkeypatch.setitem(sys.modules, "finrobot.engine.data.sec_holdings_cache", fake_cache)
+    monkeypatch.setitem(sys.modules, "alpha_desk.engine.data.sec_holdings_cache", fake_cache)
     return marked
 
 

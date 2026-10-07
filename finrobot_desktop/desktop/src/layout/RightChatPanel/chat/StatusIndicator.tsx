@@ -132,7 +132,7 @@ export function StatusIndicator({
 
   return (
     <div data-testid="thinking-indicator" className="msg agent">
-      <div className="msg-head">● FINROBOT</div>
+      <div className="msg-head">● ALPHA_DESK</div>
       <div
         data-testid="status-line"
         data-phase={phase.kind}

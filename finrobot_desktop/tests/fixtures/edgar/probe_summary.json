@@ -49,13 +49,13 @@
       "holdings_class": "DataFrame",
       "holdings_rows_in_one_filing": 386
     },
-    "implication_for_gate2": "门 2 必须新增 ~/.finrobot/sec_holdings_cache.db schema + 季度刷新后台任务（spec v4 §4 门 2）"
+    "implication_for_gate2": "门 2 必须新增 ~/.alpha_desk/sec_holdings_cache.db schema + 季度刷新后台任务（spec v4 §4 门 2）"
   },
   "async_runtime": {
     "serve_start_stop_10x": "ok",
     "test_method": "kill + nohup 启动 10 次 / curl /health 验证 + grep stderr 'RuntimeError|Event loop is closed|TypeError|AttributeError|ModuleNotFoundError'",
     "errors_found": 0,
-    "log_files": "/tmp/finrobot-start-{1..10}.log"
+    "log_files": "/tmp/alpha_desk-start-{1..10}.log"
   },
   "edgar_top_exceptions_real": {
     "available": ["DataObjectException", "CompanyNotFoundError"],

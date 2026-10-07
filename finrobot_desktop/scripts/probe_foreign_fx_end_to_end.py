@@ -12,27 +12,27 @@ import sys
 import time
 from pathlib import Path
 
-from finrobot.config import get_settings
-from finrobot.engine.compute.coordinators.extractor import extract_financial_data
-from finrobot.engine.data.factory import build_data_layer
-from finrobot.engine.data.types import DataType
-from finrobot.engine.deps import FinRobotDeps
-from finrobot.engine.skills.registry import SkillRegistry
-from finrobot.paths import SETTINGS_JSON
-from finrobot.routes.settings import load_non_secret_settings
-from finrobot.secret_store import create_secret_store
-from finrobot.server import hydrate_settings_from_secrets
+from alpha_desk.config import get_settings
+from alpha_desk.engine.compute.coordinators.extractor import extract_financial_data
+from alpha_desk.engine.data.factory import build_data_layer
+from alpha_desk.engine.data.types import DataType
+from alpha_desk.engine.deps import AlphaDeskDeps
+from alpha_desk.engine.skills.registry import SkillRegistry
+from alpha_desk.paths import SETTINGS_JSON
+from alpha_desk.routes.settings import load_non_secret_settings
+from alpha_desk.secret_store import create_secret_store
+from alpha_desk.server import hydrate_settings_from_secrets
 
 TICKER = sys.argv[1] if len(sys.argv) > 1 else "2330.TW"
 
 
-async def build_deps() -> FinRobotDeps:
+async def build_deps() -> AlphaDeskDeps:
     settings = get_settings(**load_non_secret_settings(SETTINGS_JSON))
     store, _ = create_secret_store()
     settings = await hydrate_settings_from_secrets(settings, store)
     skills_path = Path(settings.skills_dir)
     registry = SkillRegistry(skills_path) if skills_path.exists() else None
-    return FinRobotDeps(
+    return AlphaDeskDeps(
         data_layer=build_data_layer(settings), settings=settings, skill_runtime=registry
     )
 
@@ -83,8 +83,8 @@ async def main() -> None:
         # === Stage 2: run the REAL FX-normalize pipeline step on real 2330.TW data ===
         from unittest.mock import MagicMock
 
-        from finrobot.engine.models.financial import DCFResult, HistoricalMetrics
-        from finrobot.engine.pipelines.equity_research import _execute_financial_modeling
+        from alpha_desk.engine.models.financial import DCFResult, HistoricalMetrics
+        from alpha_desk.engine.pipelines.equity_research import _execute_financial_modeling
 
         hm = HistoricalMetrics(
             years=[],
@@ -161,7 +161,7 @@ async def main() -> None:
     finally:
         # Non-server entrypoint: join the aiosqlite workers + checkpoint WAL so the
         # process exits cleanly instead of hanging on "Event loop is closed" (2026-06-24).
-        from finrobot.engine.data.factory import shutdown_data_layer
+        from alpha_desk.engine.data.factory import shutdown_data_layer
 
         await shutdown_data_layer(deps.data_layer)
 

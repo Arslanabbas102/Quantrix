@@ -16,10 +16,10 @@ import pytest
 from httpx import AsyncClient, ASGITransport
 from unittest.mock import patch, AsyncMock
 
-from finrobot.engine.data.cache import raw_slot_key
-from finrobot.engine.data.interface import DataResult
-from finrobot.engine.data.types import DataType
-from finrobot.engine.data.normalize.session import compute_session_state
+from alpha_desk.engine.data.cache import raw_slot_key
+from alpha_desk.engine.data.interface import DataResult
+from alpha_desk.engine.data.types import DataType
+from alpha_desk.engine.data.normalize.session import compute_session_state
 
 
 @pytest.mark.asyncio
@@ -40,7 +40,7 @@ async def test_price_endpoint_accepts_period_param(app_with_deps):
         "warnings": [],
     }
     with patch(
-        "finrobot.routes.data.fetch_price_history",
+        "alpha_desk.routes.data.fetch_price_history",
         new=AsyncMock(return_value=mock_payload),
     ) as mock_fetch:
         transport = ASGITransport(app=app)
@@ -64,7 +64,7 @@ async def test_price_endpoint_uses_cache_on_second_call(app_with_deps):
         "warnings": [],
     }
     with patch(
-        "finrobot.routes.data.fetch_price_history",
+        "alpha_desk.routes.data.fetch_price_history",
         new=AsyncMock(return_value=mock_payload),
     ) as mock_fetch:
         transport = ASGITransport(app=app)
@@ -107,7 +107,7 @@ async def test_price_endpoint_reuses_provider_price_cache_for_default_period(app
     )
 
     with patch(
-        "finrobot.routes.data.fetch_price_history",
+        "alpha_desk.routes.data.fetch_price_history",
         new=AsyncMock(side_effect=AssertionError("route should not hit yfinance")),
     ):
         transport = ASGITransport(app=app)
@@ -154,7 +154,7 @@ async def test_price_endpoint_provider_cache_path_carries_full_technicals(app_wi
         ),
     )
     with patch(
-        "finrobot.routes.data.fetch_price_history",
+        "alpha_desk.routes.data.fetch_price_history",
         new=AsyncMock(side_effect=AssertionError("route should not hit the fetcher")),
     ):
         transport = ASGITransport(app=app)
@@ -210,7 +210,7 @@ async def test_price_endpoint_enriches_cached_payload_from_financials_cache(app_
     )
 
     with patch(
-        "finrobot.routes.data.fetch_price_history",
+        "alpha_desk.routes.data.fetch_price_history",
         new=AsyncMock(side_effect=AssertionError("route cache should serve this response")),
     ):
         transport = ASGITransport(app=app)
@@ -274,7 +274,7 @@ async def test_price_market_cap_marked_to_live_not_grafted_stale(app_with_deps):
     )
 
     with patch(
-        "finrobot.routes.data.fetch_price_history",
+        "alpha_desk.routes.data.fetch_price_history",
         new=AsyncMock(side_effect=AssertionError("route cache should serve this response")),
     ):
         transport = ASGITransport(app=app)
@@ -319,7 +319,7 @@ async def test_price_endpoint_surfaces_pre_market_session_from_market_state(app_
     )
 
     with patch(
-        "finrobot.routes.data.fetch_price_history",
+        "alpha_desk.routes.data.fetch_price_history",
         new=AsyncMock(side_effect=AssertionError("route cache should serve this response")),
     ):
         transport = ASGITransport(app=app)
@@ -335,7 +335,7 @@ async def test_price_endpoint_returns_stale_provider_cache_when_yfinance_is_rate
     app_with_deps,
 ):
     """A stale provider cache is better than a blank workspace during 429s."""
-    from finrobot.engine.data.interface import ProviderError
+    from alpha_desk.engine.data.interface import ProviderError
 
     app = app_with_deps
     cache = app.state.deps.data_layer.cache
@@ -369,7 +369,7 @@ async def test_price_endpoint_returns_stale_provider_cache_when_yfinance_is_rate
     await conn.commit()
 
     with patch(
-        "finrobot.routes.data.fetch_price_history",
+        "alpha_desk.routes.data.fetch_price_history",
         new=AsyncMock(side_effect=ProviderError("yfinance service down: 429")),
     ):
         transport = ASGITransport(app=app)
@@ -388,7 +388,7 @@ async def test_price_endpoint_different_periods_dont_share_cache(app_with_deps):
     app = app_with_deps
 
     with patch(
-        "finrobot.routes.data.fetch_price_history",
+        "alpha_desk.routes.data.fetch_price_history",
         new=AsyncMock(
             return_value={
                 "current_price": 1.0,
@@ -414,7 +414,7 @@ async def test_price_endpoint_invalid_ticker_returns_422(app_with_deps):
     app = app_with_deps
 
     with patch(
-        "finrobot.routes.data.fetch_price_history",
+        "alpha_desk.routes.data.fetch_price_history",
         new=AsyncMock(side_effect=ValueError("unknown ticker 'INVALID'")),
     ):
         transport = ASGITransport(app=app)
@@ -428,12 +428,12 @@ async def test_price_endpoint_invalid_ticker_returns_422(app_with_deps):
 @pytest.mark.asyncio
 async def test_price_endpoint_provider_error_returns_502(app_with_deps):
     """fetch_price_history raises ProviderError → /price returns 502 (not default 500)."""
-    from finrobot.engine.data.interface import ProviderError
+    from alpha_desk.engine.data.interface import ProviderError
 
     app = app_with_deps
 
     with patch(
-        "finrobot.routes.data.fetch_price_history",
+        "alpha_desk.routes.data.fetch_price_history",
         new=AsyncMock(
             side_effect=ProviderError(
                 "FMP quote failed for url "
@@ -473,7 +473,7 @@ async def test_price_fetch_path_always_includes_ticker_and_quote_timestamp(app_w
         "warnings": [],
     }
     with patch(
-        "finrobot.routes.data.fetch_price_history",
+        "alpha_desk.routes.data.fetch_price_history",
         new=AsyncMock(return_value=mock_payload),
     ):
         transport = ASGITransport(app=app)
@@ -493,7 +493,7 @@ async def test_price_rejects_unknown_period(app_with_deps):
     app = app_with_deps
 
     with patch(
-        "finrobot.routes.data.fetch_price_history",
+        "alpha_desk.routes.data.fetch_price_history",
         new=AsyncMock(return_value={"current_price": 1.0, "history": [], "warnings": []}),
     ):
         transport = ASGITransport(app=app)
@@ -516,7 +516,7 @@ async def test_price_endpoint_returns_fetched_at(app_with_deps):
         "warnings": [],
     }
     with patch(
-        "finrobot.routes.data.fetch_price_history",
+        "alpha_desk.routes.data.fetch_price_history",
         new=AsyncMock(return_value=mock_payload),
     ):
         transport = ASGITransport(app=app)

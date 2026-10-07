@@ -13,8 +13,8 @@ import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from finrobot.engine.data import symbol_index as si
-from finrobot.routes.search import router as search_router
+from alpha_desk.engine.data import symbol_index as si
+from alpha_desk.routes.search import router as search_router
 
 _FAKE_SEC = {
     "0": {"cik_str": 1, "ticker": "NVDA", "title": "NVIDIA CORP"},
