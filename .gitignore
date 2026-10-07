@@ -7,7 +7,7 @@ __pycache__/
 *.csv
 *.jpg
 *.png
-!alpha_desk_equity/web_app/static/*.png
+!quantrix_equity/web_app/static/*.png
 !figs/*.png
 quant/
 coding/
@@ -41,6 +41,6 @@ venv/
 
 # Runtime files
 .app.pid
-alpha_desk_equity/logs/
-alpha_desk_equity/web_app/data/*.db
-alpha_desk_equity/core/output/build/
+quantrix_equity/logs/
+quantrix_equity/web_app/data/*.db
+quantrix_equity/core/output/build/

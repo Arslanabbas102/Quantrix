@@ -11,9 +11,9 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies
-# Built from the repo root: the app is imported as alpha_desk_equity.web_app.main,
-# so alpha_desk_equity/ has to land under /app as a package directory.
-COPY alpha_desk_equity/requirements.txt .
+# Built from the repo root: the app is imported as quantrix_equity.web_app.main,
+# so quantrix_equity/ has to land under /app as a package directory.
+COPY quantrix_equity/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt && \
     apt-get purge -y --auto-remove build-essential && \
     rm -rf /var/lib/apt/lists/*
@@ -23,4 +23,4 @@ COPY . .
 
 EXPOSE 8001
 
-CMD ["uvicorn", "alpha_desk_equity.web_app.main:app", "--host", "0.0.0.0", "--port", "8001"]
+CMD ["uvicorn", "quantrix_equity.web_app.main:app", "--host", "0.0.0.0", "--port", "8001"]
