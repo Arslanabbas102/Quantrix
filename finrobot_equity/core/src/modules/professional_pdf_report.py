@@ -1307,7 +1307,7 @@ class ProfessionalEquityReport:
         self.elements.append(Paragraph(source_text, self.styles['Caption']))
         
         # 报告信息
-        report_info = f"Report Generated: {datetime.now(EASTERN_TZ).strftime('%Y-%m-%d %H:%M')} ET | {self.data.get('research_source', 'AI4Finance Alpha Desk')}"
+        report_info = f"Report Generated: {datetime.now(EASTERN_TZ).strftime('%Y-%m-%d %H:%M')} ET | {self.data.get('research_source', 'Alpha Desk')}"
         self.elements.append(Paragraph(report_info, self.styles['Caption']))
     
     # =========================================================================
@@ -1486,7 +1486,7 @@ class ProfessionalEquityReport:
         """添加PDF元数据（第一页）"""
         # 设置PDF元数据
         canvas_obj.setTitle(f"{self.company_name} ({self.ticker}) - Equity Research Report")
-        canvas_obj.setAuthor(self.data.get('research_source', 'AI4Finance Alpha Desk'))
+        canvas_obj.setAuthor(self.data.get('research_source', 'Alpha Desk'))
         canvas_obj.setSubject(f"Equity Research Report for {self.company_name}")
         canvas_obj.setKeywords(f"{self.ticker}, {self.company_name}, Equity Research, Investment Analysis")
         canvas_obj.setCreator('Alpha Desk Equity Research Platform')
