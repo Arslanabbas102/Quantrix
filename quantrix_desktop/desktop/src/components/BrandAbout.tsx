@@ -71,7 +71,7 @@ export function BrandAbout(): React.ReactElement {
       >
         <img className="tb-brand-mark" src={appIcon} alt="" aria-hidden />
         <span className="tb-wordmark">
-          Fin<b>Robot</b>
+          Quant<b>rix</b>
         </span>
         <svg
           className="tb-brand-chevron"
@@ -98,7 +98,7 @@ export function BrandAbout(): React.ReactElement {
         >
           <div className="brand-about-head">
             <span className="brand-about-name">
-              Fin<b>Robot</b>
+              Quant<b>rix</b>
             </span>
             <span className="brand-about-meta">{version ? `v${version} · ` : ''}Apache-2.0</span>
           </div>

@@ -74,6 +74,32 @@ const SettingsIcon = (
   </svg>
 )
 
+// Watchlist — a filled star (the universal "keep an eye on this" glyph).
+const WatchlistIcon = (
+  <svg {...ICON_PROPS}>
+    <path d="M12 3.5 14.5 9.1 20.5 9.8 16 13.8 17.3 19.7 12 16.6 6.7 19.7 8 13.8 3.5 9.8 9.5 9.1 Z" />
+  </svg>
+)
+
+// Compare — two overlapping panes (side-by-side).
+const CompareIcon = (
+  <svg {...ICON_PROPS}>
+    <rect x="3" y="4" width="8" height="16" rx="1.5" />
+    <rect x="13" y="4" width="8" height="16" rx="1.5" />
+  </svg>
+)
+
+// News — a folded newspaper / feed glyph.
+const NewsIcon = (
+  <svg {...ICON_PROPS}>
+    <rect x="3.5" y="5" width="17" height="14" rx="1.5" />
+    <line x1="7" y1="9" x2="13" y2="9" />
+    <line x1="7" y1="12.5" x2="13" y2="12.5" />
+    <line x1="7" y1="16" x2="11" y2="16" />
+    <line x1="16.5" y1="9" x2="16.5" y2="16" />
+  </svg>
+)
+
 // The three top-level product doors (router.tsx: "Research, Coverage, and
 // Settings"). Research owns the per-ticker workspace (/stocks/:ticker);
 // Settings is standalone.
@@ -89,6 +115,24 @@ const DOORS: NavDoor[] = [
     path: '/coverage',
     activePaths: ['/coverage'],
     icon: CoverageIcon,
+  },
+  {
+    labelKey: 'nav.watchlist',
+    path: '/watchlist',
+    activePaths: ['/watchlist'],
+    icon: WatchlistIcon,
+  },
+  {
+    labelKey: 'nav.compare',
+    path: '/compare',
+    activePaths: ['/compare'],
+    icon: CompareIcon,
+  },
+  {
+    labelKey: 'nav.news',
+    path: '/news',
+    activePaths: ['/news'],
+    icon: NewsIcon,
   },
   {
     labelKey: 'nav.settings',

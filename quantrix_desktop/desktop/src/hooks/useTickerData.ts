@@ -151,6 +151,10 @@ export interface CatalystEventData {
   // Cluster size from near-duplicate merging (>1 ⇒ this event aggregates that
   // many distinct source stories). 1/absent for a single-source event.
   source_count?: number | null
+  /** ISO date/datetime the underlying news was published, when the provider carries one. */
+  published?: string | null
+  /** Source article URL, when the provider carries one. */
+  url?: string | null
 }
 
 // ── Fetcher helpers ───────────────────────────────────────────────────────────

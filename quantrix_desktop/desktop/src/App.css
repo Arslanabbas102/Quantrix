@@ -1,63 +1,64 @@
 @import 'tailwindcss';
 
 /* ═══════════════════════════════════════════════════════════════
-   QUANTRIX DESIGN SYSTEM · COSMIC DESKTOP
-   Graphite terminal dark + restrained blue/violet edge light + cyan signal
+   QUANTRIX DESIGN SYSTEM · COSMIC DESKTOP (LIGHT)
+   Soft slate-white terminal light + restrained blue/violet edge light + cyan signal
    See the cosmic desktop style spec, §2/§3:
    project-memory/编码模式/UI-风格规范-cosmic桌面版.md
-   Desktop shell uses one dark theme.
+   Desktop shell uses one light theme.
    ═══════════════════════════════════════════════════════════════ */
 
 :root {
-  /* ── Graphite terminal background stack ──────────────────────── */
-  --bg-void: #05050d; /* outer starfield */
-  --bg-deep: #080a10; /* primary surface */
-  --bg-card: #0d1018;
-  --bg-elevated: #121722;
-  --bg-overlay: rgba(8, 10, 16, 0.84);
+  /* ── Slate-white terminal background stack ───────────────────── */
+  --bg-void: #eef1f6; /* outer starfield */
+  --bg-deep: #f6f8fb; /* primary surface */
+  --bg-card: #ffffff;
+  --bg-elevated: #ffffff;
+  --bg-overlay: rgba(255, 255, 255, 0.86);
 
-  /* Universal shell backdrop copied from quantrix-graphite-terminal-demo.html:
-     graphite center for dense data, low blue/violet/cyan glow parked at edges. */
-  --cockpit-base: #06070c;
-  --cockpit-glow-core: rgba(59, 130, 246, 0.18);
-  --cockpit-glow-violet: rgba(139, 92, 246, 0.1);
-  --cockpit-glow-corner: rgba(34, 211, 238, 0.055);
-  --cockpit-vignette: rgba(5, 5, 13, 0.64);
-  --cockpit-grid-line: rgba(148, 163, 184, 0.045);
-  --cockpit-bar-bg: linear-gradient(180deg, rgba(15, 19, 30, 0.92), rgba(8, 10, 16, 0.76));
+  /* Universal shell backdrop: soft slate-white center for dense data, low
+     blue/violet/cyan glow parked at edges (light counterpart of the former
+     graphite backdrop). */
+  --cockpit-base: #eef1f6;
+  --cockpit-glow-core: rgba(59, 130, 246, 0.1);
+  --cockpit-glow-violet: rgba(139, 92, 246, 0.06);
+  --cockpit-glow-corner: rgba(34, 211, 238, 0.04);
+  --cockpit-vignette: rgba(226, 232, 240, 0.4);
+  --cockpit-grid-line: rgba(15, 23, 42, 0.045);
+  --cockpit-bar-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(246, 248, 251, 0.82));
   --app-shell-bg:
     radial-gradient(70% 52% at 7% 4%, var(--cockpit-glow-core), transparent 58%),
     radial-gradient(64% 48% at 96% 0%, var(--cockpit-glow-violet), transparent 60%),
     radial-gradient(55% 45% at 50% 104%, var(--cockpit-glow-corner), transparent 68%),
-    linear-gradient(180deg, #0a0d14 0%, var(--cockpit-base) 100%);
+    linear-gradient(180deg, #fbfcfe 0%, var(--cockpit-base) 100%);
 
   /* ── Borders (three glow tiers) ──────────────────────────────── */
-  --border-faint: rgba(148, 163, 184, 0.08);
-  --border-soft: rgba(148, 163, 184, 0.16);
-  --border-glow: rgba(59, 130, 246, 0.34);
+  --border-faint: rgba(15, 23, 42, 0.08);
+  --border-soft: rgba(15, 23, 42, 0.14);
+  --border-glow: rgba(59, 130, 246, 0.38);
 
   /* ── Dual rail brand ─────────────────────────────────────────── */
   --primary: #3b82f6;
-  --primary-soft: rgba(59, 130, 246, 0.12);
+  --primary-soft: rgba(59, 130, 246, 0.1);
   --text-on-primary: #ffffff; /* legible white text on any saturated fill (primary/secondary gradient, accent button, count badge) */
   --text-on-warning: #1a1207; /* dark text on an amber/warning fill */
-  --bg-input: rgba(13, 16, 24, 0.78); /* translucent input field surface */
-  --scrim: rgba(5, 5, 13, 0.78); /* modal/overlay backdrop scrim */
-  --sheen: rgba(255, 255, 255, 0.28); /* moving highlight sweep on shimmer surfaces */
-  --secondary: #8b5cf6;
-  --secondary-soft: rgba(139, 92, 246, 0.1);
-  --secondary-soft-alt: rgba(139, 92, 246, 0.045); /* gradient endpoint */
-  --secondary-hover: rgba(148, 163, 184, 0.08); /* hover wash on inert surfaces */
-  --secondary-edge: rgba(148, 163, 184, 0.18); /* dividers */
-  --secondary-strong: rgba(139, 92, 246, 0.18); /* card borders */
-  --secondary-glow: rgba(139, 92, 246, 0.26); /* text + box shadow tint */
-  --secondary-glow-soft: rgba(139, 92, 246, 0.2);
+  --bg-input: rgba(255, 255, 255, 0.92); /* translucent input field surface */
+  --scrim: rgba(15, 23, 42, 0.45); /* modal/overlay backdrop scrim */
+  --sheen: rgba(255, 255, 255, 0.5); /* moving highlight sweep on shimmer surfaces */
+  --secondary: #7c3aed;
+  --secondary-soft: rgba(139, 92, 246, 0.08);
+  --secondary-soft-alt: rgba(139, 92, 246, 0.035); /* gradient endpoint */
+  --secondary-hover: rgba(15, 23, 42, 0.05); /* hover wash on inert surfaces */
+  --secondary-edge: rgba(15, 23, 42, 0.12); /* dividers */
+  --secondary-strong: rgba(139, 92, 246, 0.16); /* card borders */
+  --secondary-glow: rgba(139, 92, 246, 0.22); /* text + box shadow tint */
+  --secondary-glow-soft: rgba(139, 92, 246, 0.16);
   --violet-deep: #6d28d9; /* violet-700 — deep end of the AI panel send gradient */
 
   /* ── Live / accent ───────────────────────────────────────────── */
-  --accent-cyan: #22d3ee;
-  --accent-cyan-glow-soft: rgba(34, 211, 238, 0.2); /* tagline shadow */
-  --accent-pink: #ec4899;
+  --accent-cyan: #0891b2; /* cyan-600 — #22d3ee reads too pale on white */
+  --accent-cyan-glow-soft: rgba(8, 145, 178, 0.18); /* tagline shadow */
+  --accent-pink: #db2777;
 
   /* ── US market semantic (green up / red down) ────────────────── */
   --success: #16a34a;
@@ -79,22 +80,22 @@
   --neutral-soft: rgba(100, 116, 139, 0.18); /* neutral / WITHHELD badge bg */
   --neutral-edge: rgba(100, 116, 139, 0.55); /* neutral / WITHHELD badge border */
 
-  /* ── Card translucency stack (inert surfaces over graphite shell). */
-  --bg-card-faint: rgba(13, 16, 24, 0.48);
-  --bg-card-overlay: rgba(13, 16, 24, 0.64);
-  --bg-card-translucent: rgba(13, 16, 24, 0.76);
-  --bg-card-deep: rgba(13, 16, 24, 0.86);
+  /* ── Card translucency stack (inert surfaces over the slate-white shell). */
+  --bg-card-faint: rgba(255, 255, 255, 0.6);
+  --bg-card-overlay: rgba(255, 255, 255, 0.76);
+  --bg-card-translucent: rgba(255, 255, 255, 0.86);
+  --bg-card-deep: rgba(255, 255, 255, 0.95);
 
-  /* Reusable graphite card gradient — wraps a faint blue rail over the
-     translucent card surface. Used by AIZone/HotState cards so all three
-     siblings track one source of truth. */
+  /* Reusable card gradient — wraps a faint blue rail over the translucent
+     card surface. Used by AIZone/HotState cards so all three siblings track
+     one source of truth. */
   --gradient-card-cosmic: linear-gradient(
     160deg,
-    rgba(59, 130, 246, 0.055),
+    rgba(59, 130, 246, 0.045),
     var(--bg-card-overlay)
   );
   /* Top fade strip behind the ticker hero header — bg-card → transparent. */
-  --gradient-hero-strip: linear-gradient(180deg, rgba(13, 16, 24, 0.68) 0%, transparent 100%);
+  --gradient-hero-strip: linear-gradient(180deg, rgba(255, 255, 255, 0.78) 0%, transparent 100%);
 
   /* ── Coverage card verdict chroma (research library card wall) ───────────
      Each analyzed card is a graphite slab whose TOP edge carries its verdict
@@ -107,43 +108,43 @@
      report cover/right-rail badges keep the deeper --success/--warning/--danger
      semantic tokens. Hex centralised here so the card rules reference tokens
      only (cosmic spec §2). Green = up, red = down throughout. */
-  --card-sell-bg: linear-gradient(180deg, #171318 0%, #0c1016 60%);
-  --card-sell-edge: #2a1d22;
-  --card-sell-line: linear-gradient(90deg, transparent, rgba(248, 113, 113, 0.55), transparent);
-  --card-sell-fg: #f87171;
-  --card-hold-bg: linear-gradient(180deg, #16140e 0%, #0c1016 60%);
-  --card-hold-edge: #2a2418;
-  --card-hold-line: linear-gradient(90deg, transparent, rgba(245, 181, 68, 0.55), transparent);
-  --card-hold-fg: #f5b544;
-  --card-buy-bg: linear-gradient(180deg, #0f1714 0%, #0c1016 60%);
-  --card-buy-edge: #18271f;
-  --card-buy-line: linear-gradient(90deg, transparent, rgba(52, 211, 153, 0.55), transparent);
-  --card-buy-fg: #34d399;
-  --card-neutral-bg: linear-gradient(180deg, #11161e 0%, #0c1016 100%);
-  --card-neutral-edge: #1a212b;
+  --card-sell-bg: linear-gradient(180deg, #fef2f2 0%, #ffffff 60%);
+  --card-sell-edge: #fecaca;
+  --card-sell-line: linear-gradient(90deg, transparent, rgba(220, 38, 38, 0.55), transparent);
+  --card-sell-fg: #dc2626;
+  --card-hold-bg: linear-gradient(180deg, #fffbeb 0%, #ffffff 60%);
+  --card-hold-edge: #fde68a;
+  --card-hold-line: linear-gradient(90deg, transparent, rgba(180, 83, 9, 0.55), transparent);
+  --card-hold-fg: #b45309;
+  --card-buy-bg: linear-gradient(180deg, #f0fdf4 0%, #ffffff 60%);
+  --card-buy-edge: #bbf7d0;
+  --card-buy-line: linear-gradient(90deg, transparent, rgba(21, 128, 61, 0.55), transparent);
+  --card-buy-fg: #15803d;
+  --card-neutral-bg: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+  --card-neutral-edge: #e2e8f0;
 
   /* ── Amber accent (HOLD verdict + market-data zone headers).
      Distinct from --warning (which is the deeper #D97706 used for actual
      warning banners). Several sites historically wrote the literal
      #F59E0B or used `var(--accent-amber, #F59E0B)` with a fallback that
      never resolved; this declaration makes the token real. */
-  --accent-amber: #f59e0b;
+  --accent-amber: #b45309; /* amber-700 — #f59e0b reads too pale as text/icon on white */
 
   /* ── Alpha derivatives of accent / surface tokens (cosmic spec §2:
      "every colour comes from a CSS variable, no hard-coded hex"). When a card /
      pill /
      glow needs a tinted version of an existing accent, reference one
      of these instead of inlining `rgba(...)`. */
-  --border-amber-soft: rgba(245, 158, 11, 0.25); /* amber 0.25 — zone header divider */
-  --glow-amber-soft: rgba(245, 158, 11, 0.35); /* amber 0.35 — zone title glow */
-  --border-cyan-soft: rgba(34, 211, 238, 0.3); /* cyan 0.3 — live-data badge border */
+  --border-amber-soft: rgba(180, 83, 9, 0.3); /* amber 0.3 — zone header divider */
+  --glow-amber-soft: rgba(180, 83, 9, 0.35); /* amber 0.35 — zone title glow */
+  --border-cyan-soft: rgba(8, 145, 178, 0.32); /* cyan 0.32 — live-data badge border */
   --accent-cyan-soft: rgba(
-    34,
-    211,
-    238,
-    0.12
-  ); /* cyan 0.12 — live/fresh pill + active-filter fill */
-  --bg-card-50: rgba(13, 16, 24, 0.5); /* bg-card at 50% — list-item / chip overlay */
+    8,
+    145,
+    178,
+    0.1
+  ); /* cyan 0.1 — live/fresh pill + active-filter fill */
+  --bg-card-50: rgba(255, 255, 255, 0.5); /* bg-card at 50% — list-item / chip overlay */
 
   /* ── AI assistant panel — same cool family, a DETACHED FLOATING CARD ──
      The app shell + data desk are a cool blue-slate near-black. The chat
@@ -158,74 +159,78 @@
      assistant" accent is blue (--aip-accent), so the panel reads as one
      product with the data desk.
      (oklch is banned — renders green in some WebViews — so all hex/rgba.) */
-  --aipanel-bg: linear-gradient(180deg, #141a27 0%, #0e131e 100%);
-  --aipanel-edge: rgba(148, 163, 184, 0.22); /* slate border of the floating card */
-  --aipanel-edge-shadow: rgba(2, 4, 10, 0.6); /* drop shadow under the floating card */
-  --aipanel-grid: rgba(148, 163, 184, 0.04); /* faint ambient grid lines */
-  --aipanel-surface: rgba(30, 38, 54, 0.5); /* needs / tool / session cards */
-  --aipanel-surface-hover: rgba(38, 48, 68, 0.6);
-  --aipanel-surface-2: rgba(10, 13, 20, 0.85); /* input inner / deeper sub */
-  --aipanel-line: rgba(148, 163, 184, 0.14); /* hairline on panel */
-  --aipanel-line-strong: rgba(148, 163, 184, 0.26); /* card border on panel */
+  --aipanel-bg: linear-gradient(180deg, #ffffff 0%, #f6f8fb 100%);
+  --aipanel-edge: rgba(15, 23, 42, 0.12); /* slate border of the floating card */
+  --aipanel-edge-shadow: rgba(15, 23, 42, 0.16); /* drop shadow under the floating card */
+  --aipanel-grid: rgba(15, 23, 42, 0.03); /* faint ambient grid lines */
+  --aipanel-surface: rgba(241, 245, 249, 0.75); /* needs / tool / session cards */
+  --aipanel-surface-hover: rgba(226, 232, 240, 0.85);
+  --aipanel-surface-2: rgba(248, 250, 252, 0.92); /* input inner / deeper sub */
+  --aipanel-line: rgba(15, 23, 42, 0.1); /* hairline on panel */
+  --aipanel-line-strong: rgba(15, 23, 42, 0.18); /* card border on panel */
   --aipanel-user-bubble: linear-gradient(180deg, #3b82f6 0%, #2c6fe0 100%);
-  --aipanel-user-edge: rgba(96, 140, 240, 0.5);
+  --aipanel-user-edge: rgba(59, 130, 246, 0.45);
 
   /* The panel's SIGNATURE accent — one knob for everything that says
      "this is the assistant" (Quantrix wordmark, agent reply rail, code,
      list bullets, input focus ring, caret, send, status dot). Blue, the
      same cool family as the data desk, so the panel reads as one product
      with the workspace — NOT a violet bolt-on. Re-theme = swap these. */
-  --aip-accent: #60a5fa; /* blue-400 — legible on the dark cool panel */
-  --aip-accent-glow: rgba(59, 130, 246, 0.5);
-  --aip-accent-soft: rgba(59, 130, 246, 0.15);
-  --aip-rail: rgba(59, 130, 246, 0.5); /* agent reply left rail */
+  --aip-accent: #2563eb; /* blue-600 — legible on the light cool panel */
+  --aip-accent-glow: rgba(37, 99, 235, 0.4);
+  --aip-accent-soft: rgba(37, 99, 235, 0.1);
+  --aip-rail: rgba(37, 99, 235, 0.5); /* agent reply left rail */
   --aip-send: linear-gradient(135deg, var(--primary), var(--blue-dim));
 
   /* The lone violet dab — the presence orb ONLY (.ai-presence). Keeping
      purple here and nowhere else makes the orb the panel's single brand
      accent against the otherwise-blue surface. */
-  --aip-orb: #a78bfa; /* violet-300 */
-  --aip-orb-glow: rgba(139, 92, 246, 0.5);
-  --aip-orb-soft: rgba(139, 92, 246, 0.18);
+  --aip-orb: #7c3aed; /* violet-600 — legible on white, #a78bfa was tuned for dark */
+  --aip-orb-glow: rgba(124, 58, 237, 0.42);
+  --aip-orb-soft: rgba(124, 58, 237, 0.14);
   /* Triage strip shell ("Needs your eyes") — cool-tinted so it tracks the
      panel surface as a raised card, not a stray warm panel. */
-  --aipanel-strip: linear-gradient(180deg, rgba(30, 38, 54, 0.5), rgba(22, 28, 42, 0.42));
+  --aipanel-strip: linear-gradient(180deg, rgba(241, 245, 249, 0.75), rgba(226, 232, 240, 0.6));
 
   /* ── Pure-black scrims & elevation shadows ───────────────────────
      Modal/command-palette backdrops and drop shadows are neutral black,
      deliberately not tinted by the --scrim cosmic hue. Tokenized so no
      `rgba(0,0,0,…)` literal survives in component rules. */
-  --scrim-black-45: rgba(0, 0, 0, 0.45); /* cmd-palette backdrop */
-  --scrim-black-60: rgba(0, 0, 0, 0.6); /* modal backdrop */
-  --shadow-drop-18: rgba(0, 0, 0, 0.18); /* term-tip floating card */
-  --shadow-drop-30: rgba(0, 0, 0, 0.3); /* tooltip drop shadow */
-  --shadow-drop-40: rgba(0, 0, 0, 0.4); /* dropdown menu drop shadow */
+  --scrim-black-45: rgba(0, 0, 0, 0.3); /* cmd-palette backdrop */
+  --scrim-black-60: rgba(0, 0, 0, 0.4); /* modal backdrop */
+  --shadow-drop-18: rgba(15, 23, 42, 0.14); /* term-tip floating card */
+  --shadow-drop-30: rgba(15, 23, 42, 0.18); /* tooltip drop shadow */
+  --shadow-drop-40: rgba(15, 23, 42, 0.24); /* dropdown menu drop shadow */
 
-  /* ── White hover washes (neutral lift on inert surfaces) ─────────
-     A faint white overlay used for zebra stripes / row & button hover.
-     Distinct from --secondary-hover (slate-tinted); these stay neutral. */
-  --wash-white-015: rgba(255, 255, 255, 0.015); /* zebra stripe */
-  --wash-white-03: rgba(255, 255, 255, 0.03); /* chart-mode btn hover */
-  --wash-white-04: rgba(255, 255, 255, 0.04); /* time-range / toolbar btn hover */
+  /* ── Hover washes (neutral lift on inert surfaces) ─────────────
+     A faint dark overlay used for zebra stripes / row & button hover on the
+     light shell. Distinct from --secondary-hover (slate-tinted); these stay
+     neutral. (Named --wash-white-* for the legacy dark theme; kept as-is so
+     every downstream reference stays valid.) */
+  --wash-white-015: rgba(15, 23, 42, 0.025); /* zebra stripe */
+  --wash-white-03: rgba(15, 23, 42, 0.04); /* chart-mode btn hover */
+  --wash-white-04: rgba(15, 23, 42, 0.055); /* time-range / toolbar btn hover */
 
-  /* ── Legacy panel surface (#0f0f22 — the original cosmic --bg-card
-     before the graphite redesign). Still used by chart tooltips and a
-     few report panels that want the warmer violet-black card; tokenized
-     so the literal `rgba(15,15,34,…)` is centralized, not scattered. */
-  --surface-panel-40: rgba(15, 15, 34, 0.4);
-  --surface-panel-50: rgba(15, 15, 34, 0.5);
-  --surface-panel-55: rgba(15, 15, 34, 0.55);
-  --surface-panel-60: rgba(15, 15, 34, 0.6);
-  --surface-panel-92: rgba(15, 15, 34, 0.92); /* chart tooltip shell */
+  /* ── Legacy panel surface (the original cosmic --bg-card before the
+     graphite redesign). Still used by chart tooltips and a few report
+     panels that want a warmer violet-tinted card; tokenized so the literal
+     colour is centralized, not scattered. Light counterpart: a soft violet-
+     white wash instead of violet-black. */
+  --surface-panel-40: rgba(241, 239, 253, 0.55);
+  --surface-panel-50: rgba(241, 239, 253, 0.68);
+  --surface-panel-55: rgba(241, 239, 253, 0.74);
+  --surface-panel-60: rgba(241, 239, 253, 0.8);
+  --surface-panel-92: rgba(252, 251, 255, 0.97); /* chart tooltip shell */
 
-  /* ── Starfield (cosmic-stars background dots). Whites and two cool
-     blue-whites; decorative, outside the text/accent ramps. */
-  --star-white-85: rgba(255, 255, 255, 0.85);
-  --star-white-70: rgba(255, 255, 255, 0.7);
-  --star-white-60: rgba(255, 255, 255, 0.6);
-  --star-white-40: rgba(255, 255, 255, 0.4);
-  --star-blue-pale: rgba(180, 200, 255, 0.55);
-  --star-blue-ice: rgba(200, 220, 255, 0.55);
+  /* ── Starfield (cosmic-stars background dots). Dark slate + two cool
+     blues so the dots stay visible on the light shell; decorative, outside
+     the text/accent ramps. */
+  --star-white-85: rgba(15, 23, 42, 0.3);
+  --star-white-70: rgba(15, 23, 42, 0.22);
+  --star-white-60: rgba(15, 23, 42, 0.16);
+  --star-white-40: rgba(15, 23, 42, 0.1);
+  --star-blue-pale: rgba(59, 130, 246, 0.22);
+  --star-blue-ice: rgba(37, 99, 235, 0.2);
 
   /* ── Verdict-badge text-on-fill. Near-black tints matched to each
      verdict hue so the BUY/HOLD/SELL label reads on its solid badge. */
@@ -236,9 +241,9 @@
     217,
     119,
     6,
-    0.45
-  ); /* HOLD badge halo (0.45, matches success/danger glow) */
-  --provenance-hint: #7a8299; /* muted slate for provenance hint lines */
+    0.4
+  ); /* HOLD badge halo (matches success/danger glow) */
+  --provenance-hint: #64748b; /* muted slate for provenance hint lines */
 
   /* ── Legacy off-palette accent ramps ─────────────────────────────
      These shades pre-date the cosmic palette and do NOT match the
@@ -280,21 +285,22 @@
   /* ── Translucent backgrounds for sticky bars (titlebar / report
      toolbar / status bar / overlays). Same hue as --bg-deep with the
      blur layer behind it, varied by opacity for the surface stack. */
-  --bg-sticky-78: rgba(8, 10, 16, 0.84);
-  --bg-sticky-88: rgba(8, 10, 16, 0.9);
-  --bg-sticky-92: rgba(8, 10, 16, 0.94);
+  --bg-sticky-78: rgba(255, 255, 255, 0.84);
+  --bg-sticky-88: rgba(255, 255, 255, 0.9);
+  --bg-sticky-92: rgba(255, 255, 255, 0.94);
 
   /* ── Text four-step ──────────────────────────────────────────── */
-  --text-primary: #f5f5ff;
-  --text-secondary: rgba(245, 245, 255, 0.72);
-  --text-muted: rgba(245, 245, 255, 0.46);
-  --text-dim: rgba(245, 245, 255, 0.24);
+  --text-primary: #0f172a;
+  --text-secondary: rgba(15, 23, 42, 0.72);
+  --text-muted: rgba(15, 23, 42, 0.5);
+  --text-dim: rgba(15, 23, 42, 0.28);
 
-  /* ── Neon glow halos (only for key data + signal feedback) ──── */
-  --glow-blue: 0 0 18px rgba(59, 130, 246, 0.35), 0 0 48px rgba(59, 130, 246, 0.1);
-  --glow-purple: 0 0 18px rgba(139, 92, 246, 0.28), 0 0 42px rgba(139, 92, 246, 0.08);
-  --glow-cyan: 0 0 18px rgba(34, 211, 238, 0.35);
-  --glow-blue-soft: 0 0 14px rgba(59, 130, 246, 0.22); /* subtle ticker glyph glow */
+  /* ── Glow halos (only for key data + signal feedback); softened
+     relative to the dark theme so they read as tint, not neon, on white. */
+  --glow-blue: 0 0 14px rgba(59, 130, 246, 0.22), 0 0 36px rgba(59, 130, 246, 0.08);
+  --glow-purple: 0 0 14px rgba(139, 92, 246, 0.18), 0 0 32px rgba(139, 92, 246, 0.06);
+  --glow-cyan: 0 0 14px rgba(8, 145, 178, 0.22);
+  --glow-blue-soft: 0 0 10px rgba(59, 130, 246, 0.16); /* subtle ticker glyph glow */
 
   /* ── Radius four-step ────────────────────────────────────────── */
   --radius-sm: 8px;
@@ -326,9 +332,9 @@
   --font-sans: var(--font-body);
 
   /* ── Elevation (subtle, cosmic prefers glow over shadow) ─────── */
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.45);
-  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.55);
+  --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.12);
+  --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.12);
+  --shadow-lg: 0 8px 32px rgba(15, 23, 42, 0.16);
 
   /* ── Shell layout dimensions ─────────────────────────────────── */
   --titlebar-h: 44px;
@@ -351,16 +357,16 @@
   --bg-1: var(--bg-deep);
   --bg-2: var(--bg-card);
   --bg-3: var(--bg-elevated);
-  --bg-4: #171c2a;
+  --bg-4: #e5e9f0;
 
   --border: var(--border-soft);
   --border-subtle: var(--border-faint);
   --border-hover: var(--border-glow);
-  /* Neutral white hairline for data grids (KvGrid cell dividers) — distinct
+  /* Neutral dark hairline for data grids (KvGrid cell dividers) — distinct
      from the glow border family, which would tint the gridlines. */
-  --border-grid: rgba(255, 255, 255, 0.08);
-  /* Even fainter white hairline for in-table row dividers (half of --border-grid). */
-  --border-hairline: rgba(255, 255, 255, 0.04);
+  --border-grid: rgba(15, 23, 42, 0.09);
+  /* Even fainter hairline for in-table row dividers (half of --border-grid). */
+  --border-hairline: rgba(15, 23, 42, 0.045);
 
   --text-0: var(--text-primary);
   --text-1: var(--text-primary);
@@ -393,8 +399,8 @@
   --chart-forecast-ebitda: rgba(34, 211, 238, 0.32);
   /* Component surfaces that were inlined as dark literals (cosmic spec bans
      hardcoded hex). Tokenized so @media print flips them light. */
-  --table-surface: rgba(13, 16, 24, 0.64); /* KvGrid / data-table backdrop */
-  --ff-label-bg: rgba(5, 5, 13, 0.64); /* FootballField current-price pill */
+  --table-surface: rgba(255, 255, 255, 0.78); /* KvGrid / data-table backdrop */
+  --ff-label-bg: rgba(255, 255, 255, 0.92); /* FootballField current-price pill */
 
   --base: var(--bg-deep);
   --surface: var(--bg-card);

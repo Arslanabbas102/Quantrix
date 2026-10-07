@@ -16,6 +16,9 @@ import { AppShell } from './layout/AppShell'
 import { CoveragePage } from './pages/CoveragePage'
 import { ResearchPage } from './pages/ResearchPage'
 import { StockWorkspace } from './views/StockWorkspace'
+import { WatchlistPage } from './pages/WatchlistPage'
+import { ComparePage } from './pages/ComparePage'
+import { NewsPage } from './pages/NewsPage'
 
 // Lazy-routed: ArtifactDetailPage pulls 13 chapter components + the 4-panel
 // chrome, and Settings imports the full provider/channel matrix. Loading them
@@ -89,6 +92,14 @@ export const router = createBrowserRouter(
         // Research is the search-first homepage; Coverage is the archive desk.
         { path: 'research', element: <ResearchPage /> },
         { path: 'coverage', element: <CoveragePage /> },
+
+        // Watchlist (user-curated, client-only), Compare (side-by-side
+        // valuation), and News (standalone catalyst feed) — additive product
+        // doors alongside Research/Coverage/Settings, same shell.
+        { path: 'watchlist', element: <WatchlistPage /> },
+        { path: 'compare', element: <ComparePage /> },
+        { path: 'news', element: <NewsPage /> },
+        { path: 'news/:ticker', element: <NewsPage /> },
 
         // The old /stocks landing retired into Research; the per-ticker
         // drill-down (StockWorkspace) and report detail keep their routes.
