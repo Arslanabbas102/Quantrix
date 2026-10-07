@@ -6,9 +6,9 @@ This is V1 in the [Alpha Desk version lineage](../README.md). It is a **web serv
 
 Where it sits relative to the others:
 
-- **[`finrobot_desktop/`](../finrobot_desktop/) (V2)** is the production agent system — a deeper research pipeline, a deterministic compute engine, and full numeric provenance. Choose it when the analysis itself matters most.
+- **[`alpha_desk_desktop/`](../alpha_desk_desktop/) (V2)** is the production agent system — a deeper research pipeline, a deterministic compute engine, and full numeric provenance. Choose it when the analysis itself matters most.
 - **This project (V1)** is the choice when *browser access* matters most: a shared internal tool, a demo, a hosted deployment behind your own auth.
-- **[`finrobot_autogen/`](../finrobot_autogen/) (V0)** is educational — the AutoGen library behind the whitepaper.
+- **[`alpha_desk_autogen/`](../alpha_desk_autogen/) (V0)** is educational — the AutoGen library behind the whitepaper.
 
 ### Example output
 
@@ -41,7 +41,7 @@ The same files are checked in under `core/output/`.
 From the repository root:
 
 ```bash
-cp finrobot_equity/core/config/config.ini.example finrobot_equity/core/config/config.ini
+cp alpha_desk_equity/core/config/config.ini.example alpha_desk_equity/core/config/config.ini
 ```
 
 ```ini
@@ -79,15 +79,15 @@ python run_web_app.py           # --host / --port / --no-reload are available
 
 ```bash
 # Step 1 — fetch data, forecast, and generate the narrative sections
-python finrobot_equity/core/src/generate_financial_analysis.py \
+python alpha_desk_equity/core/src/generate_financial_analysis.py \
     --company-ticker NVDA \
     --company-name "NVIDIA Corporation" \
-    --config-file finrobot_equity/core/config/config.ini \
+    --config-file alpha_desk_equity/core/config/config.ini \
     --peer-tickers AMD INTC \
     --generate-text-sections
 
 # Step 2 — render the HTML report from step 1's outputs
-python finrobot_equity/core/src/create_equity_report.py \
+python alpha_desk_equity/core/src/create_equity_report.py \
     --company-ticker NVDA \
     --company-name "NVIDIA Corporation" \
     --analysis-csv output/NVDA/analysis/financial_metrics_and_forecasts.csv \
@@ -101,7 +101,7 @@ python finrobot_equity/core/src/create_equity_report.py \
     --major-takeaways-file     output/NVDA/analysis/major_takeaways.txt \
     --peer-ev-ebitda-csv       output/NVDA/analysis/peer_ev_ebitda_comparison.csv \
     --enable-text-regeneration \
-    --config-file finrobot_equity/core/config/config.ini
+    --config-file alpha_desk_equity/core/config/config.ini
 ```
 
 `generate_pdf_report.py` turns the HTML into a PDF as an optional third step. `core/src/Run.ipynb` walks the same pipeline in a notebook.
@@ -152,7 +152,7 @@ Each agent receives the already-computed numbers as context, so the narrative de
 ### Layout
 
 ```
-finrobot_equity/
+alpha_desk_equity/
 ├── core/                                    # Analysis engine
 │   ├── config/config.ini.example            #   API key template
 │   ├── src/
@@ -200,7 +200,7 @@ finrobot_equity/
 
 ### Deployment commands
 
-Run from this directory, or from the repo root as `./finrobot_equity/deploy.sh …` — the script resolves its own paths either way.
+Run from this directory, or from the repo root as `./alpha_desk_equity/deploy.sh …` — the script resolves its own paths either way.
 
 | Command | Description |
 |:---|:---|
@@ -210,7 +210,7 @@ Run from this directory, or from the repo root as `./finrobot_equity/deploy.sh �
 | `./deploy.sh status` | Check running status and recent logs |
 | `./deploy.sh install` | Install/update dependencies only |
 
-`deploy.gcloud.sh` covers Google Cloud Run deployment. The `Dockerfile` and `.dockerignore` stay at the repo root: the container imports the app as `finrobot_equity.web_app.main`, so the build context has to be the root with `finrobot_equity/` as a subdirectory under it.
+`deploy.gcloud.sh` covers Google Cloud Run deployment. The `Dockerfile` and `.dockerignore` stay at the repo root: the container imports the app as `alpha_desk_equity.web_app.main`, so the build context has to be the root with `alpha_desk_equity/` as a subdirectory under it.
 
 ### Environment variables
 
@@ -238,7 +238,7 @@ Run from this directory, or from the repo root as `./finrobot_equity/deploy.sh �
 ### Tests
 
 ```bash
-pytest finrobot_equity/core/tests/
+pytest alpha_desk_equity/core/tests/
 ```
 
 ## License

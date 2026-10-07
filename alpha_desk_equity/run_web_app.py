@@ -5,17 +5,17 @@ Start the Alpha Desk Equity Research Web Application
 This script starts the FastAPI web application for equity research analysis.
 
 Usage:
-    python finrobot_equity/run_web_app.py
+    python alpha_desk_equity/run_web_app.py
 
     Or from the Alpha Desk root directory:
-    python -m finrobot_equity.run_web_app
+    python -m alpha_desk_equity.run_web_app
 """
 
 import sys
 import os
 import uvicorn
 
-# The app is imported as `finrobot_equity.web_app.main`, so the repo root — this
+# The app is imported as `alpha_desk_equity.web_app.main`, so the repo root — this
 # file's parent directory — is what has to be importable, not this directory.
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -41,7 +41,7 @@ def run_web_app(host: str = "127.0.0.1", port: int = 8001, reload: bool = True):
         # Use import string for uvicorn so reload mode works
         # This allows uvicorn to reload the app when code changes
         uvicorn.run(
-            "finrobot_equity.web_app.main:app",
+            "alpha_desk_equity.web_app.main:app",
             host=host,
             port=port,
             reload=reload,

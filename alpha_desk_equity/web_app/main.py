@@ -32,7 +32,7 @@ SRC_ROOT = CORE_ROOT  # SRC_ROOT points to core directory, scripts are in core/s
 OUTPUT_DIR = os.path.join(CORE_ROOT, "output")
 CONFIG_DIR = os.path.join(CORE_ROOT, "config")
 DATA_DIR = os.path.join(PROJECT_ROOT, "web_app", "data")
-LOGS_DIR = os.path.join(PROJECT_ROOT, "logs")  # 统一日志目录：finrobot_equity/logs/
+LOGS_DIR = os.path.join(PROJECT_ROOT, "logs")  # 统一日志目录：alpha_desk_equity/logs/
 
 # Ensure directories exist
 os.makedirs(OUTPUT_DIR, exist_ok=True)

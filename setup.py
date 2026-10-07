@@ -1,14 +1,14 @@
 from setuptools import setup, find_packages
 
-# V0 (AutoGen) 的包本体已移入 finrobot_autogen/,但对外 import 名仍是 `alpha_desk`
-_V0_PKG_DIR = "finrobot_autogen/alpha_desk"
+# V0 (AutoGen) 的包本体已移入 alpha_desk_autogen/,但对外 import 名仍是 `alpha_desk`
+_V0_PKG_DIR = "alpha_desk_autogen/alpha_desk"
 
 # Read requirements.txt, ignore comments
 try:
-    with open("finrobot_autogen/requirements.txt", "r") as f:
+    with open("alpha_desk_autogen/requirements.txt", "r") as f:
         REQUIRES = [line.split("#", 1)[0].strip() for line in f if line.strip()]
 except:
-    print("'finrobot_autogen/requirements.txt' not found!")
+    print("'alpha_desk_autogen/requirements.txt' not found!")
     REQUIRES = list()
 
 setup(
@@ -22,7 +22,7 @@ setup(
     packages=(
         ["alpha_desk"]
         + [f"alpha_desk.{_p}" for _p in find_packages(where=_V0_PKG_DIR)]
-        + find_packages(include=["finrobot_equity", "finrobot_equity.*"])
+        + find_packages(include=["alpha_desk_equity", "alpha_desk_equity.*"])
     ),
     package_dir={"alpha_desk": _V0_PKG_DIR},
     install_requires=REQUIRES,

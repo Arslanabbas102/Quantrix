@@ -40,11 +40,11 @@ Alpha Desk is three projects sharing one financial domain layer. They are not th
 
 | Directory | Version | What it is | Use it for |
 |:---|:---|:---|:---|
-| **[`finrobot_desktop/`](./finrobot_desktop/)** | V2 | **Production** — the real agent system. Native desktop research workstation on PydanticAI + FastAPI + React/Tauri | Actual research work. This is the one to use if you want output you can act on |
-| **[`finrobot_equity/`](./finrobot_equity/)** | V1 | **Web app** — a self-hosted report generator with a FastAPI interface | Standing up a browser-based service that turns a ticker into a shareable HTML/PDF report |
-| **[`finrobot_autogen/`](./finrobot_autogen/)** | V0 | **Educational** — the original AutoGen library, the codebase behind the whitepaper | Learning how financial agents are wired together, teaching, and reproducing the paper. Not intended for production use |
+| **[`alpha_desk_desktop/`](./alpha_desk_desktop/)** | V2 | **Production** — the real agent system. Native desktop research workstation on PydanticAI + FastAPI + React/Tauri | Actual research work. This is the one to use if you want output you can act on |
+| **[`alpha_desk_equity/`](./alpha_desk_equity/)** | V1 | **Web app** — a self-hosted report generator with a FastAPI interface | Standing up a browser-based service that turns a ticker into a shareable HTML/PDF report |
+| **[`alpha_desk_autogen/`](./alpha_desk_autogen/)** | V0 | **Educational** — the original AutoGen library, the codebase behind the whitepaper | Learning how financial agents are wired together, teaching, and reproducing the paper. Not intended for production use |
 
-`pip install alpha-desk` installs the V0 package. Its source moved into `finrobot_autogen/`, but the import name did not change — every existing `from alpha_desk... import ...` keeps working.
+`pip install alpha-desk` installs the V0 package. Its source moved into `alpha_desk_autogen/`, but the import name did not change — every existing `from alpha_desk... import ...` keeps working.
 
 ---
 
@@ -54,9 +54,9 @@ Alpha Desk evolves alongside the rapid development of AI-agent frameworks. Rathe
 
 | Version | Agent Framework | Project | Maturity | Focus |
 |---|---|---|---|---|
-| **V0** | AutoGen | [`finrobot_autogen/`](./finrobot_autogen/) | Educational / reference | The original Alpha Desk multi-agent architecture for financial applications |
-| **V1** | OpenAI Agents SDK | [`finrobot_equity/`](./finrobot_equity/) | Self-hosted web app | Equity-research agents, financial analysis, valuation, and automated report generation |
-| **V2** | PydanticAI | [`finrobot_desktop/`](./finrobot_desktop/) | **Production** — also hosted at [finrobot.ai/v2](https://finrobot.ai/v2) | Structured, type-safe agent workflows for professional equity research |
+| **V0** | AutoGen | [`alpha_desk_autogen/`](./alpha_desk_autogen/) | Educational / reference | The original Alpha Desk multi-agent architecture for financial applications |
+| **V1** | OpenAI Agents SDK | [`alpha_desk_equity/`](./alpha_desk_equity/) | Self-hosted web app | Equity-research agents, financial analysis, valuation, and automated report generation |
+| **V2** | PydanticAI | [`alpha_desk_desktop/`](./alpha_desk_desktop/) | **Production** — also hosted at [finrobot.ai/v2](https://finrobot.ai/v2) | Structured, type-safe agent workflows for professional equity research |
 | **V3** | DeepSeek-Harness | Alpha Desk V3 | In development | More autonomy inside the same verification constraints |
 
 All three are open source. **V2 is the production system** — the deterministic compute engine, the provenance guarantees, and the agent orchestration described below all live there. V0 is kept because it is small enough to read and learn from, not because it is the recommended way to run research today.
@@ -142,7 +142,7 @@ Traceable Investment Research Output
 | **Skills** | 56 analyst playbooks across equity research, investment banking, private equity, and wealth management |
 | **Product stack** | PydanticAI, FastAPI, SQLite, React 19, Vite 6, Zustand, Tauri/Rust, Recharts |
 
-Full details in [`finrobot_desktop/README.md`](./finrobot_desktop/README.md).
+Full details in [`alpha_desk_desktop/README.md`](./alpha_desk_desktop/README.md).
 
 ---
 
@@ -157,16 +157,16 @@ Three ways to run the same engine.
 **Local web UI** — the same interface in a browser, no `.dmg` and no Rust toolchain, so it also works on Intel Macs, Linux, and Windows:
 
 ```bash
-cd finrobot_desktop
+cd alpha_desk_desktop
 uv sync                        # backend dependencies
 (cd desktop && npm install)    # frontend dependencies — one time
 
 ./dev.sh                       # → open http://localhost:5173
 ```
 
-`dev.sh` runs the FastAPI backend on `:8321` and a Vite server on `:5173` that proxies the API to it; `Ctrl+C` stops both. Note that it first frees those two ports, so quit "Alpha Desk.app" if it is open, and that the local API is unauthenticated in browser mode — details in [`finrobot_desktop/README.md`](./finrobot_desktop/README.md).
+`dev.sh` runs the FastAPI backend on `:8321` and a Vite server on `:5173` that proxies the API to it; `Ctrl+C` stops both. Note that it first frees those two ports, so quit "Alpha Desk.app" if it is open, and that the local API is unauthenticated in browser mode — details in [`alpha_desk_desktop/README.md`](./alpha_desk_desktop/README.md).
 
-**CLI** — after `uv sync` in `finrobot_desktop/`:
+**CLI** — after `uv sync` in `alpha_desk_desktop/`:
 
 ```bash
 alpha_desk research AAPL          # full 13-chapter research artifact
@@ -176,35 +176,35 @@ alpha_desk ic-memo TSLA
 alpha_desk ask AAPL "How exposed is the gross margin to tariffs?"
 ```
 
-Building the Tauri desktop shell is covered in [`finrobot_desktop/README.md`](./finrobot_desktop/README.md).
+Building the Tauri desktop shell is covered in [`alpha_desk_desktop/README.md`](./alpha_desk_desktop/README.md).
 
 ### V1 — the equity research web app
 
 ```bash
-cp finrobot_equity/core/config/config.ini.example finrobot_equity/core/config/config.ini
+cp alpha_desk_equity/core/config/config.ini.example alpha_desk_equity/core/config/config.ini
 # edit config.ini: fmp_api_key, openai_api_key, (optional) adanos_api_key
 
-chmod +x finrobot_equity/deploy.sh
-./finrobot_equity/deploy.sh start          # → http://127.0.0.1:8001
+chmod +x alpha_desk_equity/deploy.sh
+./alpha_desk_equity/deploy.sh start          # → http://127.0.0.1:8001
 ```
 
 | Command | Description |
 |:---|:---|
-| `./finrobot_equity/deploy.sh start` | Start the web app (auto-installs dependencies) |
-| `./finrobot_equity/deploy.sh stop` | Stop the application |
-| `./finrobot_equity/deploy.sh restart` | Restart the application |
-| `./finrobot_equity/deploy.sh status` | Check running status |
-| `./finrobot_equity/deploy.sh install` | Install/update dependencies only |
+| `./alpha_desk_equity/deploy.sh start` | Start the web app (auto-installs dependencies) |
+| `./alpha_desk_equity/deploy.sh stop` | Stop the application |
+| `./alpha_desk_equity/deploy.sh restart` | Restart the application |
+| `./alpha_desk_equity/deploy.sh status` | Check running status |
+| `./alpha_desk_equity/deploy.sh install` | Install/update dependencies only |
 
 If `deploy.sh` doesn't work in your environment:
 
 ```bash
 python3 -m venv venv && source venv/bin/activate
-pip install -r finrobot_equity/requirements.txt
-python finrobot_equity/run_web_app.py
+pip install -r alpha_desk_equity/requirements.txt
+python alpha_desk_equity/run_web_app.py
 ```
 
-A two-step CLI pipeline is available as well — see [`finrobot_equity/README.md`](./finrobot_equity/README.md).
+A two-step CLI pipeline is available as well — see [`alpha_desk_equity/README.md`](./alpha_desk_equity/README.md).
 
 **Example reports:**
 [NVDA](https://ai4finance-foundation.github.io/FinRobot/finrobot_equity/core/output/NVDA_Equity_Research_Report.html) ·
@@ -222,7 +222,7 @@ conda create --name alpha_desk python=3.10
 conda activate alpha_desk
 ```
 
-**2. Install** — from PyPI, or from source at the **repository root** (`setup.py` maps the `alpha_desk` package to `finrobot_autogen/alpha_desk`, so installing from inside that directory won't work):
+**2. Install** — from PyPI, or from source at the **repository root** (`setup.py` maps the `alpha_desk` package to `alpha_desk_autogen/alpha_desk`, so installing from inside that directory won't work):
 
 ```bash
 git clone https://github.com/Arslanabbas102/Alpha-Desk-.git
@@ -230,15 +230,15 @@ cd Alpha-Desk-
 pip install -e .          # or: pip install -U alpha-desk
 ```
 
-**3. Configure keys** — both files go in `finrobot_autogen/`, which is where the notebooks look for them. Copy rather than rename: the `*_sample` files are tracked, and your filled-in copies are gitignored.
+**3. Configure keys** — both files go in `alpha_desk_autogen/`, which is where the notebooks look for them. Copy rather than rename: the `*_sample` files are tracked, and your filled-in copies are gitignored.
 
 ```bash
-cd finrobot_autogen
+cd alpha_desk_autogen
 cp OAI_CONFIG_LIST_sample OAI_CONFIG_LIST     # OpenAI / Azure OpenAI endpoints
 cp config_api_keys_sample config_api_keys     # Finnhub, FMP, SEC, Reddit, …
 ```
 
-**4. Run a tutorial** from `finrobot_autogen/tutorials_beginner/` or `tutorials_advanced/`:
+**4. Run a tutorial** from `alpha_desk_autogen/tutorials_beginner/` or `tutorials_advanced/`:
 
 ```
 agent_annual_report.ipynb        # 10-K → formatted PDF annual report
@@ -248,7 +248,7 @@ lmm_agent_mplfinance.ipynb       # multimodal agent reading a candlestick chart
 lmm_agent_opt_smacross.ipynb     # multimodal SMA-crossover tuning
 ```
 
-The agent library, workflow types, and full tutorial index are in [`finrobot_autogen/README.md`](./finrobot_autogen/README.md).
+The agent library, workflow types, and full tutorial index are in [`alpha_desk_autogen/README.md`](./alpha_desk_autogen/README.md).
 
 ---
 
@@ -256,7 +256,7 @@ The agent library, workflow types, and full tutorial index are in [`finrobot_aut
 
 ```
 Alpha-Desk-/
-├── finrobot_autogen/            # V0 — AutoGen generation (PyPI: pip install alpha-desk)
+├── alpha_desk_autogen/          # V0 — AutoGen generation (PyPI: pip install alpha-desk)
 │   ├── alpha_desk/              #   package root — imported as `alpha_desk`
 │   │   ├── agents/              #     agent_library.py, workflow.py, prompts.py
 │   │   ├── data_source/         #     finnhub / finnlp / fmp / sec / yfinance / reddit
@@ -272,7 +272,7 @@ Alpha-Desk-/
 │   ├── config_api_keys_sample
 │   └── requirements.txt
 │
-├── finrobot_desktop/            # V2 — PydanticAI desktop generation (current)
+├── alpha_desk_desktop/          # V2 — PydanticAI desktop generation (current)
 │   ├── alpha_desk/              #   Python backend (FastAPI + compute engine)
 │   │   ├── engine/              #     agents/, pipelines/, compute/, data/
 │   │   ├── artifact/            #     report store + output contract gate
@@ -283,7 +283,7 @@ Alpha-Desk-/
 │   ├── tests/ scripts/ tutorials/
 │   └── pyproject.toml uv.lock dev.sh
 │
-├── finrobot_equity/             # V1 — OpenAI Agents SDK generation
+├── alpha_desk_equity/           # V1 — OpenAI Agents SDK generation
 │   ├── core/                    #   analysis engine + 8 section-writing agents
 │   ├── web_app/                 #   FastAPI web application
 │   ├── run_web_app.py           #   launcher
@@ -293,7 +293,7 @@ Alpha-Desk-/
 │
 ├── Dockerfile .dockerignore     # V1 container build — must stay at the repo
 │                                # root, since the image imports the app as
-│                                # finrobot_equity.web_app.main
+│                                # alpha_desk_equity.web_app.main
 ├── .github/workflows/           # desktop CI (backend 3.11/3.12, frontend Node 22/24)
 ├── setup.py                     # packages V0 (as `alpha_desk`) + V1 for PyPI
 ├── LICENSE NOTICE TRADEMARK_POLICY.md

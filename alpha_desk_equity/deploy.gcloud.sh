@@ -4,17 +4,17 @@
 #
 # Prerequisites:
 #   - gcloud CLI installed and authenticated
-#   - config.ini with real API keys at finrobot_equity/core/config/config.ini
+#   - config.ini with real API keys at alpha_desk_equity/core/config/config.ini
 #
 # Usage:
-#   chmod +x finrobot_equity/deploy.gcloud.sh
-#   ./finrobot_equity/deploy.gcloud.sh
+#   chmod +x alpha_desk_equity/deploy.gcloud.sh
+#   ./alpha_desk_equity/deploy.gcloud.sh
 #
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # The image is built from the repo root: the container runs
-# `finrobot_equity.web_app.main`, so finrobot_equity/ must be a subdirectory of
+# `alpha_desk_equity.web_app.main`, so alpha_desk_equity/ must be a subdirectory of
 # the build context, and `gcloud builds submit --tag` reads the Dockerfile from
 # the root of whatever it uploads.
 REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
@@ -147,10 +147,10 @@ gcloud run deploy "${SERVICE_NAME}" \
     --allow-unauthenticated \
     --add-cloudsql-instances="${SQL_CONNECTION_NAME}" \
     --set-env-vars="DATABASE_URL=${DATABASE_URL}" \
-    --update-secrets="/app/finrobot_equity/core/config/config.ini=${SECRET_NAME}:latest" \
+    --update-secrets="/app/alpha_desk_equity/core/config/config.ini=${SECRET_NAME}:latest" \
     --execution-environment=gen2 \
     --add-volume=name=reports,type=cloud-storage,bucket="${BUCKET_NAME}" \
-    --add-volume-mount=volume=reports,mount-path=/app/finrobot_equity/core/output \
+    --add-volume-mount=volume=reports,mount-path=/app/alpha_desk_equity/core/output \
     --quiet
 
 # ── Done ─────────────────────────────────────────────────────────────────────
