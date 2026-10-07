@@ -1,23 +1,23 @@
-# CI for the V2 desktop generation (finrobot_desktop/).
+# CI for the V2 desktop generation (alpha_desk_desktop/).
 #
 # Lives at the repo root because GitHub only reads .github/workflows/ there,
-# but every step is scoped to finrobot_desktop/ so V0 and V1 are untouched.
+# but every step is scoped to alpha_desk_desktop/ so V0 and V1 are untouched.
 name: Desktop CI
 
 on:
   push:
     branches: [master]
-    paths: ['finrobot_desktop/**', '.github/workflows/desktop-ci.yml']
+    paths: ['alpha_desk_desktop/**', '.github/workflows/desktop-ci.yml']
   pull_request:
     branches: [master]
-    paths: ['finrobot_desktop/**', '.github/workflows/desktop-ci.yml']
+    paths: ['alpha_desk_desktop/**', '.github/workflows/desktop-ci.yml']
 
 jobs:
   backend:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: finrobot_desktop
+        working-directory: alpha_desk_desktop
     strategy:
       matrix:
         python-version: ["3.11", "3.12"]
@@ -58,7 +58,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: finrobot_desktop/desktop
+        working-directory: alpha_desk_desktop/desktop
     strategy:
       matrix:
         # Lower bound: @lingui/cli imports fs.globSync, added in Node 22, so

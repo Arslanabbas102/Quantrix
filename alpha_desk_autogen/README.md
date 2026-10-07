@@ -4,7 +4,7 @@
 
 This is the codebase behind the [Alpha Desk whitepaper](https://arxiv.org/abs/2405.14767), kept in the repository for **learning and reference** — teaching, coursework, reproducing the paper, and understanding how financial agents are wired together. The agent definitions, the tool-registration pattern, and the data plumbing are all small enough to read end to end, which is exactly why it is worth keeping.
 
-**It is not the production system.** There is no deterministic compute layer here, no provenance tracking, and no guarantee that a number in the output was computed rather than generated — the agents call tools and the LLM writes the result. For research you intend to act on, use [`finrobot_desktop/`](../finrobot_desktop/) (V2), where financial figures come from pure-Python operators and every one is traceable. For a self-hosted report-generating web service, use [`finrobot_equity/`](../finrobot_equity/) (V1).
+**It is not the production system.** There is no deterministic compute layer here, no provenance tracking, and no guarantee that a number in the output was computed rather than generated — the agents call tools and the LLM writes the result. For research you intend to act on, use [`alpha_desk_desktop/`](../alpha_desk_desktop/) (V2), where financial figures come from pure-Python operators and every one is traceable. For a self-hosted report-generating web service, use [`alpha_desk_equity/`](../alpha_desk_equity/) (V1).
 
 ---
 
@@ -72,7 +72,7 @@ register_toolkits([FMPUtils.get_sec_report], assistant, user_proxy)
 
 ## Install
 
-The package is published and imported as `alpha_desk`, but its source now lives under `finrobot_autogen/`. `setup.py` at the **repository root** maps the two, so install from the root — not from this directory:
+The package is published and imported as `alpha_desk`, but its source now lives under `alpha_desk_autogen/`. `setup.py` at the **repository root** maps the two, so install from the root — not from this directory:
 
 ```bash
 conda create --name alpha_desk python=3.10   # 3.10 or 3.11
@@ -96,7 +96,7 @@ from alpha_desk.agents.workflow import SingleAssistant
 
 ## Configure
 
-Both config files live in **this directory** (`finrobot_autogen/`) — that's where the tutorial notebooks look for them (`../OAI_CONFIG_LIST` relative to `tutorials_*/`).
+Both config files live in **this directory** (`alpha_desk_autogen/`) — that's where the tutorial notebooks look for them (`../OAI_CONFIG_LIST` relative to `tutorials_*/`).
 
 **1. LLM endpoints** — copy the sample and fill in your key:
 
@@ -173,8 +173,8 @@ The two `lmm_*` notebooks need a vision-capable model configured in `OAI_CONFIG_
 
 V0 is stable and kept working, but it is maintained as teaching material, not as a product — active development happens in V1 and V2. Read this generation for the concepts, then build on:
 
-- [`finrobot_desktop/`](../finrobot_desktop/) — **production**: desktop app and CLI, PydanticAI, deterministic compute engine
-- [`finrobot_equity/`](../finrobot_equity/) — **web app**: self-hosted equity research report generator
+- [`alpha_desk_desktop/`](../alpha_desk_desktop/) — **production**: desktop app and CLI, PydanticAI, deterministic compute engine
+- [`alpha_desk_equity/`](../alpha_desk_equity/) — **web app**: self-hosted equity research report generator
 
 ## License
 

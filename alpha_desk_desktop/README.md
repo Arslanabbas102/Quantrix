@@ -14,7 +14,7 @@ This is V2 in the [Alpha Desk version lineage](../README.md), and it is the gene
 - **7 data providers behind failover**, with response validation that rejects malformed payloads before they reach the compute layer.
 - **237 test files**, property-based tests, and CI across Python 3.11/3.12 and Node 22/24.
 
-The other two generations serve different purposes: [`finrobot_equity/`](../finrobot_equity/) (V1) is a self-hosted web app for browser-based report generation, and [`finrobot_autogen/`](../finrobot_autogen/) (V0) is the educational AutoGen library behind the whitepaper.
+The other two generations serve different purposes: [`alpha_desk_equity/`](../alpha_desk_equity/) (V1) is a self-hosted web app for browser-based report generation, and [`alpha_desk_autogen/`](../alpha_desk_autogen/) (V0) is the educational AutoGen library behind the whitepaper.
 
 ---
 
@@ -180,7 +180,7 @@ The same backend and the same UI can run as a local web service, with no `.dmg` 
 **Prerequisites:** [`uv`](https://docs.astral.sh/uv/) and Node 20+. Python 3.11+.
 
 ```bash
-cd finrobot_desktop
+cd alpha_desk_desktop
 uv sync                        # backend dependencies
 (cd desktop && npm install)    # frontend dependencies — one time
 
@@ -248,7 +248,7 @@ ruff check . && mypy alpha_desk                          # also wired into .pre-
 Layout:
 
 ```
-finrobot_desktop/
+alpha_desk_desktop/
 ├── alpha_desk/              # Python backend
 │   ├── engine/            #   agents, pipelines, compute, data, skills
 │   ├── routes/            #   FastAPI endpoints (runs, artifacts, valuation, …)

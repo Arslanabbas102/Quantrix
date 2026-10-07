@@ -11,7 +11,7 @@
 #
 # Usage:
 #   Run from this directory as ./deploy.sh, or from the repo root as
-#   ./finrobot_equity/deploy.sh — paths resolve either way.
+#   ./alpha_desk_equity/deploy.sh — paths resolve either way.
 #
 #   ./deploy.sh start      - Start the web application
 #   ./deploy.sh stop       - Stop the application
@@ -29,7 +29,7 @@ set -e
 # ============================================================================
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-# The app is imported as `finrobot_equity.web_app.main`, so the repo root — the
+# The app is imported as `alpha_desk_equity.web_app.main`, so the repo root — the
 # parent of this directory — is what has to be on PYTHONPATH.
 REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 VENV_DIR="${SCRIPT_DIR}/venv"
@@ -200,7 +200,7 @@ install_deps() {
         pip install -r "$REQUIREMENTS_WEB" 2>&1 | tail -5
     fi
     
-    # Note: finrobot_equity is a local module, no need to install separately
+    # Note: alpha_desk_equity is a local module, no need to install separately
     
     print_info "All dependencies installed successfully"
 }
@@ -257,7 +257,7 @@ start_app() {
     fi
     
     # Start the application
-    # Add the repo root to PYTHONPATH so finrobot_equity can be imported
+    # Add the repo root to PYTHONPATH so alpha_desk_equity can be imported
     export PYTHONPATH="$REPO_ROOT:$PYTHONPATH"
     
     nohup python "$SCRIPT_DIR/run_web_app.py" \
@@ -434,8 +434,8 @@ CONFIGURATION:
   API Keys:
     Before using equity analysis, configure your API keys:
     
-    cp finrobot_equity/core/config/config.ini.example \
-       finrobot_equity/core/config/config.ini
+    cp alpha_desk_equity/core/config/config.ini.example \
+       alpha_desk_equity/core/config/config.ini
     (paths shown from the repo root)
     
     Edit config.ini with your API keys:
