@@ -6,6 +6,13 @@ Quantrix Desktop is an open-source equity research workstation for analysts, qua
 
 **The core bet: numbers are computed by code, judgment is supplied by the LLM.** The model never emits a figure that cannot be traced back to a call in `quantrix/engine/compute/`.
 
+### What it does
+
+- **Automated report generation** — the full 13-chapter equity research artifact above, on demand, from a single ticker.
+- **Financial analysis** — income statement, balance sheet, and cash flow, normalized across the data layer's 7 providers.
+- **Valuation analysis** — DCF, DDM, LBO, and comparable-company multiples (P/E, EV/EBITDA), each a deterministic operator with full provenance.
+- **Risk assessment** — the Sensitivity and Catalysts chapters plus the 6 audit operators, which check the narrative against the numbers before a report ships.
+
 This is V2 in the [Quantrix version lineage](../README.md), and it is the generation meant for real work. What makes it the production system rather than a larger demo:
 
 - **32 deterministic operators** compute every financial figure in pure Python — the LLM narrates them, it does not produce them.

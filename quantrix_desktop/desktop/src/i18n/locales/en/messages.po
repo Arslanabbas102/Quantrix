@@ -117,6 +117,18 @@ msgid "nav.coverage"
 msgstr "Coverage"
 
 #. js-lingui-explicit-id
+msgid "nav.watchlist"
+msgstr "Watchlist"
+
+#. js-lingui-explicit-id
+msgid "nav.compare"
+msgstr "Compare"
+
+#. js-lingui-explicit-id
+msgid "nav.news"
+msgstr "News"
+
+#. js-lingui-explicit-id
 msgid "nav.back"
 msgstr "Back"
 

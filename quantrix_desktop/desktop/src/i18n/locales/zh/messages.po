@@ -117,6 +117,18 @@ msgid "nav.coverage"
 msgstr "研究库"
 
 #. js-lingui-explicit-id
+msgid "nav.watchlist"
+msgstr "自选"
+
+#. js-lingui-explicit-id
+msgid "nav.compare"
+msgstr "对比"
+
+#. js-lingui-explicit-id
+msgid "nav.news"
+msgstr "资讯"
+
+#. js-lingui-explicit-id
 msgid "nav.back"
 msgstr "返回"
 
